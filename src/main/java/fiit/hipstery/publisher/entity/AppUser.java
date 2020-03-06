@@ -1,20 +1,32 @@
 package fiit.hipstery.publisher.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import java.util.List;
 
 @Entity
-public class AppUser {
+public class AppUser extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+    protected String userName;
 
-    private String firstName;
+    protected String firstName;
 
-    private String lastName;
+    protected String lastName;
+
+    @ManyToOne
+    protected Publisher publisher;
+
+    @ManyToMany
+    protected List<Role> roles;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -30,5 +42,13 @@ public class AppUser {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
     }
 }

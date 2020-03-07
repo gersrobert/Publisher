@@ -16,6 +16,9 @@ public class Article extends AbstractEntity {
     @ManyToOne
     protected Publisher publisher;
 
+    @ManyToMany
+    protected List<Category> categories;
+
     public String getTitle() {
         return title;
     }
@@ -38,5 +41,13 @@ public class Article extends AbstractEntity {
 
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

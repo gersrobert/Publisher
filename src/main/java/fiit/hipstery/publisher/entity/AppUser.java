@@ -20,6 +20,9 @@ public class AppUser extends AbstractEntity {
     @ManyToMany
     protected List<Role> roles;
 
+    @ManyToMany
+    protected List<Category> subscribedCategories;
+
     public String getUserName() {
         return userName;
     }
@@ -50,5 +53,21 @@ public class AppUser extends AbstractEntity {
 
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Category> getSubscribedCategories() {
+        return subscribedCategories;
+    }
+
+    public void setSubscribedCategories(List<Category> subscribedCategories) {
+        this.subscribedCategories = subscribedCategories;
     }
 }

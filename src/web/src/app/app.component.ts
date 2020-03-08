@@ -15,8 +15,7 @@ export class AppComponent {
 
   constructor(private http: HttpClient) {}
 
-  getHelloWorld() {
+  getWorld() {
     this.posts = this.http.get(this.ROOT_URL + '/hello');
-    console.log(this.posts);
   }
 }

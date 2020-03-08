@@ -2,9 +2,7 @@
 <br>
 <span>{{ title }}</span>
 <br>
-<button (click)="getHelloWorld()">Get</button>
+<button (click)="getWorld()">Get</button>
 <br>
 
-<div *ngFor="let post in posts">
-  {{ post | json }}
-</div>
+{{ posts | json }}

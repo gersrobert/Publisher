@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {ArticleDetailedDTO} from './dto/dtos';
+import {environment} from '../environments/environment';
+import {ArticleService} from './service/article.service';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +12,13 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'web';
 
-  readonly ROOT_URL = 'http://localhost:10420';
-
   posts: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private articleService: ArticleService) {}
 
   getWorld() {
-    this.posts = this.http.get(this.ROOT_URL + '/hello');
+    this.articleService.getArticleById('1').subscribe(article => {
+      this.posts = article.content;
+    });
   }
 }

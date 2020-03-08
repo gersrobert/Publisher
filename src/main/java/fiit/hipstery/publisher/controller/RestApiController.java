@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.transaction.Transactional;
 
 @Controller
-public class RestApiController {
+public class RestApiController extends AbstractController {
 
     @Autowired
     private UserService userService;

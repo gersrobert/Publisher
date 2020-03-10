@@ -1,5 +1,7 @@
 package fiit.hipstery.publisher.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -18,6 +20,9 @@ public class Article extends AbstractEntity {
 
     @ManyToMany
     protected List<Category> categories;
+
+    @Type(type="text")
+    protected String content;
 
     public String getTitle() {
         return title;
@@ -49,5 +54,13 @@ public class Article extends AbstractEntity {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

@@ -1,10 +1,12 @@
 package fiit.hipstery.publisher.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -14,8 +16,13 @@ public abstract class AbstractEntity {
     public static final String STATE_DELETED = "DELETED";
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    protected Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(updatable = false, nullable = false)
+    protected UUID id;
 
     @CreationTimestamp
     protected LocalDateTime createdAt;
@@ -25,7 +32,7 @@ public abstract class AbstractEntity {
 
     protected String state = STATE_ACTIVE;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

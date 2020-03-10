@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule } from '@angular/material/slider';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -16,7 +16,7 @@ import { MatSliderModule } from '@angular/material/slider';
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatSliderModule
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

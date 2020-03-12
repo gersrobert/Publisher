@@ -3,11 +3,10 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HeaderComponent } from './components/header/header.component';
+import {HeaderComponent} from './components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
-import { IconComponent } from './components/icon/icon.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 
@@ -15,7 +14,6 @@ import {MatButtonModule} from '@angular/material/button';
   declarations: [
     AppComponent,
     HeaderComponent,
-    IconComponent
   ],
     imports: [
         BrowserModule,

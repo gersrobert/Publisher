@@ -51,7 +51,4 @@ public class ArticleController extends AbstractController{
 
         return ResponseEntity.of(Optional.of(article));
     }
-
-
-
 }

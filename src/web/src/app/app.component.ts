@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   }
 
   getWorld() {
-    this.articleService.getArticleById('1').subscribe(article => {
+    this.articleService.getArticleById('72b4a325-7fc0-4a3a-9ae5-00c8a4cde1ab').subscribe(article => {
       this.articleTitle = article.title;
       this.article = article.content;
       this.publishedAt = article.publishedAt;

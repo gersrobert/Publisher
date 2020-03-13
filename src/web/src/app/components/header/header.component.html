@@ -1,21 +1,17 @@
 <mat-toolbar>
-  <app-icon></app-icon>
-  <span>My Application</span>
+  <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon" svgIcon="publisher_logo"></mat-icon>
+  <span>Publisher</span>
+  <span class="example-spacer"></span>
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item>
-      <mat-icon>dialpad</mat-icon>
-      <span>Redial</span>
+      <span>Username</span>
     </button>
-    <button mat-menu-item disabled>
-      <mat-icon>voicemail</mat-icon>
-      <span>Check voice mail</span>
-    </button>
+    <span mat-menu-item>Daco123</span>
     <button mat-menu-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span>Disable alerts</span>
+      <span>Logout</span>
     </button>
   </mat-menu>
 </mat-toolbar>

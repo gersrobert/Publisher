@@ -13,5 +13,7 @@ public interface ArticleService {
 
     List<ArticleSimpleDTO> getArticles();
 
+    List<ArticleSimpleDTO> getArticlesByAuthor(String author);
+
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 }

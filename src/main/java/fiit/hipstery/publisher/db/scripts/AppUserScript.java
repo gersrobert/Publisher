@@ -5,6 +5,7 @@ import fiit.hipstery.publisher.entity.Role;
 import fiit.hipstery.publisher.util.EntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Order(2)
 public class AppUserScript extends InitDbScript<AppUser> {
 
 	@Value("classpath:db/app_users.csv")
@@ -40,9 +42,9 @@ public class AppUserScript extends InitDbScript<AppUser> {
 				.map(this.roles::get)
 				.collect(Collectors.toList());
 
-		user.setFirstName(row.get(0));
-		user.setLastName(row.get(1));
-		user.setUserName(row.get(2));
+		user.setFirstName(row.get(1));
+		user.setLastName(row.get(2));
+		user.setUserName(row.get(3));
 		user.setRoles(roles);
 		return user;
 	}

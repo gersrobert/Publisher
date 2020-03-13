@@ -3,6 +3,7 @@ package fiit.hipstery.publisher.db.scripts;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Order(3)
 public class ArticleScript extends InitDbScript<Article> {
 
 	@Value("classpath:db/articles.csv")

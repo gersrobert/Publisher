@@ -3,12 +3,14 @@ package fiit.hipstery.publisher.db.scripts;
 import fiit.hipstery.publisher.entity.AbstractEntity;
 import fiit.hipstery.publisher.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@Order(1)
 public class RoleScript extends InitDbScript<Role> {
 
 	@Value("classpath:db/roles.csv")

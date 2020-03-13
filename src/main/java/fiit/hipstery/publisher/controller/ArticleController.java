@@ -26,7 +26,7 @@ public class ArticleController extends AbstractController{
 
     Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<ArticleDetailedDTO> getArticleById(@PathVariable String id) {
         ArticleDetailedDTO article;
         try {
@@ -44,6 +44,19 @@ public class ArticleController extends AbstractController{
         List<ArticleSimpleDTO> article;
         try {
             article = articleService.getArticles();
+        } catch (Exception e) {
+            logger.error("Error getting article list", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.of(Optional.of(article));
+    }
+
+    @GetMapping("/author/{author}")
+    public ResponseEntity<List<ArticleSimpleDTO>> getArticlesByAuthor(@PathVariable String author) {
+        List<ArticleSimpleDTO> article;
+        try {
+            article = articleService.getArticlesByAuthor(author);
         } catch (Exception e) {
             logger.error("Error getting article list", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -2,6 +2,7 @@ package fiit.hipstery.publisher.bl.service;
 
 import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
+import fiit.hipstery.publisher.entity.AppUser;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,4 +13,6 @@ public interface ArticleService {
     ArticleDetailedDTO getArticleById(UUID id) throws IOException;
 
     List<ArticleSimpleDTO> getArticles();
+
+    List<ArticleSimpleDTO> getArticlesByAuthor(String author);
 }

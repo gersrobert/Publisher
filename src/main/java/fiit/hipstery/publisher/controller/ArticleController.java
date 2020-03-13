@@ -51,4 +51,17 @@ public class ArticleController extends AbstractController{
 
         return ResponseEntity.of(Optional.of(article));
     }
+
+    @GetMapping("forUser/{id}")
+    public ResponseEntity<List<ArticleSimpleDTO>> getArticleListForUser(@PathVariable String id) {
+        List<ArticleSimpleDTO> article;
+        try {
+            article = articleService.getArticleListForUser(UUID.fromString(id));
+        } catch (Exception e) {
+            logger.error("Error getting article list", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.of(Optional.of(article));
+    }
 }

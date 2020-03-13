@@ -38,6 +38,11 @@ public class ArticleServiceImpl implements ArticleService {
         return articles.stream().map(this::articleToArticleSimpleDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
+        return null;
+    }
+
     private ArticleSimpleDTO articleToArticleSimpleDTO(Article article) {
         ArticleSimpleDTO articleSimpleDTO = new ArticleSimpleDTO();
         articleSimpleDTO.setAuthors(article.getAuthors().stream().map(AppUser::getUserName).collect(Collectors.toList()));

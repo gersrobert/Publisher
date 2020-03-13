@@ -12,43 +12,43 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractEntity {
 
-    public static final String STATE_ACTIVE = "ACTIVE";
-    public static final String STATE_DELETED = "DELETED";
+	public static final String STATE_ACTIVE = "ACTIVE";
+	public static final String STATE_DELETED = "DELETED";
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(updatable = false, nullable = false)
-    protected UUID id;
+	@Id
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+			name = "UUID",
+			strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	@Column(updatable = false, nullable = false)
+	protected UUID id;
 
-    @CreationTimestamp
-    protected LocalDateTime createdAt;
+	@CreationTimestamp
+	protected LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    protected LocalDateTime updatedAt;
+	@UpdateTimestamp
+	protected LocalDateTime updatedAt;
 
-    protected String state = STATE_ACTIVE;
+	protected String state = STATE_ACTIVE;
 
-    public UUID getId() {
-        return id;
-    }
+	public UUID getId() {
+		return id;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 
-    public String getState() {
-        return state;
-    }
+	public String getState() {
+		return state;
+	}
 
-    public void setState(String state) {
-        this.state = state;
-    }
+	public void setState(String state) {
+		this.state = state;
+	}
 }

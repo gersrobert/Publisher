@@ -12,4 +12,6 @@ public interface ArticleService {
     ArticleDetailedDTO getArticleById(UUID id) throws IOException;
 
     List<ArticleSimpleDTO> getArticles();
+
+    List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 }

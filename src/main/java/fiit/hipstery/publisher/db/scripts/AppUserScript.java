@@ -1,0 +1,49 @@
+package fiit.hipstery.publisher.db.scripts;
+
+import fiit.hipstery.publisher.entity.AppUser;
+import fiit.hipstery.publisher.entity.Role;
+import fiit.hipstery.publisher.util.EntityUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+public class AppUserScript extends InitDbScript<AppUser> {
+
+	@Value("classpath:db/app_users.csv")
+	private Resource resource;
+
+	private List<Role> roles;
+
+	@Override
+	public void run() {
+		roles = entityManager.createQuery("from Role ", Role.class).getResultList();
+		super.run();
+	}
+
+	@Override
+	protected Resource getDataFile() {
+		return resource;
+	}
+
+	@Override
+	protected AppUser mapRowToEntity(List<String> row) {
+		AppUser user = new AppUser();
+		List<Role> roles = Arrays.stream(row.get(0).split(","))
+				.map(Integer::parseInt)
+				.map(this.roles::get)
+				.collect(Collectors.toList());
+
+		user.setFirstName(row.get(0));
+		user.setLastName(row.get(1));
+		user.setUserName(row.get(2));
+		user.setRoles(roles);
+		return user;
+	}
+}

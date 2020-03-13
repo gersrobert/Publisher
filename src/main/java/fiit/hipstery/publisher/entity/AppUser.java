@@ -1,6 +1,7 @@
 package fiit.hipstery.publisher.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.util.List;
@@ -20,8 +21,14 @@ public class AppUser extends AbstractEntity {
     @ManyToMany
     protected List<Role> roles;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     protected List<Category> subscribedCategories;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    protected List<Article> likedArticles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    protected List<Article> readArticles;
 
     public String getUserName() {
         return userName;

@@ -1,5 +1,6 @@
 package fiit.hipstery.publisher.entity;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
@@ -23,6 +24,9 @@ public class Article extends AbstractEntity {
 
     @Type(type="text")
     protected String content;
+
+    @Formula(value = "(SELECT count(*) FROM app_user_liked_articles WHERE app_user_liked_articles.liked_articles_id = id)")
+    protected int likeCount;
 
     public String getTitle() {
         return title;
@@ -62,5 +66,9 @@ public class Article extends AbstractEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
     }
 }

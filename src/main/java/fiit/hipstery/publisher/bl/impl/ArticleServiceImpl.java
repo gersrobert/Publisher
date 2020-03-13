@@ -5,6 +5,7 @@ import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -42,17 +43,37 @@ public class ArticleServiceImpl implements ArticleService {
 
     @SuppressWarnings("unchecked")
     @Override
+    public List<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex) {
+        List<Object[]> resultList = entityManager.createNativeQuery("SELECT " +
+                "   a.id," +
+                "   a.title," +
+                "   a.created_at," +
+                "   au.user_name" +
+                "   FROM article a" +
+                "   JOIN article_authors aa ON a.id = aa.article_id" +
+                "   JOIN app_user au ON aa.authors_id = au.id" +
+                "   ORDER BY a.updated_at DESC" +
+                "   OFFSET :lowerIndex ROWS" +
+                "   FETCH NEXT :upperIndex ROWS ONLY").setParameter(
+                        "lowerIndex", lowerIndex).setParameter(
+                                "upperIndex", upperIndex - lowerIndex).getResultList();
+
+        return resultList.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public List<ArticleSimpleDTO> getArticlesByAuthor(String author) {
-        List<Object[]> resultList = entityManager.createNativeQuery("select " +
+        List<Object[]> resultList = entityManager.createNativeQuery("SELECT " +
                 "   a.id," +
                 "   a.title," +
                 "   a.created_at," +
                 "   au.user_name," +
-                "   au.id as author_id" +
-                "   from article a" +
-                "   join article_authors aa on a.id = aa.article_id" +
-                "   join app_user au on aa.authors_id = au.id" +
-                "   where au.user_name = :authorName").setParameter("authorName", author).getResultList();
+                "   au.id AS author_id" +
+                "   FROM article a" +
+                "   JOIN article_authors aa ON a.id = aa.article_id" +
+                "   JOIN app_user au ON aa.authors_id = au.id" +
+                "   WHERE au.user_name = :authorName").setParameter("authorName", author).getResultList();
 
         return resultList.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
     }

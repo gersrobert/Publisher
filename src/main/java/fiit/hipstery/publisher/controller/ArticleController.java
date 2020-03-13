@@ -52,6 +52,20 @@ public class ArticleController extends AbstractController{
         return ResponseEntity.of(Optional.of(article));
     }
 
+    @GetMapping("/index/{lowerIndex}-{upperIndex}")
+    public ResponseEntity<List<ArticleSimpleDTO>> getArticlesInRange(
+            @PathVariable int lowerIndex, @PathVariable int upperIndex) {
+        List<ArticleSimpleDTO> article;
+        try {
+            article = articleService.getArticlesInRange(lowerIndex, upperIndex);
+        } catch (Exception e) {
+            logger.error("Error getting article list", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.of(Optional.of(article));
+    }
+
     @GetMapping("/author/{author}")
     public ResponseEntity<List<ArticleSimpleDTO>> getArticlesByAuthor(@PathVariable String author) {
         List<ArticleSimpleDTO> article;

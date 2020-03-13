@@ -1,12 +1,21 @@
-<app-header></app-header>
-<span>Test</span>
-<br>
-<span>{{ title }}</span>
-<br>
-<!--<button (click)="getWorld()">Get</button>-->
-<br>
+<!--<button (click)="someAction()">Get</button>-->
 
-<p>{{ articleTitle }}</p>
-<p>{{ article }}</p>
-<p>{{ author }}</p>
-<p>{{ publishedAt }}</p>
+<body class="mat-app-background">
+  <app-header></app-header>
+  <br>
+
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let article of articles">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ article.title }}
+        </mat-panel-title>
+        <mat-panel-description>
+            {{ article.authors }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      {{ article.publishedAt }}
+    </mat-expansion-panel>
+  </mat-accordion>
+  <br>
+</body>

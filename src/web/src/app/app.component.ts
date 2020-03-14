@@ -11,11 +11,16 @@ import {ArticleService} from './service/article.service';
 })
 export class AppComponent implements OnInit {
   articles: ArticleSimpleDTO[];
-  panelOpenState = false;
+  titleName: string;
 
   constructor(private articleService: ArticleService) {}
 
   ngOnInit() {
     this.articleService.getArticles().subscribe(response => this.articles = response);
+  }
+
+  nameOfButton(event) {
+    console.log(event.target.name);
+    this.titleName = event.target.name;
   }
 }

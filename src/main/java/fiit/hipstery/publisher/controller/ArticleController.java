@@ -6,12 +6,11 @@ import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -90,5 +89,17 @@ public class ArticleController extends AbstractController{
         }
 
         return ResponseEntity.of(Optional.of(article));
+    }
+
+    @PutMapping("insert/{name}")
+    public ResponseEntity insertArticle(@PathVariable String name) {
+        try {
+            articleService.insertArticle();
+        } catch (Exception e) {
+            logger.error("Error getting article list", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

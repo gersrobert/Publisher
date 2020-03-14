@@ -18,4 +18,6 @@ public interface ArticleService {
     List<ArticleSimpleDTO> getArticlesByAuthor(String author);
 
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
+
+    void insertArticle();
 }

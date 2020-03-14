@@ -4,10 +4,19 @@ import java.time.LocalDateTime;
 
 public class ArticleDetailedDTO {
 
+	protected String id;
 	protected String title;
 	protected String content;
 	protected LocalDateTime publishedAt;
 	protected String author;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getTitle() {
 		return title;

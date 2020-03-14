@@ -1,24 +1,6 @@
-<!--<button (click)="someAction()">Get</button>-->
-
 <body class="mat-app-background">
   <app-header></app-header>
-  <br>
 
-  <mat-accordion>
-    <mat-expansion-panel *ngFor="let article of articles">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{ article.title }}
-        </mat-panel-title>
-        <mat-panel-description>
-            {{ article.authors }}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      {{ article.publishedAt }}
-      <button mat-raised-button color="primary" name="{{ article.title }}" (click)="nameOfButton(article)">Primary</button>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <br>
-  <span>laskdlf</span>
-  <span>{{ titleName }}</span>
+  <router-outlet></router-outlet>
+
 </body>

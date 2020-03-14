@@ -1,4 +1,5 @@
 export class ArticleDetailedDTO {
+  public id: string;
   public title: string;
   public content: string;
   public publishedAt: Date;
@@ -6,6 +7,7 @@ export class ArticleDetailedDTO {
 }
 
 export class ArticleSimpleDTO {
+  public id: string;
   public title: string;
   public publishedAt: Date;
   public authors: string[];

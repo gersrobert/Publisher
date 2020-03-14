@@ -5,9 +5,18 @@ import java.util.List;
 
 public class ArticleSimpleDTO {
 
+	protected String id;
 	protected String title;
 	protected LocalDateTime publishedAt;
 	protected List<String> authors;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getTitle() {
 		return title;

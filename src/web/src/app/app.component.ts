@@ -10,17 +10,6 @@ import {ArticleService} from './service/article.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  articles: ArticleSimpleDTO[];
-  titleName: string;
-
-  constructor(private articleService: ArticleService) {}
-
-  ngOnInit() {
-    this.articleService.getArticles().subscribe(response => this.articles = response);
-  }
-
-  nameOfButton(article) {
-    console.log(article);
-    this.titleName = article.title;
+  ngOnInit(): void {
   }
 }

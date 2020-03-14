@@ -28,6 +28,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = entityManager.getReference(Article.class, id);
 
         ArticleDetailedDTO articleDetailedDTO = new ArticleDetailedDTO();
+        articleDetailedDTO.setId(article.getId().toString());
         articleDetailedDTO.setAuthor(article.getAuthors().get(0).getUserName());
         articleDetailedDTO.setTitle(article.getTitle());
         articleDetailedDTO.setContent(article.getContent());
@@ -80,6 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private ArticleSimpleDTO mapRowToArticleSimpleDTO(Object[] row) {
         ArticleSimpleDTO articleSimpleDTO = new ArticleSimpleDTO();
+        articleSimpleDTO.setId((String) row[0]);
         articleSimpleDTO.setTitle((String) row[1]);
         articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
         articleSimpleDTO.setAuthors(List.of((String) row[3]));
@@ -93,6 +95,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private ArticleSimpleDTO articleToArticleSimpleDTO(Article article) {
         ArticleSimpleDTO articleSimpleDTO = new ArticleSimpleDTO();
+        articleSimpleDTO.setId(article.getId().toString());
         articleSimpleDTO.setAuthors(article.getAuthors().stream().map(AppUser::getUserName).collect(Collectors.toList()));
         articleSimpleDTO.setPublishedAt(article.getCreatedAt());
         articleSimpleDTO.setTitle(article.getTitle());

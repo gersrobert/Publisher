@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {MainRoutingModule} from './app.routing';
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -12,11 +13,15 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { ArticleListComponent } from './article-list/article-list.component';
+import { ArticleDetailComponent } from './article-detail/article-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
+    ArticleListComponent,
+    ArticleDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,7 +33,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     MatButtonModule,
     MatListModule,
     MatExpansionModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MainRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -15,7 +15,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       {{ article.publishedAt }}
-      <button mat-raised-button color="primary" name="{{ article.title }}" (click)="nameOfButton($event)">Primary</button>
+      <button mat-raised-button color="primary" name="{{ article.title }}" (click)="nameOfButton(article)">Primary</button>
     </mat-expansion-panel>
   </mat-accordion>
   <br>

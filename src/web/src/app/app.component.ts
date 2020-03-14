@@ -19,8 +19,8 @@ export class AppComponent implements OnInit {
     this.articleService.getArticles().subscribe(response => this.articles = response);
   }
 
-  nameOfButton(event) {
-    console.log(event.target.name);
-    this.titleName = event.target.name;
+  nameOfButton(article) {
+    console.log(article);
+    this.titleName = article.title;
   }
 }

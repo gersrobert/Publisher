@@ -78,11 +78,17 @@ public class ArticleServiceImpl implements ArticleService {
         return resultList.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public void insertArticle() {
+        System.out.println("test123");
+    }
+
     private ArticleSimpleDTO mapRowToArticleSimpleDTO(Object[] row) {
         ArticleSimpleDTO articleSimpleDTO = new ArticleSimpleDTO();
         articleSimpleDTO.setTitle((String) row[1]);
         articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
         articleSimpleDTO.setAuthors(List.of((String) row[3]));
+
         return articleSimpleDTO;
     }
 

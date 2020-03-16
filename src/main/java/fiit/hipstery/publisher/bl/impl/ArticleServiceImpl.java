@@ -80,8 +80,14 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void insertArticle() {
+    public Article insertArticle(List<AppUser> authors, String title, String content) {
+        Article article = new Article();
+        article.setAuthors(authors);
+        article.setTitle(title);
+        article.setContent(content);
         System.out.println("test123");
+        System.out.println(article);
+        return article;
     }
 
     private ArticleSimpleDTO mapRowToArticleSimpleDTO(Object[] row) {

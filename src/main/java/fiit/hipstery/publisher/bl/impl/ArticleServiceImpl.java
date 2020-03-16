@@ -2,22 +2,22 @@ package fiit.hipstery.publisher.bl.impl;
 
 import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
+import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
-import org.hibernate.Hibernate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("!sqlOnly")
 public class ArticleServiceImpl implements ArticleService {
 
     @PersistenceContext
@@ -80,14 +80,19 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article insertArticle(List<AppUser> authors, String title, String content) {
+    public Article insertArticle(ArticleInsertDTO articleInsertDTO) {
         Article article = new Article();
-        article.setAuthors(authors);
-        article.setTitle(title);
-        article.setContent(content);
+//        article.setAuthors(authors);
+//        article.setTitle(title);
+//        article.setContent(articleInsertDTO);
         System.out.println("test123");
         System.out.println(article);
         return article;
+    }
+
+    @Override
+    public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
+        return null;
     }
 
     private ArticleSimpleDTO mapRowToArticleSimpleDTO(Object[] row) {
@@ -98,11 +103,6 @@ public class ArticleServiceImpl implements ArticleService {
         articleSimpleDTO.setAuthors(List.of((String) row[3]));
 
         return articleSimpleDTO;
-    }
-
-    @Override
-    public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
-        return null;
     }
 
     private ArticleSimpleDTO articleToArticleSimpleDTO(Article article) {

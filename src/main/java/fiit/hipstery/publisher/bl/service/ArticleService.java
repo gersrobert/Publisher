@@ -1,8 +1,8 @@
 package fiit.hipstery.publisher.bl.service;
 
 import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
+import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
-import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
 
 import java.io.IOException;
@@ -21,5 +21,5 @@ public interface ArticleService {
 
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 
-    Article insertArticle(List<AppUser> authors, String title, String content);
+    Article insertArticle(ArticleInsertDTO articleInsertDTO);
 }

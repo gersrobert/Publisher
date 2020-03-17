@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -79,15 +80,26 @@ public class ArticleServiceImpl implements ArticleService {
         return resultList.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
-    public Article insertArticle(ArticleInsertDTO articleInsertDTO) {
-        Article article = new Article();
+    public boolean insertArticle(ArticleInsertDTO article) {
 //        article.setAuthors(authors);
 //        article.setTitle(title);
 //        article.setContent(articleInsertDTO);
-        System.out.println("test123");
-        System.out.println(article);
-        return article;
+        entityManager.createNativeQuery("INSERT " +
+                "   INTO article (id, created_at, state, updated_at, content, title)" +
+                "   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
+                ).setParameter("id", article.getId()
+                ).setParameter("created_at", article.getCreatedAt()
+                ).setParameter("updated_at", article.getUpdatedAt()
+                ).setParameter("content", article.getContent()
+                ).setParameter("title", article.getTitle()).executeUpdate();
+        article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
+                "   INTO article_authors (article_id, authors_id) " +
+                "   VALUES (:article_id, :authors_id)"
+                ).setParameter("article_id", article.getId()
+                ).setParameter("authors_id", a).executeUpdate());
+        return true;
     }
 
     @Override

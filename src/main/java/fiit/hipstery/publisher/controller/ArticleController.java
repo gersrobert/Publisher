@@ -12,12 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -96,11 +98,14 @@ public class ArticleController extends AbstractController{
         return ResponseEntity.of(Optional.of(article));
     }
 
-    @PostMapping("insert")
-    public ResponseEntity insertArticle(@Valid @RequestBody ArticleInsertDTO body) {
+    @PostMapping(value = "insert", headers = "Accept=application/json", produces = "application/json")
+    public ResponseEntity insertArticle(@RequestBody ArticleInsertDTO article) {
         try {
-            System.out.println(body);
-            // articleService.insertArticle(article);
+            articleService.insertArticle(article);
+            System.out.println(article.getAuthors());
+            System.out.println(article.getContent());
+            System.out.println(article.getTitle());
+            System.out.println(article.getCreatedAt());
         } catch (Exception e) {
             logger.error("Error getting article list", e);
             throw new InternalServerException(e);

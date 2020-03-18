@@ -3,7 +3,6 @@ package fiit.hipstery.publisher.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

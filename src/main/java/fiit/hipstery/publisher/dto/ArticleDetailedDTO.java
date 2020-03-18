@@ -1,6 +1,9 @@
 package fiit.hipstery.publisher.dto;
 
+import fiit.hipstery.publisher.entity.AppUser;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ArticleDetailedDTO {
 
@@ -8,7 +11,7 @@ public class ArticleDetailedDTO {
 	protected String title;
 	protected String content;
 	protected LocalDateTime publishedAt;
-	protected String author;
+	protected List<String> authors;
 
 	public String getId() {
 		return id;
@@ -42,11 +45,11 @@ public class ArticleDetailedDTO {
 		this.publishedAt = publishedAt;
 	}
 
-	public String getAuthor() {
-		return author;
+	public List<String> getAuthor() {
+		return authors;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setAuthors(List <String> authors) {
+		this.authors = authors;
 	}
 }

@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,9 +29,12 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDetailedDTO getArticleById(UUID id) {
         Article article = entityManager.getReference(Article.class, id);
 
+        // TODO TOTO TREBA KRAJSIE A OVELA :D
+        List<String> articleAuthors = Collections.singletonList(article.getAuthors().get(0).getUserName());
+
         ArticleDetailedDTO articleDetailedDTO = new ArticleDetailedDTO();
         articleDetailedDTO.setId(article.getId().toString());
-        articleDetailedDTO.setAuthor(article.getAuthors().get(0).getUserName());
+        articleDetailedDTO.setAuthors(articleAuthors);
         articleDetailedDTO.setTitle(article.getTitle());
         articleDetailedDTO.setContent(article.getContent());
         articleDetailedDTO.setPublishedAt(article.getCreatedAt());

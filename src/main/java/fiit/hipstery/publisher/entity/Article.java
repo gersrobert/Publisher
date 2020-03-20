@@ -22,6 +22,9 @@ public class Article extends AbstractEntity {
     @ManyToMany
     protected List<Category> categories;
 
+    @ManyToMany
+    protected List<Comment> comments;
+
     @Type(type="text")
     protected String content;
 
@@ -70,5 +73,13 @@ public class Article extends AbstractEntity {
 
     public int getLikeCount() {
         return likeCount;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

@@ -13,9 +13,8 @@ export class ArticleService {
   constructor(private httpClient: HttpClient) {
   }
 
-
   public getArticleById(id: string): Observable<ArticleDetailedDTO> {
-    return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/' + id);
+    return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/id/' + id);
   }
 
   public getArticles(): Observable<ArticleSimpleDTO[]> {

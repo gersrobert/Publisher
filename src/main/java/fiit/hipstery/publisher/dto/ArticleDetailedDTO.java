@@ -45,7 +45,7 @@ public class ArticleDetailedDTO {
 		this.publishedAt = publishedAt;
 	}
 
-	public List<String> getAuthor() {
+	public List<String> getAuthors() {
 		return authors;
 	}
 

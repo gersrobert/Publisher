@@ -94,22 +94,19 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 	@Transactional
 	@Override
 	public boolean insertArticle(ArticleInsertDTO article) {
-//        article.setAuthors(authors);
-//        article.setTitle(title);
-//        article.setContent(articleInsertDTO);
-		entityManager.createNativeQuery("INSERT " +
-				"   INTO article (id, created_at, state, updated_at, content, title)" +
-				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
-		).setParameter("id", article.getId()
-		).setParameter("created_at", article.getCreatedAt()
-		).setParameter("updated_at", article.getUpdatedAt()
-		).setParameter("content", article.getContent()
-		).setParameter("title", article.getTitle()).executeUpdate();
-		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
-				"   INTO article_authors (article_id, authors_id) " +
-				"   VALUES (:article_id, :authors_id)"
-		).setParameter("article_id", article.getId()
-		).setParameter("authors_id", a).executeUpdate());
+//		entityManager.createNativeQuery("INSERT " +
+//				"   INTO article (id, created_at, state, updated_at, content, title)" +
+//				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
+//		).setParameter("id", article.getId()
+//		).setParameter("created_at", article.getCreatedAt()
+//		).setParameter("updated_at", article.getUpdatedAt()
+//		).setParameter("content", article.getContent()
+//		).setParameter("title", article.getTitle()).executeUpdate();
+//		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
+//				"   INTO article_authors (article_id, authors_id) " +
+//				"   VALUES (:article_id, :authors_id)"
+//		).setParameter("article_id", article.getId()
+//		).setParameter("authors_id", a).executeUpdate()); TODO
 		return true;
 	}
 
@@ -123,7 +120,7 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 		articleSimpleDTO.setId((String) row[0]);
 		articleSimpleDTO.setTitle((String) row[1]);
 		articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
-		articleSimpleDTO.setAuthors(List.of((String) row[3]));
+//		articleSimpleDTO.setAuthors(List.of((String) row[3])); TODO
 
 		return articleSimpleDTO;
 	}
@@ -134,7 +131,7 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 		articleDetailedDTO.setTitle((String) row[1]);
 		articleDetailedDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
 		articleDetailedDTO.setContent((String) row[3]);
-		articleDetailedDTO.setAuthors(List.of((String) row[4]));
+//		articleDetailedDTO.setAuthors(List.of((String) row[4])); TODO
 
 		return articleDetailedDTO;
 	}
@@ -142,7 +139,7 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 	private ArticleSimpleDTO articleToArticleSimpleDTO(Article article) {
 		ArticleSimpleDTO articleSimpleDTO = new ArticleSimpleDTO();
 		articleSimpleDTO.setId(article.getId().toString());
-		articleSimpleDTO.setAuthors(article.getAuthors().stream().map(AppUser::getUserName).collect(Collectors.toList()));
+//		articleSimpleDTO.setAuthors(article.getAuthors().stream().map(AppUser::getUserName).collect(Collectors.toList())); TODO
 		articleSimpleDTO.setPublishedAt(article.getCreatedAt());
 		articleSimpleDTO.setTitle(article.getTitle());
 

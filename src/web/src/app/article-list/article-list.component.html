@@ -8,10 +8,9 @@
         {{ article.authors }}
       </mat-panel-description>
     </mat-expansion-panel-header>
-    {{ article.publishedAt }}
+    {{ article.publishedAt | date }}
     <button mat-raised-button color="primary" name="{{ article.title }}" [routerLink]="['/home/articleDetail', article.id]" [state]="{ id: article.id }">Primary</button>
   </mat-expansion-panel>
 </mat-accordion>
 <br>
-<span>laskdlf</span>
 <span>{{ titleName }}</span>

@@ -5,7 +5,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.less']
 })
 export class HeaderComponent {
   constructor(private matIconRegistry: MatIconRegistry,

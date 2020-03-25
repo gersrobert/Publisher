@@ -2,14 +2,11 @@ package fiit.hipstery.publisher.db.scripts;
 
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Role;
-import fiit.hipstery.publisher.util.EntityUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

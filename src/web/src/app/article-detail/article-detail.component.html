@@ -1,4 +1,4 @@
 <h1>{{ article.title }}</h1>
 <h1>{{ article.authors }}</h1>
-<h1>{{ article.publishedAt }}</h1>
-<span>{{ article.content }}</span>
+<h1>{{ article.publishedAt | date:'medium' }}</h1>
+<p>{{ article.content }}</p>

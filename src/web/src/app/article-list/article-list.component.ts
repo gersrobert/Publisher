@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {ArticleSimpleDTO} from '../dto/dtos';
+import {Component, OnInit} from '@angular/core';
+import {AppUserDTO, ArticleSimpleDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
 
 @Component({
@@ -12,14 +12,25 @@ export class ArticleListComponent implements OnInit {
   articles: ArticleSimpleDTO[];
   titleName: string;
 
-  constructor(private articleService: ArticleService) {}
-
-  ngOnInit() {
-    this.articleService.getArticles().subscribe(response => this.articles = response);
+  constructor(private articleService: ArticleService) {
   }
 
-  nameOfButton(article) {
-    console.log(article);
-    this.titleName = article.title;
+  ngOnInit() {
+    this.articleService.getArticles().subscribe(response =>
+      this.articles = response
+    );
+  }
+
+  public displayUsers(appUsers: AppUserDTO[]): string {
+    let retVal = '';
+
+    appUsers.forEach((user, i) => {
+      retVal += user.firstName + ' ' + user.lastName;
+      if (i !== appUsers.length - 1) {
+        retVal += ', ';
+      }
+    });
+
+    return retVal;
   }
 }

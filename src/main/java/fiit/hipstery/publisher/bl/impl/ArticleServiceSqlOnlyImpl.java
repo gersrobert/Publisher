@@ -1,6 +1,7 @@
 package fiit.hipstery.publisher.bl.impl;
 
 import fiit.hipstery.publisher.bl.service.ArticleService;
+import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
@@ -13,6 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,11 +35,15 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 				"   a.title," +
 				"   a.created_at," +
 				"   a.content," +
-				"   au.user_name" +
+				"   string_agg(au.user_name, ';') AS user_name," +
+				"   string_agg(au.first_name, ';') AS first_name," +
+				"   string_agg(au.last_name, ';') AS last_name," +
+				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
 				"   JOIN article_authors aa ON a.id = aa.article_id" +
 				"   JOIN app_user au ON aa.authors_id = au.id" +
-				"   WHERE a.id = :id").setParameter("id", id.toString()).getResultList();
+				"   WHERE a.id = :id" +
+				"   GROUP BY a.id").setParameter("id", id.toString()).getResultList();
 		return mapRowToArticleDetailedDTO(articles.get(0));
 	}
 
@@ -44,13 +51,17 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 	@Override
 	public List<ArticleSimpleDTO> getArticles() {
 		List<Object[]> articles = entityManager.createNativeQuery("SELECT " +
-						"   a.id," +
-						"   a.title," +
-						"   a.created_at," +
-						"   au.user_name" +
-						"   FROM article a" +
-						"   JOIN article_authors aa ON a.id = aa.article_id" +
-						"   JOIN app_user au ON aa.authors_id = au.id").getResultList();
+				"   a.id," +
+				"   a.title," +
+				"   a.created_at," +
+				"   string_agg(au.user_name, ';') AS user_name," +
+				"   string_agg(au.first_name, ';') AS first_name," +
+				"   string_agg(au.last_name, ';') AS last_name," +
+				"   string_agg(au.id, ';') AS author_id" +
+				"   FROM article a" +
+				"   JOIN article_authors aa ON a.id = aa.article_id" +
+				"   JOIN app_user au ON aa.authors_id = au.id" +
+				"   GROUP BY a.id").getResultList();
 		return articles.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
 	}
 
@@ -61,11 +72,15 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 				"   a.id," +
 				"   a.title," +
 				"   a.created_at," +
-				"   au.user_name" +
+				"   string_agg(au.user_name, ';') AS user_name," +
+				"   string_agg(au.first_name, ';') AS first_name," +
+				"   string_agg(au.last_name, ';') AS last_name," +
+				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
 				"   JOIN article_authors aa ON a.id = aa.article_id" +
 				"   JOIN app_user au ON aa.authors_id = au.id" +
-				"   ORDER BY a.updated_at DESC" +
+				"   GROUP BY a.id" +
+				"   ORDER BY min(a.updated_at) DESC" +
 				"   OFFSET :lowerIndex ROWS" +
 				"   FETCH NEXT :upperIndex ROWS ONLY").setParameter(
 				"lowerIndex", lowerIndex).setParameter(
@@ -120,9 +135,27 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 		articleSimpleDTO.setId((String) row[0]);
 		articleSimpleDTO.setTitle((String) row[1]);
 		articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
-//		articleSimpleDTO.setAuthors(List.of((String) row[3])); TODO
+		articleSimpleDTO.setAuthors(rowToAppUserDto(Arrays.copyOfRange(row, 3, 7)));
 
 		return articleSimpleDTO;
+	}
+
+	private List<AppUserDTO> rowToAppUserDto(Object[] row) {
+		List<AppUserDTO> appUserDTOS = new ArrayList<>();
+		String[] userNames = ((String) row[0]).split(";");
+		String[] firstNames = ((String) row[1]).split(";");
+		String[] lastNames = ((String) row[2]).split(";");
+		String[] ids = ((String) row[3]).split(";");
+
+		for (int i = 0; i < ids.length; i++) {
+			AppUserDTO dto = new AppUserDTO();
+			dto.setUserName(userNames[i]);
+			dto.setFirstName(firstNames[i]);
+			dto.setLastName(lastNames[i]);
+			dto.setId(ids[i]);
+			appUserDTOS.add(dto);
+		}
+		return appUserDTOS;
 	}
 
 	private ArticleDetailedDTO mapRowToArticleDetailedDTO(Object[] row) {
@@ -131,18 +164,8 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 		articleDetailedDTO.setTitle((String) row[1]);
 		articleDetailedDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
 		articleDetailedDTO.setContent((String) row[3]);
-//		articleDetailedDTO.setAuthors(List.of((String) row[4])); TODO
+		articleDetailedDTO.setAuthors(rowToAppUserDto(Arrays.copyOfRange(row, 4, 8)));
 
 		return articleDetailedDTO;
-	}
-
-	private ArticleSimpleDTO articleToArticleSimpleDTO(Article article) {
-		ArticleSimpleDTO articleSimpleDTO = new ArticleSimpleDTO();
-		articleSimpleDTO.setId(article.getId().toString());
-//		articleSimpleDTO.setAuthors(article.getAuthors().stream().map(AppUser::getUserName).collect(Collectors.toList())); TODO
-		articleSimpleDTO.setPublishedAt(article.getCreatedAt());
-		articleSimpleDTO.setTitle(article.getTitle());
-
-		return articleSimpleDTO;
 	}
 }

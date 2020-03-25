@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {ArticleDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
+import {AppUserDTO, ArticleDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
 
 @Component({
@@ -14,11 +14,24 @@ export class ArticleDetailComponent implements OnInit {
   constructor(private articleService: ArticleService, private route:ActivatedRoute) {}
 
   ngOnInit() {
-    var id:string
+    let id: string;
     this.route.params.subscribe(params => {
        id = params['id'];
     });
     console.log(id);
     this.articleService.getArticleById(id).subscribe(response => this.article = response);
+  }
+
+  public displayUsers(appUsers: AppUserDTO[]): string {
+    let retVal = '';
+
+    appUsers.forEach((user, i) => {
+      retVal += user.firstName + ' ' + user.lastName;
+      if (i !== appUsers.length - 1) {
+        retVal += ', ';
+      }
+    });
+
+    return retVal;
   }
 }

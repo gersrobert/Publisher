@@ -1,7 +1,10 @@
-package fiit.hipstery.publisher.db.scripts;
+package fiit.hipstery.publisher.initDb.scripts;
 
 import fiit.hipstery.publisher.entity.AppUser;
+import fiit.hipstery.publisher.entity.Publisher;
 import fiit.hipstery.publisher.entity.Role;
+import fiit.hipstery.publisher.initDb.config.PublisherFaker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
 @Order(2)
 public class AppUserScript extends InitDbScript<AppUser> {
 
+	@Autowired
+	private PublisherFaker faker;
+
 	@Value("classpath:db/app_users.csv")
 	private Resource resource;
 
@@ -22,6 +28,8 @@ public class AppUserScript extends InitDbScript<AppUser> {
 
 	@Override
 	public void run() {
+		faker.getSources();
+
 		roles = entityManager.createQuery("from Role ", Role.class).getResultList();
 		super.run();
 	}

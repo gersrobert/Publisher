@@ -1,4 +1,4 @@
-package fiit.hipstery.publisher.db.scripts;
+package fiit.hipstery.publisher.initDb.scripts;
 
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
@@ -7,7 +7,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

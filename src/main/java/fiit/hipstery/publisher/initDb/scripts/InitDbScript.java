@@ -1,4 +1,4 @@
-package fiit.hipstery.publisher.db.scripts;
+package fiit.hipstery.publisher.initDb.scripts;
 
 import fiit.hipstery.publisher.entity.AbstractEntity;
 import org.apache.commons.io.FileUtils;
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class InitDbScript<E extends AbstractEntity> implements Runnable {

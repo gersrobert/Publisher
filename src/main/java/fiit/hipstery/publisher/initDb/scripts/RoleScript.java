@@ -1,6 +1,5 @@
-package fiit.hipstery.publisher.db.scripts;
+package fiit.hipstery.publisher.initDb.scripts;
 
-import fiit.hipstery.publisher.entity.AbstractEntity;
 import fiit.hipstery.publisher.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;

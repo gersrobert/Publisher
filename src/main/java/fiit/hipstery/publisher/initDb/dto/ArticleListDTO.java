@@ -1,12 +1,13 @@
 package fiit.hipstery.publisher.initDb.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleListDTO {
 
 	String status;
-	int totalResults;
-	List<ArticleDTO> articles;
+	int totalResults = 0;
+	List<ArticleDTO> articles = new ArrayList<>();
 
 	public String getStatus() {
 		return status;

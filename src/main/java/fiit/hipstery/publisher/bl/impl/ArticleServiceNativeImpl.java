@@ -41,7 +41,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"   string_agg(au.last_name, ';') AS last_name," +
 				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
-				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
 				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   WHERE a.id = :id" +
 				"   GROUP BY a.id")
@@ -62,7 +62,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"   string_agg(au.last_name, ';') AS last_name," +
 				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
-				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
 				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   GROUP BY a.id").getResultList();
 		return articles.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
@@ -80,7 +80,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"   string_agg(au.last_name, ';') AS last_name," +
 				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
-				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
 				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   GROUP BY a.id" +
 				"   ORDER BY min(a.updated_at) DESC" +
@@ -102,7 +102,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"   au.user_name," +
 				"   au.id AS author_id" +
 				"   FROM article a" +
-				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
 				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   WHERE au.user_name = :authorName").setParameter("authorName", author).getResultList();
 

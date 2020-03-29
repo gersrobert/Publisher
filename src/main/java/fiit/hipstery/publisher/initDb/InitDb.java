@@ -1,8 +1,6 @@
 package fiit.hipstery.publisher.initDb;
 
 import fiit.hipstery.publisher.controller.ArticleController;
-import fiit.hipstery.publisher.initDb.requests.InitDbRequest;
-import fiit.hipstery.publisher.initDb.scripts.InitDbScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +26,11 @@ public class InitDb implements ApplicationListener<ContextRefreshedEvent> {
 	@Autowired
 	private List<InitDbScript<?>> initDbScripts;
 
-	@Autowired
-	private List<InitDbRequest> initDbRequests;
-
 	@Override
 	@Transactional
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		logger.info("initDb();");
 		initDbScripts.forEach(InitDbScript::run);
-		initDbRequests.forEach(InitDbRequest::run);
 		logger.info("initDb(); completed");
 	}
 }

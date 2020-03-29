@@ -1,25 +1,18 @@
-package fiit.hipstery.publisher.initDb.scripts;
+package fiit.hipstery.publisher.initDb;
 
 import fiit.hipstery.publisher.entity.AbstractEntity;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class InitDbScript<E extends AbstractEntity> implements Runnable {
-
-	protected Logger logger = LoggerFactory.getLogger(getClass());
-
-	@PersistenceContext
-	protected EntityManager entityManager;
+@Profile("initDb")
+public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbScript<E> {
 
 	@Override
 	public void run() {

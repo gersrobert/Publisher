@@ -2,17 +2,13 @@ package fiit.hipstery.publisher.entity;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Article extends AbstractEntity {
-
-    @ManyToMany
-    protected List<AppUser> authors;
 
     protected String title;
 
@@ -22,13 +18,13 @@ public class Article extends AbstractEntity {
     @ManyToMany
     protected List<Category> categories;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "article")
     protected List<Comment> comments;
 
     @Type(type="text")
     protected String content;
 
-    @Formula(value = "(SELECT count(*) FROM app_user_liked_articles WHERE app_user_liked_articles.liked_articles_id = id)")
+    @Formula(value = "(SELECT count(*) FROM app_user_article_relation aar WHERE aar.article_id = id AND aar.relation_type = 'LIKE')")
     protected int likeCount;
 
     public String getTitle() {
@@ -37,14 +33,6 @@ public class Article extends AbstractEntity {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public List<AppUser> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(List<AppUser> author) {
-        this.authors = author;
     }
 
     public Publisher getPublisher() {

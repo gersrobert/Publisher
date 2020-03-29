@@ -40,7 +40,7 @@ public class ArticleScript extends InitDbScript<Article> {
 				.map(appUsers::get)
 				.collect(Collectors.toList());
 
-		article.setAuthors(authors);
+//		article.setAuthors(authors);
 		article.setTitle(row.get(1));
 		article.setContent(row.get(2));
 		return article;

@@ -6,6 +6,7 @@ import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
 import fiit.hipstery.publisher.entity.AppUser;
+import fiit.hipstery.publisher.entity.AppUserArticleRelation;
 import fiit.hipstery.publisher.entity.Article;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Profile("sqlOnly")
-public class ArticleServiceSqlOnlyImpl implements ArticleService {
+@Profile("!jpa")
+public class ArticleServiceNativeImpl implements ArticleService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -40,10 +41,12 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 				"   string_agg(au.last_name, ';') AS last_name," +
 				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
-				"   JOIN article_authors aa ON a.id = aa.article_id" +
-				"   JOIN app_user au ON aa.authors_id = au.id" +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   WHERE a.id = :id" +
-				"   GROUP BY a.id").setParameter("id", id.toString()).getResultList();
+				"   GROUP BY a.id")
+				.setParameter("id", id.toString()).getResultList();
+
 		return mapRowToArticleDetailedDTO(articles.get(0));
 	}
 
@@ -59,8 +62,8 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 				"   string_agg(au.last_name, ';') AS last_name," +
 				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
-				"   JOIN article_authors aa ON a.id = aa.article_id" +
-				"   JOIN app_user au ON aa.authors_id = au.id" +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   GROUP BY a.id").getResultList();
 		return articles.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
 	}
@@ -77,8 +80,8 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 				"   string_agg(au.last_name, ';') AS last_name," +
 				"   string_agg(au.id, ';') AS author_id" +
 				"   FROM article a" +
-				"   JOIN article_authors aa ON a.id = aa.article_id" +
-				"   JOIN app_user au ON aa.authors_id = au.id" +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   GROUP BY a.id" +
 				"   ORDER BY min(a.updated_at) DESC" +
 				"   OFFSET :lowerIndex ROWS" +
@@ -99,8 +102,8 @@ public class ArticleServiceSqlOnlyImpl implements ArticleService {
 				"   au.user_name," +
 				"   au.id AS author_id" +
 				"   FROM article a" +
-				"   JOIN article_authors aa ON a.id = aa.article_id" +
-				"   JOIN app_user au ON aa.authors_id = au.id" +
+				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = " + AppUserArticleRelation.RelationType.AUTHOR +
+				"   JOIN app_user au ON aa.app_user_id = au.id" +
 				"   WHERE au.user_name = :authorName").setParameter("authorName", author).getResultList();
 
 		return resultList.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());

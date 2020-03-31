@@ -19,3 +19,8 @@ export class AppUserDTO {
   public lastName: string;
   public userName: string;
 }
+
+export class ArticleSimpleListDTO {
+  public articles: ArticleSimpleDTO[];
+  public numberOfArticles: number;
+}

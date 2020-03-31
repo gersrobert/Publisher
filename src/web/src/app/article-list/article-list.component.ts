@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {AppUserDTO, ArticleSimpleDTO} from '../dto/dtos';
+import {AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
+import {PageEvent} from '@angular/material/paginator';
 
 @Component({
   selector: 'app-article-list',
@@ -9,16 +10,32 @@ import {ArticleService} from '../service/article.service';
 })
 export class ArticleListComponent implements OnInit {
 
+  numberOfArticles: number;
   articles: ArticleSimpleDTO[];
   titleName: string;
+  lower = 0;
+  upper = 10;
 
   constructor(private articleService: ArticleService) {
   }
 
   ngOnInit() {
-    this.articleService.getArticles().subscribe(response =>
-      this.articles = response
-    );
+    this.getArticlesInRange();
+  }
+
+  private getArticlesInRange() {
+    this.articleService.getArticlesInRange(this.lower, this.upper).subscribe(response => {
+      this.articles = response.articles;
+      this.numberOfArticles = response.numberOfArticles;
+    });
+  }
+
+  public updateArticles(num: number) {
+    if (this.lower + num >= 0 && this.lower + num < this.numberOfArticles) {
+      this.lower += num;
+      this.upper += num;
+      this.getArticlesInRange();
+    }
   }
 
   public displayUsers(appUsers: AppUserDTO[]): string {

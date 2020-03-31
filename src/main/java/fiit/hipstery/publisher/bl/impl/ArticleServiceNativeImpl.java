@@ -8,12 +8,14 @@ import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
 import fiit.hipstery.publisher.entity.Article;
+import fiit.hipstery.publisher.initDb.dto.SourcesDTO;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -170,5 +172,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		articleDetailedDTO.setAuthors(rowToAppUserDto(Arrays.copyOfRange(row, 4, 8)));
 
 		return articleDetailedDTO;
+	}
+
+	public int getNumberOfArticles() {
+		return ((Number)entityManager.createNativeQuery("SELECT COUNT(id) FROM article;").getSingleResult()).intValue();
 	}
 }

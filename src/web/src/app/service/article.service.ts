@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ArticleDetailedDTO} from '../dto/dtos';
+import {ArticleDetailedDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleSimpleDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
@@ -19,5 +19,10 @@ export class ArticleService {
 
   public getArticles(): Observable<ArticleSimpleDTO[]> {
     return this.httpClient.get<ArticleSimpleDTO[]>(environment.ROOT_URL + '/article');
+  }
+
+  public getArticlesInRange(lower: number, upper: number): Observable<ArticleSimpleListDTO> {
+    return this.httpClient.get<ArticleSimpleListDTO>(
+      environment.ROOT_URL + '/article/index/' + lower + '-' + upper);
   }
 }

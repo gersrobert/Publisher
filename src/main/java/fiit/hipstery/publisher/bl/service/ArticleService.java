@@ -22,4 +22,6 @@ public interface ArticleService {
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 
     boolean insertArticle(ArticleInsertDTO article);
+
+    int getNumberOfArticles();
 }

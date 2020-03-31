@@ -4,9 +4,11 @@ import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
+import fiit.hipstery.publisher.dto.ArticleSimpleListDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
 import fiit.hipstery.publisher.exception.InternalServerException;
+import fiit.hipstery.publisher.initDb.dto.ArticleListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,17 +61,18 @@ public class ArticleController extends AbstractController{
     }
 
     @GetMapping("/index/{lowerIndex}-{upperIndex}")
-    public ResponseEntity<List<ArticleSimpleDTO>> getArticlesInRange(
+    public ResponseEntity<ArticleSimpleListDTO> getArticlesInRange(
             @PathVariable int lowerIndex, @PathVariable int upperIndex) {
-        List<ArticleSimpleDTO> article;
+        ArticleSimpleListDTO response = new ArticleSimpleListDTO();
         try {
-            article = articleService.getArticlesInRange(lowerIndex, upperIndex);
+            response.setArticles(articleService.getArticlesInRange(lowerIndex, upperIndex));
+            response.setNumberOfArticles(articleService.getNumberOfArticles());
         } catch (Exception e) {
             logger.error("Error getting article list", e);
             throw new InternalServerException(e);
         }
 
-        return ResponseEntity.of(Optional.of(article));
+        return ResponseEntity.of(Optional.of(response));
     }
 
     @GetMapping("/author/{author}")

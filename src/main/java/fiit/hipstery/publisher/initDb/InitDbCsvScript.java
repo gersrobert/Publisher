@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Profile("initDb")
-public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbScript<E> {
+public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbScript {
 
 	@Override
 	public void run() {

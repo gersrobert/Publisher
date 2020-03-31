@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 @Order(3)
 @Profile("initDb")
-public class ArticleScript extends InitDbScript<Article> {
+public class ArticleScript extends InitDbScript {
 
 	@Override
 	@Transactional
@@ -43,12 +43,16 @@ public class ArticleScript extends InitDbScript<Article> {
 
 	@SuppressWarnings("unchecked")
 	private void assignRandomAuthors(Article article) {
-		List<String> authors = entityManager.createNativeQuery("select au.id from app_user au" +
-				" join app_user_roles aur on au.id = aur.app_user_id" +
-				" join role r on aur.roles_id = r.id" +
-				" where r.name='writer'" +
-				" order by random()" +
-				" limit 1 + (random()*0.05) + (random() * 0.3) + (random()*1.4)").getResultList();
+		List<String> authors = entityManager.createNativeQuery("with rand as (select random() as val) select au.id from app_user au" +
+				"   join app_user_roles aur on au.id = aur.app_user_id" +
+				"   join role r on aur.roles_id = r.id" +
+				"   where r.name='writer'" +
+				"   order by random()" +
+				"   limit" +
+				"       case when ((select val from rand) > 0.9) then 3" +
+				"       when ((select val from rand) > 0.6) then 2" +
+				"       else 1 end")
+				.getResultList();
 
 		authors.forEach(author -> {
 			AppUser appUser = entityManager.find(AppUser.class, UUID.fromString(author));

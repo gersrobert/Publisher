@@ -1,7 +1,6 @@
 package fiit.hipstery.publisher.initDb;
 
 import com.github.javafaker.Faker;
-import fiit.hipstery.publisher.entity.AbstractEntity;
 import fiit.hipstery.publisher.initDb.config.PublisherFaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Profile("initDb")
-public abstract class InitDbScript<E extends AbstractEntity> implements Runnable {
+public abstract class InitDbScript implements Runnable {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 

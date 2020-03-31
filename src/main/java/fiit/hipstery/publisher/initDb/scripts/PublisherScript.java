@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("initDb")
 @Order(4)
-public class PublisherScript extends InitDbScript<Publisher> {
+public class PublisherScript extends InitDbScript {
 
 	@Override
 	public void run() {

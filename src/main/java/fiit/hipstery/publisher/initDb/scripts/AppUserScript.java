@@ -1,33 +1,29 @@
 package fiit.hipstery.publisher.initDb.scripts;
 
+import com.github.javafaker.Faker;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Role;
-import fiit.hipstery.publisher.initDb.InitDbCsvScript;
 import fiit.hipstery.publisher.initDb.InitDbScript;
-import fiit.hipstery.publisher.initDb.config.PublisherFaker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Component
 @Order(2)
 @Profile("initDb")
-public class AppUserScript extends InitDbScript<AppUser> {
+public class AppUserScript extends InitDbScript {
 
-	public static final int USER_COUNT = 100;
+	public static final int USER_COUNT = 100_000;
 	Role writer;
 	Role reader;
 	Role publisher_owner;
 	Role admin;
+
+	@Autowired
+	List<UserNameGenerator> generators;
 
 	@Override
 	public void run() {
@@ -41,7 +37,10 @@ public class AppUserScript extends InitDbScript<AppUser> {
 			AppUser user = new AppUser();
 			user.setFirstName(faker.name().firstName());
 			user.setLastName(faker.name().lastName());
-			user.setUserName(user.getFirstName().toLowerCase() + "." + user.getLastName().toLowerCase());
+
+			int random = (int) (Math.random() * generators.size());
+			user.setUserName(generators.get(random).generate(faker, user));
+
 			user.setRoles(getRolesForIndex(i));
 
 			entityManager.persist(user);
@@ -56,13 +55,89 @@ public class AppUserScript extends InitDbScript<AppUser> {
 		List<Role> roles = new ArrayList<>();
 		roles.add(reader);
 
-		if (i % (USER_COUNT / 10) == 0) {
+		if (i % (USER_COUNT / 20) == 0) {
 			roles.add(writer);
 		}
-		if (i % (USER_COUNT / 20) == 0) {
+		if (i % (USER_COUNT / 50) == 0) {
 			roles.add(publisher_owner);
 		}
 
 		return roles;
+	}
+
+	public interface UserNameGenerator {
+		String generate(Faker faker, AppUser user);
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen1 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return user.getFirstName().toLowerCase() + "." + user.getLastName().toLowerCase() + "." + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen2 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return user.getFirstName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen3 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return user.getLastName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen4 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return faker.rickAndMorty().character().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen5 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return faker.harryPotter().character().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen6 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return faker.esports().player().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen7 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return faker.hipster().word().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
+	}
+
+	@Component
+	@Profile("initDb")
+	public static class Gen8 implements UserNameGenerator {
+		@Override
+		public String generate(Faker faker, AppUser user) {
+			return faker.superhero().name().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+		}
 	}
 }

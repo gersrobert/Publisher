@@ -114,19 +114,19 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	@Transactional
 	@Override
 	public boolean insertArticle(ArticleInsertDTO article) {
-//		entityManager.createNativeQuery("INSERT " +
-//				"   INTO article (id, created_at, state, updated_at, content, title)" +
-//				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
-//		).setParameter("id", article.getId()
-//		).setParameter("created_at", article.getCreatedAt()
-//		).setParameter("updated_at", article.getUpdatedAt()
-//		).setParameter("content", article.getContent()
-//		).setParameter("title", article.getTitle()).executeUpdate();
-//		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
-//				"   INTO article_authors (article_id, authors_id) " +
-//				"   VALUES (:article_id, :authors_id)"
-//		).setParameter("article_id", article.getId()
-//		).setParameter("authors_id", a).executeUpdate()); TODO
+		entityManager.createNativeQuery("INSERT " +
+				"   INTO article (id, created_at, state, updated_at, content, title)" +
+				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
+		).setParameter("id", article.getId()
+		).setParameter("created_at", article.getCreatedAt()
+		).setParameter("updated_at", article.getUpdatedAt()
+		).setParameter("content", article.getContent()
+		).setParameter("title", article.getTitle()).executeUpdate();
+		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
+				"   INTO app_user_article_relation (article_id, app_user_id, relation_type) " +
+				"   VALUES (:article_id, :authors_id, 'AUTHOR')"
+		).setParameter("article_id", article.getId()
+		).setParameter("authors_id", a).executeUpdate());
 		return true;
 	}
 

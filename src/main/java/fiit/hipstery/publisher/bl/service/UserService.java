@@ -1,8 +1,10 @@
 package fiit.hipstery.publisher.bl.service;
 
+import java.util.UUID;
+
 public interface UserService {
 
     void insertUser(String firstName, String lastName);
 
-    void authenticateLogin(String userName, String passwordHash);
+    UUID authenticateLogin(String userName, String passwordHash);
 }

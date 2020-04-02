@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,8 +26,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void authenticateLogin(String userName, String passwordHash) {
+    public UUID authenticateLogin(String userName, String passwordHash) {
+        UUID userId = UUID.fromString((String) entityManager.createNativeQuery("SELECT " +
+                "id " +
+                "FROM app_user " +
+                "WHERE user_name = :userName AND " +
+                "password_hash = :passwordHash").setParameter("userName", userName
+            ).setParameter("passwordHash", passwordHash).getSingleResult());
 
+        // SELECT id FROM app_user WHERE user_name = 'Supah_Hancock_X_bcc1d3' AND password_hash = 'heslo';
+        return userId;
     }
 
 }

@@ -1,9 +1,17 @@
 package fiit.hipstery.publisher.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class LoginRequestDTO {
 
 	protected String username;
 	protected String passwordHash;
+
+	@JsonCreator
+	public LoginRequestDTO(String username, String passwordHash) {
+		this.username = username;
+		this.passwordHash = passwordHash;
+	}
 
 	public String getUsername() {
 		return username;
@@ -14,7 +22,7 @@ public class LoginRequestDTO {
 	}
 
 	public String getPasswordHash() {
-		return passwordHash;
+		return this.passwordHash;
 	}
 
 	public void setPasswordHash(String passwordHash) {

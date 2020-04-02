@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ArticleDetailedDTO} from '../dto/dtos';
 import {environment} from '../../environments/environment';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as shajs from 'sha.js';
 
 @Injectable({
@@ -22,7 +22,14 @@ export class SessionService {
       passwordHash: shajs('sha256').update({password}).digest('hex')
     };
 
-    const observable = this.httpClient.post<string>(environment.ROOT_URL + '/user/login', body);
+    console.log(body);
+
+    const headers = new HttpHeaders({
+      'Content-Type':  'application/json',
+      'Accept': 'application/json'
+    });
+
+    const observable = this.httpClient.post<string>(environment.ROOT_URL + '/user/login', body, {headers});
     observable.subscribe(response => {
       sessionStorage.setItem(this.SESSION_KEY, response);
     });

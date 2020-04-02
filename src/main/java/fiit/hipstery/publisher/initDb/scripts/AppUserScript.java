@@ -37,6 +37,7 @@ public class AppUserScript extends InitDbScript {
 			AppUser user = new AppUser();
 			user.setFirstName(faker.name().firstName());
 			user.setLastName(faker.name().lastName());
+			user.setPasswordHash("da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8"); // sha256 hashed "heslo"
 
 			int random = (int) (Math.random() * generators.size());
 			user.setUserName(generators.get(random).generate(faker, user));

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SessionService} from '../service/session.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-screen',
@@ -10,9 +11,12 @@ import {SessionService} from '../service/session.service';
 export class LoginScreenComponent implements OnInit {
 
   loginForm: FormGroup;
+  showPasswordError = false;
 
 
-  constructor(private formBuilder: FormBuilder, private sessionService: SessionService) {
+  constructor(private formBuilder: FormBuilder,
+              private sessionService: SessionService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -23,7 +27,10 @@ export class LoginScreenComponent implements OnInit {
   }
 
   public onSubmit() {
-    this.sessionService.login(this.loginForm.value['username'], this.loginForm.value['password']);
+    this.sessionService.login(this.loginForm.value['username'], this.loginForm.value['password']).subscribe(
+      value => this.router.navigate(['home/articleList']),
+      error => this.showPasswordError = true
+    );
   }
 
 }

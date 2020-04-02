@@ -4,6 +4,7 @@ import {ArticleDetailedDTO} from '../dto/dtos';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as shajs from 'sha.js';
+import {sha256} from 'js-sha256';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,10 @@ export class SessionService {
   public login(userName: string, password: string): Observable<string> {
     const body = {
       username: userName,
-      passwordHash: shajs('sha256').update({password}).digest('hex')
+      passwordHash: sha256(password)
     };
 
-    console.log(body);
+    console.log(body, password);
 
     const headers = new HttpHeaders({
       'Content-Type':  'application/json',

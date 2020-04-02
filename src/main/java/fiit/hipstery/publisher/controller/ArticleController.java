@@ -88,7 +88,7 @@ public class ArticleController extends AbstractController{
         return ResponseEntity.of(Optional.of(article));
     }
 
-    @GetMapping("forUser/{id}")
+    @GetMapping("/forUser/{id}")
     public ResponseEntity<List<ArticleSimpleDTO>> getArticleListForUser(@PathVariable String id) {
         List<ArticleSimpleDTO> article;
         try {
@@ -101,7 +101,7 @@ public class ArticleController extends AbstractController{
         return ResponseEntity.of(Optional.of(article));
     }
 
-    @PostMapping(value = "insert", headers = "Accept=application/json", produces = "application/json")
+    @PostMapping(value = "/insert", headers = "Accept=application/json", produces = "application/json")
     public ResponseEntity insertArticle(@RequestBody ArticleInsertDTO article) {
         try {
             articleService.insertArticle(article);

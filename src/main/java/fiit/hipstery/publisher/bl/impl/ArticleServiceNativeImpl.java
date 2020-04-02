@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -123,8 +124,12 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		).setParameter("content", article.getContent()
 		).setParameter("title", article.getTitle()).executeUpdate();
 		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
-				"   INTO app_user_article_relation (article_id, app_user_id, relation_type) " +
-				"   VALUES (:article_id, :authors_id, 'AUTHOR')"
+				"   INTO app_user_article_relation (" +
+				"   id, created_at, state, updated_at, article_id, app_user_id, relation_type) " +
+				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :article_id, :authors_id, 'AUTHOR')"
+		).setParameter("id", UUID.randomUUID()
+		).setParameter("created_at", LocalDateTime.now()
+		).setParameter("updated_at", LocalDateTime.now()
 		).setParameter("article_id", article.getId()
 		).setParameter("authors_id", a).executeUpdate());
 		return true;

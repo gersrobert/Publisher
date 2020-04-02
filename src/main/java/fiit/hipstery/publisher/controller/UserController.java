@@ -28,8 +28,6 @@ public class UserController extends AbstractController {
 	@PostMapping(value = "/login", headers = "Accept=application/json", produces = "application/json")
 	public ResponseEntity<UUID> login(@RequestBody LoginRequestDTO loginRequestDTO) {
 		UUID response;
-		System.out.println("TEST");
-		System.out.println(loginRequestDTO);
 		try {
 			 response = userService.authenticateLogin(loginRequestDTO.getUsername(), loginRequestDTO.getPasswordHash());
 		} catch (Exception e) {

@@ -23,4 +23,10 @@ public class UserServiceImpl implements UserService {
 
         entityManager.persist(user);
     }
+
+    @Override
+    public void authenticateLogin(String userName, String passwordHash) {
+
+    }
+
 }

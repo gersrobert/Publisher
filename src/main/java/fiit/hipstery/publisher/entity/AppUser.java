@@ -13,6 +13,8 @@ public class AppUser extends AbstractEntity {
 
     protected String lastName;
 
+    protected String passwordHash;
+
     @ManyToOne
     protected Publisher publisher;
 
@@ -44,6 +46,14 @@ public class AppUser extends AbstractEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public Publisher getPublisher() {

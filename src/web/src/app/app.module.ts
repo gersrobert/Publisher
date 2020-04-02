@@ -16,6 +16,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { ArticleListComponent } from './article-list/article-list.component';
 import { ArticleDetailComponent } from './article-detail/article-detail.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { LoginScreenComponent } from './login-screen/login-screen.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -23,21 +26,25 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     HeaderComponent,
     ArticleListComponent,
     ArticleDetailComponent,
+    LoginScreenComponent,
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatListModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MainRoutingModule,
-        MatPaginatorModule
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatListModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MainRoutingModule,
+    MatPaginatorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

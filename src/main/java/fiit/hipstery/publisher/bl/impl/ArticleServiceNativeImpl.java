@@ -5,23 +5,20 @@ import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
-import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
-import fiit.hipstery.publisher.entity.Article;
-import fiit.hipstery.publisher.initDb.dto.SourcesDTO;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,6 +112,28 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	@Transactional
 	@Override
 	public boolean insertArticle(ArticleInsertDTO article) {
+		AtomicBoolean isWriter = new AtomicBoolean(false);
+
+		for (UUID author : article.getAuthors()) {
+			entityManager.createNativeQuery("SELECT " +
+				"   r.name " +
+				"   FROM app_user users " +
+				"   JOIN app_user_roles bind " +
+				"   ON users.id = bind.app_user_id " +
+				"   JOIN role r ON bind.roles_id = r.id" +
+				"   WHERE users.id = :uid").setParameter("uid", author.toString()).getResultList().stream().forEach(role -> {
+				System.out.println(role);
+				if (role.equals("writer")) {
+					System.out.println("je autor");
+					isWriter.set(true);
+				}
+			});
+		}
+
+		if (!isWriter.get()) {
+			return false;
+		}
+
 		entityManager.createNativeQuery("INSERT " +
 				"   INTO article (id, created_at, state, updated_at, content, title)" +
 				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"

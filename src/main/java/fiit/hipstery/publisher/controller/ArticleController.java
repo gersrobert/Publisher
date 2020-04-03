@@ -105,10 +105,6 @@ public class ArticleController extends AbstractController{
     public ResponseEntity insertArticle(@RequestBody ArticleInsertDTO article) {
         try {
             articleService.insertArticle(article);
-            System.out.println(article.getAuthors());
-            System.out.println(article.getContent());
-            System.out.println(article.getTitle());
-            System.out.println(article.getCreatedAt());
         } catch (Exception e) {
             logger.error("Error getting article list", e);
             throw new InternalServerException(e);

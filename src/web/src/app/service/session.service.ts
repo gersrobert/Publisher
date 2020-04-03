@@ -37,4 +37,8 @@ export class SessionService {
     return observable;
   }
 
+  public getSession(): string {
+    return sessionStorage.getItem(this.SESSION_KEY);
+  }
+
 }

@@ -19,6 +19,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+import { ArticleInsertComponent } from './article-insert/article-insert.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {MatInputModule} from '@angular/material/input';
     ArticleListComponent,
     ArticleDetailComponent,
     LoginScreenComponent,
+    ArticleInsertComponent,
   ],
   imports: [
     BrowserModule,

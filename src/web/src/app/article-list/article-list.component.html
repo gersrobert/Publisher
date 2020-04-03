@@ -2,14 +2,14 @@
 
   <mat-card>
     <mat-card-content>
-      <span class="article-title">{{article.title}}</span>
+      <span class="article-title" (click)="router.navigate(['/home/articleDetail', article.id])">{{article.title}}</span>
 
       <div class="article-menu">
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_horiz</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item [routerLink]="['/home/login']">
+          <button mat-menu-item>
             <span>Add to collection</span>
           </button>
         </mat-menu>

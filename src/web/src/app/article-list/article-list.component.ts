@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
 import {PageEvent} from '@angular/material/paginator';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-article-list',
@@ -16,7 +17,7 @@ export class ArticleListComponent implements OnInit {
   lower = 0;
   upper = 10;
 
-  constructor(private articleService: ArticleService) {
+  constructor(private articleService: ArticleService, public router: Router) {
   }
 
   ngOnInit() {

@@ -11,6 +11,8 @@ export class ArticleSimpleDTO {
   public title: string;
   public publishedAt: Date;
   public authors: AppUserDTO[];
+  public categories: Category[];
+  public publisher: Publisher;
 }
 
 export class AppUserDTO {
@@ -23,4 +25,14 @@ export class AppUserDTO {
 export class ArticleSimpleListDTO {
   public articles: ArticleSimpleDTO[];
   public numberOfArticles: number;
+}
+
+export class Category {
+  public id: string;
+  public name: string;
+}
+
+export class Publisher {
+  public id: string;
+  public name: string;
 }

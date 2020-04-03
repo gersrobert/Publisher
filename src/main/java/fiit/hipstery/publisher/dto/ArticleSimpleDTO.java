@@ -2,12 +2,15 @@ package fiit.hipstery.publisher.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class ArticleSimpleDTO extends AbstractDTO {
 
 	protected String title;
 	protected LocalDateTime publishedAt;
-	protected List<AppUserDTO> authors;
+	protected Set<AppUserDTO> authors;
+	protected Set<CategoryDTO> categories;
+	protected PublisherDTO publisher;
 
 	public String getTitle() {
 		return title;
@@ -25,11 +28,27 @@ public class ArticleSimpleDTO extends AbstractDTO {
 		this.publishedAt = publishedAt;
 	}
 
-	public List<AppUserDTO> getAuthors() {
+	public Set<AppUserDTO> getAuthors() {
 		return authors;
 	}
 
-	public void setAuthors(List<AppUserDTO> authors) {
+	public void setAuthors(Set<AppUserDTO> authors) {
 		this.authors = authors;
+	}
+
+	public Set<CategoryDTO> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Set<CategoryDTO> categories) {
+		this.categories = categories;
+	}
+
+	public PublisherDTO getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(PublisherDTO publisher) {
+		this.publisher = publisher;
 	}
 }

@@ -20,6 +20,9 @@ import { LoginScreenComponent } from './login-screen/login-screen.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import { ArticleInsertComponent } from './article-insert/article-insert.component';
+import {MatCardModule} from '@angular/material/card';
+import {MatChipsModule} from '@angular/material/chips';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +32,7 @@ import { ArticleInsertComponent } from './article-insert/article-insert.componen
     ArticleDetailComponent,
     LoginScreenComponent,
     ArticleInsertComponent,
+    UserDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +49,9 @@ import { ArticleInsertComponent } from './article-insert/article-insert.componen
     MatPaginatorModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    MatCardModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

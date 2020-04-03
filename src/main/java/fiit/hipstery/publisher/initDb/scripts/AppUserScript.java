@@ -17,14 +17,15 @@ import java.util.*;
 public class AppUserScript extends InitDbScript {
 
 	public static final int USER_COUNT = 100_000;
-	Role writer;
-	Role reader;
-	Role publisher_owner;
-	Role admin;
+	
+	private Role writer;
+	private Role reader;
+	private Role publisher_owner;
+	private Role admin;
 
 	@Autowired
 	List<UserNameGenerator> generators;
-
+	
 	@Override
 	public void run() {
 		List<Role> roles = entityManager.createQuery("from Role ", Role.class).getResultList();
@@ -66,79 +67,71 @@ public class AppUserScript extends InitDbScript {
 		return roles;
 	}
 
-	public interface UserNameGenerator {
-		String generate(Faker faker, AppUser user);
+	public abstract static class UserNameGenerator {
+		protected int i = 0;
+		public abstract String generate(Faker faker, AppUser user);
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen1 implements UserNameGenerator {
+	public static class Gen1 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return user.getFirstName().toLowerCase() + "." + user.getLastName().toLowerCase() + "." + UUID.randomUUID().toString().substring(0, 6);
+			return user.getFirstName().toLowerCase() + "." + user.getLastName().toLowerCase() + "." + i++;
 		}
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen2 implements UserNameGenerator {
+	public static class Gen2 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return user.getFirstName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 6);
+			return user.getFirstName().toLowerCase() + "_" + i++;
 		}
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen3 implements UserNameGenerator {
+	public static class Gen3 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return user.getLastName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 6);
+			return user.getLastName() + "_" + i++;
 		}
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen4 implements UserNameGenerator {
+	public static class Gen4 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return faker.rickAndMorty().character().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+			return faker.rickAndMorty().character().replace(' ', '_') + "_" + i++;
 		}
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen5 implements UserNameGenerator {
+	public static class Gen5 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return faker.harryPotter().character().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+			return faker.harryPotter().character().replace(' ', '_') + "_" + i++;
 		}
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen6 implements UserNameGenerator {
+	public static class Gen7 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return faker.esports().player().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+			return faker.hipster().word().replace(' ', '_') + "_" + i++;
 		}
 	}
 
 	@Component
 	@Profile("initDb")
-	public static class Gen7 implements UserNameGenerator {
+	public static class Gen8 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return faker.hipster().word().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
-		}
-	}
-
-	@Component
-	@Profile("initDb")
-	public static class Gen8 implements UserNameGenerator {
-		@Override
-		public String generate(Faker faker, AppUser user) {
-			return faker.superhero().name().replace(' ', '_') + "_" + UUID.randomUUID().toString().substring(0, 6);
+			return faker.superhero().name().replace(' ', '_') + "_" + i++;
 		}
 	}
 }

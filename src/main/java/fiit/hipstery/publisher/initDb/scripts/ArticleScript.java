@@ -1,28 +1,18 @@
 package fiit.hipstery.publisher.initDb.scripts;
 
-import fiit.hipstery.publisher.entity.AppUser;
-import fiit.hipstery.publisher.entity.AppUserArticleRelation;
-import fiit.hipstery.publisher.entity.Article;
-import fiit.hipstery.publisher.initDb.InitDbCsvScript;
+import fiit.hipstery.publisher.entity.*;
 import fiit.hipstery.publisher.initDb.InitDbScript;
 import fiit.hipstery.publisher.initDb.dto.ArticleListDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
-@Order(3)
+@Order(5)
 @Profile("initDb")
 public class ArticleScript extends InitDbScript {
 
@@ -30,11 +20,15 @@ public class ArticleScript extends InitDbScript {
 	@Transactional
 	public void run() {
 		ArticleListDTO articleContent = publisherFaker.getArticleContent();
+		List<Category> categories = entityManager.createQuery("from Category ", Category.class).getResultList();
+		List<Publisher> publishers = entityManager.createQuery("from Publisher ", Publisher.class).getResultList();
 
 		articleContent.getArticles().forEach(articleDTO -> {
 			Article article = new Article();
 			article.setTitle(articleDTO.getTitle());
 			article.setContent(articleDTO.getContent());
+			article.setCategories(categories);
+			article.setPublisher(publishers.get((int) (Math.random() * publishers.size())));
 
 			entityManager.persist(article);
 			assignRandomAuthors(article);

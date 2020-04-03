@@ -1,21 +1,49 @@
-<button mat-raised-button color="primary"(click)="updateArticles(-10)">
-  <mat-icon>keyboard_arrow_left</mat-icon>
-</button>
-<button mat-raised-button color="primary" (click)="updateArticles(10)">
-  <mat-icon>keyboard_arrow_right</mat-icon>
-</button>
-<span>{{ lower }} - {{ upper }} / {{ numberOfArticles }}</span>
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let article of articles">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{ article.title }}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <p> {{ article.publishedAt | date }} </p>
-    <p> {{ 'Author: ' + displayUsers(article.authors) }} </p>
-    <button mat-raised-button color="primary" name="{{ article.title }}" [routerLink]="['/home/articleDetail', article.id]" [state]="{ id: article.id }">Read</button>
-  </mat-expansion-panel>
-</mat-accordion>
-<br>
-<span>{{ titleName }}</span>
+<div *ngFor="let article of articles">
+
+  <mat-card>
+    <mat-card-content>
+      <span class="article-title">{{article.title}}</span>
+
+      <div class="article-menu">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item [routerLink]="['/home/login']">
+            <span>Add to collection</span>
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="article-categories">
+        <mat-chip-list>
+          <mat-chip *ngFor="let category of article.categories">{{category.name}}</mat-chip>
+        </mat-chip-list>
+      </div>
+
+      <div class="article-authors">
+        <span>By </span>
+        <a *ngFor="let author of article.authors" [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
+        <span>for {{article.publisher.name}}</span>
+      </div>
+
+      <div class="article-date">
+        <span>{{ article.publishedAt | date }}</span>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>
+
+<div class="paging">
+  <button mat-icon-button (click)="updateArticles(-10)">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+
+  <span>{{ lower }} - {{ upper }} / {{ numberOfArticles }}</span>
+
+  <button mat-icon-button (click)="updateArticles(10)">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+</div>

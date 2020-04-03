@@ -134,12 +134,13 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			return false;
 		}
 
+		UUID articleUuid = UUID.randomUUID();
 		entityManager.createNativeQuery("INSERT " +
 				"   INTO article (id, created_at, state, updated_at, content, title)" +
 				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
-		).setParameter("id", article.getId()
-		).setParameter("created_at", article.getCreatedAt()
-		).setParameter("updated_at", article.getUpdatedAt()
+		).setParameter("id", articleUuid
+		).setParameter("created_at", LocalDateTime.now()
+		).setParameter("updated_at", LocalDateTime.now()
 		).setParameter("content", article.getContent()
 		).setParameter("title", article.getTitle()).executeUpdate();
 		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
@@ -149,7 +150,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		).setParameter("id", UUID.randomUUID()
 		).setParameter("created_at", LocalDateTime.now()
 		).setParameter("updated_at", LocalDateTime.now()
-		).setParameter("article_id", article.getId()
+		).setParameter("article_id", articleUuid
 		).setParameter("authors_id", a).executeUpdate());
 		return true;
 	}

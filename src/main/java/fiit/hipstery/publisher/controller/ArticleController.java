@@ -68,7 +68,7 @@ public class ArticleController extends AbstractController{
             response.setArticles(articleService.getArticlesInRange(lowerIndex, upperIndex));
             response.setNumberOfArticles(articleService.getNumberOfArticles());
         } catch (Exception e) {
-            logger.error("Error getting article list", e);
+            logger.error("Error getting article list in range from " + lowerIndex + " to " + upperIndex, e);
             throw new InternalServerException(e);
         }
 
@@ -81,7 +81,7 @@ public class ArticleController extends AbstractController{
         try {
             article = articleService.getArticlesByAuthor(author);
         } catch (Exception e) {
-            logger.error("Error getting article list", e);
+            logger.error("Error getting list of articles written by : " + author, e);
             throw new InternalServerException(e);
         }
 
@@ -94,7 +94,7 @@ public class ArticleController extends AbstractController{
         try {
             article = articleService.getArticleListForUser(UUID.fromString(id));
         } catch (Exception e) {
-            logger.error("Error getting article list", e);
+            logger.error("Error getting some strange bobo shit", e);
             throw new InternalServerException(e);
         }
 
@@ -103,13 +103,18 @@ public class ArticleController extends AbstractController{
 
     @PostMapping(value = "/insert", headers = "Accept=application/json", produces = "application/json")
     public ResponseEntity insertArticle(@RequestBody ArticleInsertDTO article) {
+    	boolean response;
         try {
-            articleService.insertArticle(article);
+            response = articleService.insertArticle(article);
         } catch (Exception e) {
-            logger.error("Error getting article list", e);
+            logger.error("Error inserting into article list", e);
             throw new InternalServerException(e);
         }
 
-        return ResponseEntity.ok().build();
+        if (response) {
+            return new ResponseEntity(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
     }
 }

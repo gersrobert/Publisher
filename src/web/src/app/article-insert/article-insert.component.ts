@@ -26,22 +26,28 @@ export class ArticleInsertComponent implements OnInit {
   }
 
   public onSubmit() {
-    const body = {
-      title: this.articleForm.value['title'],
-      content: this.articleForm.value['content'],
-      authors: [this.sessionService.getSession()]
-    };
+    let title = this.articleForm.value['title'];
+    let content = this.articleForm.value['content'];
+    let authors = [this.sessionService.getSession()];
 
-    console.log(body);
+    if (title != '' && content != '' && authors[0] != null) {
+      const body = {
+        title: title,
+        content: content,
+        authors: authors
+      };
 
-    const headers = new HttpHeaders({
-      'Content-Type':  'application/json',
-      'Accept': 'application/json'
-    });
+      console.log(body);
 
-    this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers}).subscribe((res:Response) => {
-      console.log(res.headers);
-    });
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      });
+
+      this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers}).subscribe((res: Response) => {
+        console.log(res.status);
+      });
+    }
   }
 
 }

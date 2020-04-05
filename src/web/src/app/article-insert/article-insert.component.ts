@@ -44,8 +44,10 @@ export class ArticleInsertComponent implements OnInit {
         'Accept': 'application/json'
       });
 
-      this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers}).subscribe((res: Response) => {
-        console.log(res.status);
+      this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers}).subscribe(response => {
+        console.log('success', response);
+      }, error => {
+        console.log('error', error);
       });
     }
   }

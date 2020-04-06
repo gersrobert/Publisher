@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Role;
 import fiit.hipstery.publisher.initDb.InitDbScript;
+import fiit.hipstery.publisher.initDb.config.EntityCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -24,15 +25,20 @@ public class AppUserScript extends InitDbScript {
 	private Role admin;
 
 	@Autowired
-	List<UserNameGenerator> generators;
+	private List<UserNameGenerator> generators;
+
+	@Autowired
+	private EntityCache<AppUser> appUserCache;
+
+	@Autowired
+	private EntityCache<Role> roleEntityCache;
 	
 	@Override
 	public void run() {
-		List<Role> roles = entityManager.createQuery("from Role ", Role.class).getResultList();
-		writer = roles.stream().filter(role -> role.getName().equals("writer")).findAny().orElseThrow();
-		reader = roles.stream().filter(role -> role.getName().equals("reader")).findAny().orElseThrow();
-		publisher_owner = roles.stream().filter(role -> role.getName().equals("publisher_owner")).findAny().orElseThrow();
-		admin = roles.stream().filter(role -> role.getName().equals("admin")).findAny().orElseThrow();
+		writer = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("writer")).findAny().orElseThrow();
+		reader = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("reader")).findAny().orElseThrow();
+		publisher_owner = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("publisher_owner")).findAny().orElseThrow();
+		admin = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("admin")).findAny().orElseThrow();
 
 		for (int i = 0; i < USER_COUNT; i++) {
 			AppUser user = new AppUser();
@@ -46,6 +52,7 @@ public class AppUserScript extends InitDbScript {
 			user.setRoles(getRolesForIndex(i));
 
 			entityManager.persist(user);
+			appUserCache.save(user);
 		}
 	}
 
@@ -122,7 +129,7 @@ public class AppUserScript extends InitDbScript {
 	public static class Gen7 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return faker.hipster().word().replace(' ', '_') + "_" + i++;
+			return faker.hipster().word().replace(' ', '_') + "-" + i++;
 		}
 	}
 
@@ -131,7 +138,7 @@ public class AppUserScript extends InitDbScript {
 	public static class Gen8 extends UserNameGenerator {
 		@Override
 		public String generate(Faker faker, AppUser user) {
-			return faker.superhero().name().replace(' ', '_') + "_" + i++;
+			return faker.superhero().name().replace(' ', '_') + "-" + i++;
 		}
 	}
 }

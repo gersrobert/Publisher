@@ -1,7 +1,9 @@
 package fiit.hipstery.publisher.initDb;
 
 import fiit.hipstery.publisher.entity.AbstractEntity;
+import fiit.hipstery.publisher.initDb.config.EntityCache;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 
@@ -14,10 +16,16 @@ import java.util.stream.Collectors;
 @Profile("initDb")
 public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbScript {
 
+	@Autowired
+	private EntityCache<E> entityCache;
+
 	@Override
 	public void run() {
 		List<List<String>> data = getData(getDataFile());
-		data.stream().map(this::mapRowToEntity).forEach(entityManager::persist);
+		data.stream().map(this::mapRowToEntity).forEach(e -> {
+			entityManager.persist(e);
+			entityCache.save(e);
+		});
 	}
 
 	protected abstract Resource getDataFile();

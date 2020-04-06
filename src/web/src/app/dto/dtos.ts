@@ -4,6 +4,8 @@ export class ArticleDetailedDTO {
   public content: string;
   public publishedAt: Date;
   public authors: AppUserDTO[];
+  public categories: Category[];
+  public publisher: Publisher;
 }
 
 export class ArticleSimpleDTO {

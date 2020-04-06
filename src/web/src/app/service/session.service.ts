@@ -1,9 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {ArticleDetailedDTO} from '../dto/dtos';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import * as shajs from 'sha.js';
 import {sha256} from 'js-sha256';
 
 @Injectable({

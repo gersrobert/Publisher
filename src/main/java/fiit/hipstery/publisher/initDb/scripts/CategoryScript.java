@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-@Profile("initDb")
-@Order(3)
+//@Component
+//@Profile("initDb")
+//@Order(3)
 public class CategoryScript extends InitDbCsvScript<Category> {
 
 	@Value("classpath:db/categories.csv")

@@ -23,6 +23,7 @@ import { ArticleInsertComponent } from './article-insert/article-insert.componen
 import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
 import { UserDetailComponent } from './user-detail/user-detail.component';
+import {ShowdownModule} from 'ngx-showdown';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { UserDetailComponent } from './user-detail/user-detail.component';
     ReactiveFormsModule,
     MatInputModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
+    ShowdownModule
   ],
   providers: [],
   bootstrap: [AppComponent]

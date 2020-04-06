@@ -1,4 +1,19 @@
-<h1>{{ article.title }}</h1>
-<h2>{{ displayUsers(article.authors) }}</h2>
-<h2>{{ article.publishedAt | date:'medium' }}</h2>
-<p>{{ article.content }}</p>
+<div class="article-detail-wrapper">
+  <h1>{{ article.title }}</h1>
+
+  <div class="article-authors">
+    <span>By </span>
+    <a *ngFor="let author of article.authors" [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
+    <span>for {{article.publisher || 'publisher'}}</span>
+  </div>
+
+  <div class="article-date">
+    <span>{{ article.publishedAt | date:'medium' }}</span>
+  </div>
+
+  <div class="article-content">
+
+  </div>
+
+  <div class="article-content" [innerHTML]="article.content"></div>
+</div>

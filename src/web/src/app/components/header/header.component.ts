@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sessionService.getCurrentUser().subscribe(user => this.currentUser = user);
+    this.sessionService.getCurrentUser()?.subscribe(user => this.currentUser = user);
 
     const obs = {
       next: id => this.sessionService.getCurrentUser().subscribe(user => this.currentUser = user),

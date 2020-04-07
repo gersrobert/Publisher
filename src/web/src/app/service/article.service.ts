@@ -34,4 +34,12 @@ export class ArticleService {
 
     return this.httpClient.put<number>(environment.ROOT_URL + '/article/like/' + articleId, null, {headers});
   }
+
+  public unlikeArticle(articleId: string): Observable<number> {
+    const headers = new HttpHeaders({
+      'Auth-Token': this.sessionService.getSession()
+    });
+
+    return this.httpClient.put<number>(environment.ROOT_URL + '/article/unlike/' + articleId, null, {headers});
+  }
 }

@@ -55,10 +55,17 @@ export class ArticleListComponent implements OnInit {
   public likeArticle(article: ArticleSimpleDTO) {
     console.log("likearticle", article);
 
-    this.articleService.likeArticle(article.id).subscribe(response => {
-      article.likeCount = response;
-      article.liked = !article.liked;
-    });
+    if (article.liked) {
+      this.articleService.unlikeArticle(article.id).subscribe(response => {
+        article.likeCount = response;
+        article.liked = false;
+      });
+    } else {
+      this.articleService.likeArticle(article.id).subscribe(response => {
+        article.likeCount = response;
+        article.liked = true;
+      });
+    }
   }
 
 }

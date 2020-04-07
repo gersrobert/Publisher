@@ -11,7 +11,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,6 +27,8 @@ public class ArticleScript extends InitDbScript {
 	@Autowired
 	private EntityCache<Publisher> publisherEntityCache;
 
+	private Map<String, Category> categoryMap = new HashMap<>();
+
 	@Override
 	@Transactional
 	public void run() {
@@ -35,9 +39,15 @@ public class ArticleScript extends InitDbScript {
 			article.setTitle(articleDTO.getTitle());
 			article.setContent(articleDTO.getContent());
 			article.setCategories(articleDTO.getCategories().stream().map(name -> {
-				Category category = new Category();
-				category.setName(name);
-				entityManager.persist(category);
+				Category category;
+				if (categoryMap.containsKey(name)) {
+					category = categoryMap.get(name);
+				} else {
+					category = new Category();
+					category.setName(name);
+					entityManager.persist(category);
+					categoryMap.put(name, category);
+				}
 				return category;
 			}).collect(Collectors.toList()));
 			article.setPublisher(publisherEntityCache.getEntities(Publisher.class)

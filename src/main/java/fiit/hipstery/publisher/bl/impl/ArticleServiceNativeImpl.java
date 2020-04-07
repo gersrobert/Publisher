@@ -273,6 +273,24 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	}
 
 	@Override
+	@Transactional
+	public int unlikeArticle(UUID articleId, UUID userId) {
+		entityManager.createNativeQuery("DELETE FROM app_user_article_relation " +
+				"WHERE article_id=:articleId " +
+				"AND app_user_id=:appUserId " +
+				"AND relation_type='LIKE'")
+				.setParameter("articleId", articleId.toString())
+				.setParameter("appUserId", userId.toString())
+				.executeUpdate();
+
+		entityManager.flush();
+		Object likeCount = entityManager.createNativeQuery("SELECT count(id) FROM app_user_article_relation " +
+				"WHERE article_id=:articleId and relation_type='LIKE'").setParameter("articleId", articleId.toString()).getSingleResult();
+
+		return ((BigInteger) likeCount).intValue();
+	}
+
+	@Override
 	public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
 		return null;
 	}

@@ -26,5 +26,7 @@ public interface ArticleService {
 
     int likeArticle(UUID articleId, UUID userId);
 
+    int unlikeArticle(UUID articleId, UUID userId);
+
     int getNumberOfArticles();
 }

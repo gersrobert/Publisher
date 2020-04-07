@@ -130,4 +130,17 @@ public class ArticleController extends AbstractController{
 
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping(value = "unlike/{articleId}")
+    public ResponseEntity<Integer> unlikeArticle(@RequestHeader("Auth-Token") String userId, @PathVariable String articleId) {
+        int response;
+        try {
+            response = articleService.unlikeArticle(UUID.fromString(articleId), UUID.fromString(userId));
+        } catch (Exception e) {
+            logger.error("Error unliking article", e);
+            throw new InternalServerException(e);
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }

@@ -25,6 +25,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import {ShowdownModule} from 'ngx-showdown';
 import {MatRippleModule} from '@angular/material/core';
+import {LoginRedirect} from './core/login-redirect';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,7 @@ import {MatRippleModule} from '@angular/material/core';
         ShowdownModule,
         MatRippleModule
     ],
-  providers: [],
+  providers: [LoginRedirect],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

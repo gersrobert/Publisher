@@ -2,6 +2,7 @@ package fiit.hipstery.publisher.controller;
 
 import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.bl.service.UserService;
+import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.dto.LoginRequestDTO;
 import fiit.hipstery.publisher.exception.InternalServerException;
 import org.slf4j.Logger;
@@ -10,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
 import java.util.Optional;
@@ -35,7 +34,22 @@ public class UserController extends AbstractController {
 		} catch (NoResultException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		} catch (Exception e) {
-			logger.error("Error getting article list", e);
+			logger.error("Error logging in", e);
+			throw new InternalServerException(e);
+		}
+
+		return ResponseEntity.of(Optional.of(response));
+	}
+
+	@GetMapping(value = "/{uuid}")
+	public ResponseEntity<AppUserDTO> getUser(@PathVariable String uuid) {
+		AppUserDTO response;
+		try {
+			response = userService.getAppUser(UUID.fromString(uuid));
+		} catch (NoResultException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		} catch (Exception e) {
+			logger.error("Could not find user", e);
 			throw new InternalServerException(e);
 		}
 

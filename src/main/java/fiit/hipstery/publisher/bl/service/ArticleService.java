@@ -24,5 +24,7 @@ public interface ArticleService {
 
     boolean insertArticle(ArticleInsertDTO article);
 
+    int likeArticle(UUID articleId, UUID userId);
+
     int getNumberOfArticles();
 }

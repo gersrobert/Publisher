@@ -51,4 +51,14 @@ export class ArticleListComponent implements OnInit {
 
     return retVal;
   }
+
+  public likeArticle(article: ArticleSimpleDTO) {
+    console.log("likearticle", article);
+
+    this.articleService.likeArticle(article.id).subscribe(response => {
+      article.likeCount = response;
+      article.liked = !article.liked;
+    });
+  }
+
 }

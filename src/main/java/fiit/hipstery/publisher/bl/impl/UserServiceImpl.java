@@ -1,6 +1,7 @@
 package fiit.hipstery.publisher.bl.impl;
 
 import fiit.hipstery.publisher.bl.service.UserService;
+import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import org.springframework.stereotype.Service;
 
@@ -38,4 +39,14 @@ public class UserServiceImpl implements UserService {
         return userId;
     }
 
+    @Override
+    public AppUserDTO getAppUser(UUID uuid) {
+        AppUser appUser = entityManager.find(AppUser.class, uuid);
+        AppUserDTO dto = new AppUserDTO();
+        dto.setId(appUser.getId().toString());
+        dto.setFirstName(appUser.getFirstName());
+        dto.setLastName(appUser.getLastName());
+        dto.setUserName(appUser.getUserName());
+        return dto;
+    }
 }

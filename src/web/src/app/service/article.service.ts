@@ -1,16 +1,17 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ArticleDetailedDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleSimpleDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {SessionService} from './session.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArticleService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private sessionService: SessionService) {
   }
 
   public getArticleById(id: string): Observable<ArticleDetailedDTO> {
@@ -24,5 +25,13 @@ export class ArticleService {
   public getArticlesInRange(lower: number, upper: number): Observable<ArticleSimpleListDTO> {
     return this.httpClient.get<ArticleSimpleListDTO>(
       environment.ROOT_URL + '/article/index/' + lower + '-' + upper);
+  }
+
+  public likeArticle(articleId: string): Observable<number> {
+    const headers = new HttpHeaders({
+      'Auth-Token': this.sessionService.getSession()
+    });
+
+    return this.httpClient.put<number>(environment.ROOT_URL + '/article/like/' + articleId, null, {headers});
   }
 }

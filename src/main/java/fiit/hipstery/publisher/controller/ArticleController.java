@@ -117,4 +117,17 @@ public class ArticleController extends AbstractController{
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
     }
+
+    @PutMapping(value = "like/{articleId}")
+    public ResponseEntity<Integer> likeArticle(@RequestHeader("Auth-Token") String userId, @PathVariable String articleId) {
+        int response;
+        try {
+            response = articleService.likeArticle(UUID.fromString(articleId), UUID.fromString(userId));
+        } catch (Exception e) {
+            logger.error("Error liking article", e);
+            throw new InternalServerException(e);
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }

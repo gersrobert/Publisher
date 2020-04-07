@@ -21,7 +21,7 @@
         </mat-chip-list>
       </div>
 
-      <div class="like-count" mat-ripple (click)="article.liked=!article.liked">
+      <div class="like-count" mat-ripple (click)="likeArticle(article)">
         <mat-icon>{{article.liked ? 'favorite' : 'favorite_border'}}</mat-icon>
         <span>{{article.likeCount}} likes</span>
       </div>

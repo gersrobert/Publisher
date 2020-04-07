@@ -252,6 +252,27 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	}
 
 	@Override
+	@Transactional
+	public int likeArticle(UUID articleId, UUID userId) {
+		entityManager.createNativeQuery("INSERT INTO " +
+				"app_user_article_relation (id, created_at, state, updated_at, relation_type, app_user_id, article_id)" +
+				"VALUES (:id, :createdAt, :state, :updatedAt, :relationType, :appUserId, :articleId)")
+				.setParameter("id", UUID.randomUUID())
+				.setParameter("createdAt", LocalDateTime.now())
+				.setParameter("state", AppUserArticleRelation.STATE_ACTIVE)
+				.setParameter("updatedAt", LocalDateTime.now())
+				.setParameter("relationType", AppUserArticleRelation.RelationType.LIKE.toString())
+				.setParameter("appUserId", userId.toString())
+				.setParameter("articleId", articleId.toString()).executeUpdate();
+
+		entityManager.flush();
+		Object likeCount = entityManager.createNativeQuery("SELECT count(id) FROM app_user_article_relation " +
+				"WHERE article_id=:articleId and relation_type='LIKE'").setParameter("articleId", articleId.toString()).getSingleResult();
+
+		return ((BigInteger) likeCount).intValue();
+	}
+
+	@Override
 	public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
 		return null;
 	}

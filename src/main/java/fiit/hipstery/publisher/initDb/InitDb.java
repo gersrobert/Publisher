@@ -30,6 +30,5 @@ public class InitDb implements ApplicationListener<ContextRefreshedEvent> {
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		logger.info("initDb();");
 		initDbScripts.forEach(InitDbScript::run);
-		logger.info("initDb(); completed");
 	}
 }

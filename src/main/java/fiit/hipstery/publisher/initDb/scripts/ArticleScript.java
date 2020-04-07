@@ -47,23 +47,28 @@ public class ArticleScript extends InitDbScript {
 
 			double random = Math.random();
 			if (random > 0) {
-				persistRelation(article);
+				persistRelation(article, AppUserArticleRelation.RelationType.AUTHOR);
 			}
 			if (random > 0.6) {
-				persistRelation(article);
+				persistRelation(article, AppUserArticleRelation.RelationType.AUTHOR);
 			}
 			if (random > 0.9) {
-				persistRelation(article);
+				persistRelation(article, AppUserArticleRelation.RelationType.AUTHOR);
+			}
+
+			int likeCount = (int) (Math.random() * (appUserEntityCache.getEntities(AppUser.class).size() * 0.025) * 2);
+			for (int i = 0; i < likeCount; i++) {
+				persistRelation(article, AppUserArticleRelation.RelationType.LIKE);
 			}
 		});
 	}
 
-	private void persistRelation(Article article) {
+	private void persistRelation(Article article, AppUserArticleRelation.RelationType relationType) {
 		AppUser appUser = appUserEntityCache.getEntities(AppUser.class).get((int) (Math.random() * appUserEntityCache.getEntities(AppUser.class).size()));
 		AppUserArticleRelation relation = new AppUserArticleRelation();
 		relation.setAppUser(appUser);
 		relation.setArticle(article);
-		relation.setRelationType(AppUserArticleRelation.RelationType.AUTHOR);
+		relation.setRelationType(relationType);
 		entityManager.persist(relation);
 	}
 

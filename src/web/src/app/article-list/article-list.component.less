@@ -8,6 +8,8 @@ mat-card {
 
 .article-title {
   font-size: 18px;
+  display: inline-block;
+  margin-right: 1.5em;
 }
 
 .article-menu {
@@ -24,16 +26,39 @@ mat-chip {
   font-size: 12px;
 }
 
+.like-count {
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
+  text-align: center;
+  padding: 8px;
+
+}
+
+.like-count mat-icon {
+  display: block;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 38px;
+}
+
+.like-count:hover {
+  cursor: pointer;
+}
+
 .article-authors {
   display: inline-block;
   margin-top: 2em;
 }
 
+.article-authors:after {
+  content: '•';
+  padding: 0.5em;
+}
+
 .article-date {
-  display: inline-block;
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
+  display: inline;
 }
 
 .paging {

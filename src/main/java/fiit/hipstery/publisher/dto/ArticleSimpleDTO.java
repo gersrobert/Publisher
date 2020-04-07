@@ -11,6 +11,7 @@ public class ArticleSimpleDTO extends AbstractDTO {
 	protected Set<AppUserDTO> authors;
 	protected Set<CategoryDTO> categories;
 	protected PublisherDTO publisher;
+	protected int likeCount;
 
 	public String getTitle() {
 		return title;
@@ -50,5 +51,13 @@ public class ArticleSimpleDTO extends AbstractDTO {
 
 	public void setPublisher(PublisherDTO publisher) {
 		this.publisher = publisher;
+	}
+
+	public int getLikeCount() {
+		return likeCount;
+	}
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
 	}
 }

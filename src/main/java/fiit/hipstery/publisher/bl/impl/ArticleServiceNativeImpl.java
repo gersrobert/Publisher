@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,23 +26,67 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArticleDetailedDTO getArticleById(UUID id) {
-		List<Object[]> articles = entityManager.createNativeQuery("SELECT " +
-				"   a.id," +
-				"   a.title," +
-				"   a.created_at," +
-				"   a.content," +
-				"   string_agg(au.user_name, ';') AS user_name," +
-				"   string_agg(au.first_name, ';') AS first_name," +
-				"   string_agg(au.last_name, ';') AS last_name," +
-				"   string_agg(au.id, ';') AS author_id" +
+		List<Object[]> rows = entityManager.createNativeQuery("SELECT a.id," +
+				"       a.title," +
+				"       a.created_at," +
+				"       au.user_name                            AS user_name," +
+				"       au.first_name                           AS first_name," +
+				"       au.last_name                            AS last_name," +
+				"       au.id                                   AS author_id," +
+				"       c.name                                  AS c_name," +
+				"       c.id                                    AS c_id," +
+				"       p.name                                  AS p_name," +
+				"       p.id                                    AS p_id," +
+				"       a.content                               AS content," +
+				"       (SELECT count(relation.id)" +
+				"        FROM app_user_article_relation relation" +
+				"        WHERE relation.article_id = a.id" +
+				"          AND relation.relation_type = 'LIKE') AS like_count" +
 				"   FROM article a" +
-				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
-				"   JOIN app_user au ON aa.app_user_id = au.id" +
-				"   WHERE a.id = :id" +
-				"   GROUP BY a.id")
+				"         JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"         JOIN app_user au ON aar.app_user_id = au.id" +
+				"         LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
+				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
+				"         LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
+				"   WHERE a.id=:id")
 				.setParameter("id", id.toString()).getResultList();
 
-		return mapRowToArticleDetailedDTO(articles.get(0));
+		ArticleDetailedDTO articleDetailedDTO = new ArticleDetailedDTO();
+		Object[] article = rows.get(0);
+
+		articleDetailedDTO.setId((String) article[0]);
+		articleDetailedDTO.setTitle((String) article[1]);
+		articleDetailedDTO.setPublishedAt(((Timestamp) article[2]).toLocalDateTime());
+		articleDetailedDTO.setContent((String) article[11]);
+		articleDetailedDTO.setLikeCount(((BigInteger) article[12]).intValue());
+
+		PublisherDTO publisherDTO = new PublisherDTO();
+		publisherDTO.setName((String) article[9]);
+		publisherDTO.setId((String) article[10]);
+		articleDetailedDTO.setPublisher(publisherDTO);
+
+		for (Object[] row : rows) {
+			if (articleDetailedDTO.getAuthors() == null) {
+				articleDetailedDTO.setAuthors(new HashSet<>());
+			}
+			if (articleDetailedDTO.getCategories() == null) {
+				articleDetailedDTO.setCategories(new HashSet<>());
+			}
+
+			AppUserDTO appUserDTO = new AppUserDTO();
+			appUserDTO.setUserName((String) row[3]);
+			appUserDTO.setFirstName((String) row[4]);
+			appUserDTO.setLastName((String) row[5]);
+			appUserDTO.setId((String) row[6]);
+			articleDetailedDTO.getAuthors().add(appUserDTO);
+
+			CategoryDTO categoryDTO = new CategoryDTO();
+			categoryDTO.setName((String) row[7]);
+			categoryDTO.setId((String) row[8]);
+			articleDetailedDTO.getCategories().add(categoryDTO);
+		}
+
+		return articleDetailedDTO;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -68,11 +113,16 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	@Override
 	public Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex) {
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
-				"    SELECT *" +
+				"    SELECT *," +
+				"           (SELECT count(relation.id)" +
+				"            FROM app_user_article_relation relation" +
+				"            WHERE relation.article_id = a.id" +
+				"              AND relation.relation_type = 'LIKE') AS like_count" +
 				"    FROM article a" +
-				"        OFFSET :lowerIndex ROWS" +
+				"    ORDER BY like_count DESC" +
+				"    OFFSET :lowerIndex ROWS" +
 				"    FETCH NEXT :upperIndex ROWS ONLY" +
-				")" +
+				"   )" +
 				"   SELECT a.id," +
 				"       a.title," +
 				"       a.created_at," +
@@ -83,18 +133,19 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       c.name        AS c_name," +
 				"       c.id          AS c_id," +
 				"       p.name        AS p_name," +
-				"       p.id          AS p_id" +
+				"       p.id          AS p_id," +
+				"       a.like_count  AS like_count" +
 				"   FROM a" +
-				"         JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = 'AUTHOR'" +
-				"         JOIN app_user au ON aa.app_user_id = au.id" +
+				"         JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"         JOIN app_user au ON aar.app_user_id = au.id" +
 				"         LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
 				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
-				"         JOIN publisher p on a.publisher_id = p.id" +
-				"   ORDER BY a.updated_at DESC;").setParameter(
+				"         LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
+				"   ORDER BY like_count DESC").setParameter(
 				"lowerIndex", lowerIndex).setParameter(
 				"upperIndex", upperIndex - lowerIndex).getResultList();
 
-		HashMap<String, ArticleSimpleDTO> map = new HashMap<>();
+		Map<String, ArticleSimpleDTO> map = new LinkedHashMap<>();
 		for (Object[] row : resultList) {
 			ArticleSimpleDTO articleSimpleDTO = map.get(row[0]);
 			if (articleSimpleDTO == null) {
@@ -102,11 +153,13 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				articleSimpleDTO.setId((String) row[0]);
 				articleSimpleDTO.setTitle((String) row[1]);
 				articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
+				articleSimpleDTO.setLikeCount(((BigInteger) row[11]).intValue());
 
 				PublisherDTO publisherDTO = new PublisherDTO();
 				publisherDTO.setName((String) row[9]);
 				publisherDTO.setId((String) row[10]);
 				articleSimpleDTO.setPublisher(publisherDTO);
+
 			}
 
 			if (articleSimpleDTO.getAuthors() == null) {
@@ -201,49 +254,6 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	@Override
 	public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
 		return null;
-	}
-
-	private List<AppUserDTO> rowToAppUserDto(Object[] row) {
-		List<AppUserDTO> appUserDTOS = new ArrayList<>();
-		String[] userNames = ((String) row[0]).split(";");
-		String[] firstNames = ((String) row[1]).split(";");
-		String[] lastNames = ((String) row[2]).split(";");
-		String[] ids = ((String) row[3]).split(";");
-
-		for (int i = 0; i < ids.length; i++) {
-			AppUserDTO dto = new AppUserDTO();
-			dto.setUserName(userNames[i]);
-			dto.setFirstName(firstNames[i]);
-			dto.setLastName(lastNames[i]);
-			dto.setId(ids[i]);
-			appUserDTOS.add(dto);
-		}
-		return appUserDTOS;
-	}
-
-	private List<CategoryDTO> rowToCategoryDto(Object[] row) {
-		List<CategoryDTO> categoryDTOS = new ArrayList<>();
-		String[] names = ((String) row[0]).split(";");
-		String[] ids = ((String) row[1]).split(";");
-
-		for (int i = 0; i < ids.length; i++) {
-			CategoryDTO dto = new CategoryDTO();
-			dto.setName(names[i]);
-			dto.setId(ids[i]);
-			categoryDTOS.add(dto);
-		}
-		return categoryDTOS;
-	}
-
-	private ArticleDetailedDTO mapRowToArticleDetailedDTO(Object[] row) {
-		ArticleDetailedDTO articleDetailedDTO = new ArticleDetailedDTO();
-		articleDetailedDTO.setId((String) row[0]);
-		articleDetailedDTO.setTitle((String) row[1]);
-		articleDetailedDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
-		articleDetailedDTO.setContent((String) row[3]);
-		articleDetailedDTO.setAuthors(rowToAppUserDto(Arrays.copyOfRange(row, 4, 8)));
-
-		return articleDetailedDTO;
 	}
 
 	public int getNumberOfArticles() {

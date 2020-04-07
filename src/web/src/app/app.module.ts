@@ -24,6 +24,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import {ShowdownModule} from 'ngx-showdown';
+import {MatRippleModule} from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -35,26 +36,27 @@ import {ShowdownModule} from 'ngx-showdown';
     ArticleInsertComponent,
     UserDetailComponent,
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatListModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MainRoutingModule,
-    MatPaginatorModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatCardModule,
-    MatChipsModule,
-    ShowdownModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatListModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MainRoutingModule,
+        MatPaginatorModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatCardModule,
+        MatChipsModule,
+        ShowdownModule,
+        MatRippleModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

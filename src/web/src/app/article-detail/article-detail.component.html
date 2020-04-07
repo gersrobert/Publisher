@@ -1,19 +1,29 @@
 <div class="article-detail-wrapper">
-  <h1>{{ article.title }}</h1>
+  <div class="article-header">
+    <h1 class="article-title">{{ article.title }}</h1>
 
-  <div class="article-authors">
-    <span>By </span>
-    <a *ngFor="let author of article.authors" [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
-    <span>for {{article.publisher || 'publisher'}}</span>
+    <div class="article-categories">
+      <mat-chip-list>
+        <mat-chip *ngFor="let category of article.categories">{{category.name}}</mat-chip>
+      </mat-chip-list>
+    </div>
+
+    <div class="article-authors">
+      <span>By </span>
+      <a *ngFor="let author of article.authors"
+         [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
+      <span>for {{article.publisher.name}}</span>
+    </div>
+
+    <div class="article-date">
+      <span>{{ article.publishedAt | date:'medium' }}</span>
+    </div>
+
+    <div class="like-count" mat-ripple (click)="liked=!liked">
+      <mat-icon>{{liked ? 'favorite' : 'favorite_border'}}</mat-icon>
+      <span>{{article.likeCount}} likes</span>
+    </div>
   </div>
-
-  <div class="article-date">
-    <span>{{ article.publishedAt | date:'medium' }}</span>
-  </div>
-
-  <div class="article-content">
-
-  </div>
-
+  <mat-divider></mat-divider>
   <div class="article-content" [innerHTML]="article.content"></div>
 </div>

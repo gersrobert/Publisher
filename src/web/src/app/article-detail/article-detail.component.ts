@@ -11,6 +11,7 @@ import { Converter } from 'showdown';
 })
 export class ArticleDetailComponent implements OnInit {
   article: ArticleDetailedDTO;
+  liked = false;
 
   constructor(private articleService: ArticleService, private route:ActivatedRoute) {}
 

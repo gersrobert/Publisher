@@ -21,6 +21,11 @@
         </mat-chip-list>
       </div>
 
+      <div class="like-count" mat-ripple (click)="article.liked=!article.liked">
+        <mat-icon>{{article.liked ? 'favorite' : 'favorite_border'}}</mat-icon>
+        <span>{{article.likeCount}} likes</span>
+      </div>
+
       <div class="article-authors">
         <span>By </span>
         <a *ngFor="let author of article.authors" [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
@@ -36,7 +41,7 @@
 
 </div>
 
-<div class="paging">
+<div class="paging" *ngIf="articles">
   <button mat-icon-button (click)="updateArticles(-10)">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>

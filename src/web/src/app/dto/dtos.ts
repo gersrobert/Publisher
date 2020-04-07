@@ -6,6 +6,7 @@ export class ArticleDetailedDTO {
   public authors: AppUserDTO[];
   public categories: Category[];
   public publisher: Publisher;
+  public likeCount: number;
 }
 
 export class ArticleSimpleDTO {
@@ -15,6 +16,8 @@ export class ArticleSimpleDTO {
   public authors: AppUserDTO[];
   public categories: Category[];
   public publisher: Publisher;
+  public likeCount: number;
+  public liked: boolean = false;
 }
 
 export class AppUserDTO {

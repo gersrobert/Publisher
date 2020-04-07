@@ -230,6 +230,12 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			return false;
 		}
 
+//		for (String category : article.getCategories()) {
+//			entityManager.createNativeQuery("SELECT id "+
+//					"FROM category " +
+//					"WHERE name = :category;").setParameter("category", category)
+//		}
+
 		UUID articleUuid = UUID.randomUUID();
 		entityManager.createNativeQuery("INSERT " +
 				"   INTO article (id, created_at, state, updated_at, content, title)" +

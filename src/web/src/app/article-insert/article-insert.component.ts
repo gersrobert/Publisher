@@ -22,14 +22,18 @@ export class ArticleInsertComponent implements OnInit {
   ngOnInit(): void {
     this.articleForm = this.formBuilder.group({
       title: '',
+      categories: '',
       content: ''
     });
   }
 
   public onSubmit() {
     let title = this.articleForm.value['title'];
+    let categories = this.articleForm.value['categories'].split(", ");
     let content = this.articleForm.value['content'];
     let authors = [this.sessionService.getSession()];
+
+    console.log(categories);
 
     if (title != '' && content != '' && authors[0] != null) {
       const body = {

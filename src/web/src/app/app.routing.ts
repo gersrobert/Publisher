@@ -6,6 +6,7 @@ import {LoginScreenComponent} from './login-screen/login-screen.component';
 import {ArticleInsertComponent} from './article-insert/article-insert.component';
 import {UserDetailComponent} from './user-detail/user-detail.component';
 import {LoginRedirect} from './core/login-redirect';
+import {PublisherDetailComponent} from './publisher-detail/publisher-detail.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'home/articleList', pathMatch: 'full'},
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'home/articleDetail/:id', component: ArticleDetailComponent, canActivate: [LoginRedirect]},
   {path: 'home/login', component: LoginScreenComponent},
   {path: 'home/userDetail/:id', component: UserDetailComponent, canActivate: [LoginRedirect]},
+  {path: 'home/publisherDetail/:id', component: PublisherDetailComponent, canActivate: [LoginRedirect]},
 ];
 
 @NgModule({

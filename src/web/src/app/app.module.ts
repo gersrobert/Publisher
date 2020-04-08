@@ -26,6 +26,7 @@ import { UserDetailComponent } from './user-detail/user-detail.component';
 import {ShowdownModule} from 'ngx-showdown';
 import {MatRippleModule} from '@angular/material/core';
 import {LoginRedirect} from './core/login-redirect';
+import { PublisherDetailComponent } from './publisher-detail/publisher-detail.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import {LoginRedirect} from './core/login-redirect';
     LoginScreenComponent,
     ArticleInsertComponent,
     UserDetailComponent,
+    PublisherDetailComponent,
   ],
     imports: [
         BrowserModule,

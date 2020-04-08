@@ -1,5 +1,7 @@
 package fiit.hipstery.publisher.dto;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 public class AppUserDTO extends AbstractDTO {
 
 	protected String firstName;
@@ -10,6 +12,7 @@ public class AppUserDTO extends AbstractDTO {
 		return firstName;
 	}
 
+	@JsonSetter
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
@@ -18,6 +21,7 @@ public class AppUserDTO extends AbstractDTO {
 		return lastName;
 	}
 
+	@JsonSetter
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
@@ -26,6 +30,7 @@ public class AppUserDTO extends AbstractDTO {
 		return userName;
 	}
 
+	@JsonSetter
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}

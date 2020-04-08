@@ -49,4 +49,10 @@ public class UserServiceImpl implements UserService {
         dto.setUserName(appUser.getUserName());
         return dto;
     }
+
+    @Override
+    public boolean registerAppUser(AppUserDTO user) {
+        System.out.println(user.getUserName());
+        return true;
+    }
 }

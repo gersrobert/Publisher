@@ -8,7 +8,7 @@ import {environment} from '../../environments/environment';
 @Component({
   selector: 'app-article-insert',
   templateUrl: './article-insert.component.html',
-  styleUrls: ['./article-insert.component.css']
+  styleUrls: ['./article-insert.component.less']
 })
 export class ArticleInsertComponent implements OnInit {
   articleForm: FormGroup;

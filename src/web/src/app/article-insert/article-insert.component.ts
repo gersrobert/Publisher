@@ -12,6 +12,7 @@ import {environment} from '../../environments/environment';
 })
 export class ArticleInsertComponent implements OnInit {
   articleForm: FormGroup;
+  insertArticleError = false;
 
   constructor(private formBuilder: FormBuilder,
               private sessionService: SessionService,
@@ -38,6 +39,7 @@ export class ArticleInsertComponent implements OnInit {
     if (title != '' && content != '' && authors[0] != null) {
       const body = {
         title: title,
+        categories: categories,
         content: content,
         authors: authors
       };
@@ -51,8 +53,10 @@ export class ArticleInsertComponent implements OnInit {
 
       this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers}).subscribe(response => {
         console.log('success', response);
+        this.router.navigate(['home/articleList']);
       }, error => {
         console.log('error', error);
+        this.insertArticleError = true;
       });
     }
   }

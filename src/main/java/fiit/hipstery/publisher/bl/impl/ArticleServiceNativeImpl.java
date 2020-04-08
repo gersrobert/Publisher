@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
@@ -218,9 +219,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 					"   ON users.id = bind.app_user_id " +
 					"   JOIN role r ON bind.roles_id = r.id" +
 					"   WHERE users.id = :uid").setParameter("uid", author.toString()).getResultList().stream().forEach(role -> {
-				System.out.println(role);
 				if (role.equals("writer")) {
-					System.out.println("je autor");
 					isWriter.set(true);
 				}
 			});
@@ -230,13 +229,8 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			return false;
 		}
 
-//		for (String category : article.getCategories()) {
-//			entityManager.createNativeQuery("SELECT id "+
-//					"FROM category " +
-//					"WHERE name = :category;").setParameter("category", category)
-//		}
-
 		UUID articleUuid = UUID.randomUUID();
+
 		entityManager.createNativeQuery("INSERT " +
 				"   INTO article (id, created_at, state, updated_at, content, title)" +
 				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
@@ -254,6 +248,32 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		).setParameter("updated_at", LocalDateTime.now()
 		).setParameter("article_id", articleUuid
 		).setParameter("authors_id", a).executeUpdate());
+
+		for (String category : article.getCategories()) {
+			UUID categoryId;
+			try {
+				categoryId = UUID.fromString((String) entityManager.createNativeQuery("SELECT id "+
+						"FROM category " +
+						"WHERE name = :category").setParameter("category", category).getSingleResult());
+			} catch (NoResultException e) {
+				categoryId = UUID.randomUUID();
+				entityManager.createNativeQuery("INSERT " +
+						"INTO category (id, created_at, state, updated_at, name) " +
+						"VALUES (:id, :created_at, 'ACTIVE', :updated_at, :name)"
+				).setParameter("id", categoryId
+				).setParameter("created_at", LocalDateTime.now()
+				).setParameter("updated_at", LocalDateTime.now()
+				).setParameter("name", category).executeUpdate();
+			}
+			System.out.println(categoryId);
+
+			entityManager.createNativeQuery("INSERT " +
+					"INTO article_categories (article_id, categories_id) " +
+					"VALUES (:article_id, :categories_id)"
+			).setParameter("article_id", articleUuid
+			).setParameter("categories_id", categoryId).executeUpdate();
+		}
+
 		return true;
 	}
 

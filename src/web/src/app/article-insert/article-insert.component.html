@@ -1,4 +1,5 @@
 <div>
+  <span class="error-message" *ngIf="insertArticleError">Could not insert article.</span>
   <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
     <mat-form-field>
       <mat-label>Title</mat-label>

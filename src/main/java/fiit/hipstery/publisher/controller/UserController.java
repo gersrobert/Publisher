@@ -2,6 +2,7 @@ package fiit.hipstery.publisher.controller;
 
 import fiit.hipstery.publisher.bl.service.UserService;
 import fiit.hipstery.publisher.dto.AppUserDTO;
+import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 import fiit.hipstery.publisher.dto.LoginRequestDTO;
 import fiit.hipstery.publisher.exception.InternalServerException;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class UserController extends AbstractController {
 	}
 
 	@PostMapping(value = "/register")
-	public ResponseEntity registerUser(@RequestBody AppUserDTO user) {
+	public ResponseEntity registerUser(@RequestBody AppUserWithPasswordDTO user) {
 		boolean response;
 		try {
 			response = userService.registerAppUser(user);

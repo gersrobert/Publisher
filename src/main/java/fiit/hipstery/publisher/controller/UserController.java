@@ -1,8 +1,8 @@
 package fiit.hipstery.publisher.controller;
 
-import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.bl.service.UserService;
 import fiit.hipstery.publisher.dto.AppUserDTO;
+import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 import fiit.hipstery.publisher.dto.LoginRequestDTO;
 import fiit.hipstery.publisher.exception.InternalServerException;
 import org.slf4j.Logger;
@@ -56,4 +56,20 @@ public class UserController extends AbstractController {
 		return ResponseEntity.of(Optional.of(response));
 	}
 
+	@PostMapping(value = "/register")
+	public ResponseEntity registerUser(@RequestBody AppUserWithPasswordDTO user) {
+		boolean response;
+		try {
+			response = userService.registerAppUser(user);
+		} catch (Exception e) {
+			logger.error("Error registering user", e);
+			throw new InternalServerException(e);
+		}
+
+		if (response) {
+			return new ResponseEntity(HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+	}
 }

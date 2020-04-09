@@ -19,11 +19,25 @@
       <span>{{ article.publishedAt | date:'medium' }}</span>
     </div>
 
-    <div class="like-count" mat-ripple (click)="liked=!liked">
-      <mat-icon>{{liked ? 'favorite' : 'favorite_border'}}</mat-icon>
+    <div class="like-count" mat-ripple (click)="likeArticle()">
+      <mat-icon>{{article.liked ? 'favorite' : 'favorite_border'}}</mat-icon>
       <span>{{article.likeCount}} likes</span>
     </div>
   </div>
+
   <mat-divider></mat-divider>
+
   <div class="article-content" [innerHTML]="article.content"></div>
+
+  <div class="comments">
+    <h2>Comments</h2>
+
+    <div *ngFor="let comment of article.comments" class="comment">
+      <a class="comment-author" [routerLink]="['/home/userDetail', comment.author.id]">{{comment.author.firstName}} {{comment.author.lastName}}</a>
+      <span> says:</span>
+      <p class="comment-content">{{comment.content}}</p>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+
 </div>

@@ -11,7 +11,6 @@ import { Converter } from 'showdown';
 })
 export class ArticleDetailComponent implements OnInit {
   article: ArticleDetailedDTO;
-  liked = false;
 
   constructor(private articleService: ArticleService, private route:ActivatedRoute) {}
 
@@ -22,6 +21,7 @@ export class ArticleDetailComponent implements OnInit {
     });
     console.log(id);
     this.articleService.getArticleById(id).subscribe(response => {
+      console.log(response);
       this.article = response;
 
       const converter = new Converter();
@@ -29,4 +29,17 @@ export class ArticleDetailComponent implements OnInit {
     });
   }
 
+  public likeArticle() {
+    if (this.article.liked) {
+      this.articleService.unlikeArticle(this.article.id).subscribe(response => {
+        this.article.likeCount = response;
+        this.article.liked = false;
+      });
+    } else {
+      this.articleService.likeArticle(this.article.id).subscribe(response => {
+        this.article.likeCount = response;
+        this.article.liked = true;
+      });
+    }
+  }
 }

@@ -12,6 +12,7 @@ public class ArticleSimpleDTO extends AbstractDTO {
 	protected Set<CategoryDTO> categories;
 	protected PublisherDTO publisher;
 	protected int likeCount;
+	protected boolean liked;
 
 	public String getTitle() {
 		return title;
@@ -59,5 +60,13 @@ public class ArticleSimpleDTO extends AbstractDTO {
 
 	public void setLikeCount(int likeCount) {
 		this.likeCount = likeCount;
+	}
+
+	public boolean isLiked() {
+		return liked;
+	}
+
+	public void setLiked(boolean liked) {
+		this.liked = liked;
 	}
 }

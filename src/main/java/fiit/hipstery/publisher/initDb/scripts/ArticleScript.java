@@ -27,6 +27,9 @@ public class ArticleScript extends InitDbScript {
 	@Autowired
 	private EntityCache<Publisher> publisherEntityCache;
 
+	@Autowired
+	private EntityCache<Article> articleEntityCache;
+
 	private Map<String, Category> categoryMap = new HashMap<>();
 
 	@Override
@@ -54,6 +57,7 @@ public class ArticleScript extends InitDbScript {
 					.get((int) (Math.random() * publisherEntityCache.getEntities(Publisher.class).size()))
 			);
 			entityManager.persist(article);
+			articleEntityCache.save(article);
 
 			double random = Math.random();
 			if (random > 0) {

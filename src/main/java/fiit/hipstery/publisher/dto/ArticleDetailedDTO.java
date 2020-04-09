@@ -14,7 +14,9 @@ public class ArticleDetailedDTO extends AbstractDTO {
 	protected Set<AppUserDTO> authors;
 	protected Set<CategoryDTO> categories;
 	protected PublisherDTO publisher;
+	protected boolean liked;
 	protected int likeCount;
+	protected Set<CommentDTO> comments;
 
 	public String getTitle() {
 		return title;
@@ -70,5 +72,21 @@ public class ArticleDetailedDTO extends AbstractDTO {
 
 	public void setLikeCount(int likeCount) {
 		this.likeCount = likeCount;
+	}
+
+	public Set<CommentDTO> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<CommentDTO> comments) {
+		this.comments = comments;
+	}
+
+	public boolean isLiked() {
+		return liked;
+	}
+
+	public void setLiked(boolean liked) {
+		this.liked = liked;
 	}
 }

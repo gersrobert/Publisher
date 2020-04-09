@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Service
 @Profile("!jpa")
@@ -26,7 +25,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ArticleDetailedDTO getArticleById(UUID id) {
+	public ArticleDetailedDTO getArticleById(UUID id, UUID currentUser) {
 		List<Object[]> rows = entityManager.createNativeQuery("SELECT a.id," +
 				"       a.title," +
 				"       a.created_at," +
@@ -39,18 +38,29 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name                                  AS p_name," +
 				"       p.id                                    AS p_id," +
 				"       a.content                               AS content," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
 				"       (SELECT count(relation.id)" +
 				"        FROM app_user_article_relation relation" +
 				"        WHERE relation.article_id = a.id" +
-				"          AND relation.relation_type = 'LIKE') AS like_count" +
+				"          AND relation.relation_type = 'LIKE') AS like_count," +
+				"       com.id                                  AS com_id," +
+				"       com.content                             AS com_content," +
+				"       com_author.id                           AS com_author_id," +
+				"       com_author.user_name                    AS com_author_user_name," +
+				"       com_author.first_name                   AS com_author_first_name," +
+				"       com_author.last_name                    AS com_author_last_name" +
 				"   FROM article a" +
 				"         JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"         JOIN app_user au ON aar.app_user_id = au.id" +
 				"         LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
 				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
 				"         LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
+				"         LEFT OUTER JOIN comment com on a.id = com.article_id" +
+				"         LEFT OUTER JOIN app_user com_author on com.author_id = com_author.id" +
 				"   WHERE a.id=:id")
-				.setParameter("id", id.toString()).getResultList();
+				.setParameter("id", id.toString())
+				.setParameter("currentUser", currentUser.toString())
+				.getResultList();
 
 		ArticleDetailedDTO articleDetailedDTO = new ArticleDetailedDTO();
 		Object[] article = rows.get(0);
@@ -59,7 +69,8 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		articleDetailedDTO.setTitle((String) article[1]);
 		articleDetailedDTO.setPublishedAt(((Timestamp) article[2]).toLocalDateTime());
 		articleDetailedDTO.setContent((String) article[11]);
-		articleDetailedDTO.setLikeCount(((BigInteger) article[12]).intValue());
+		articleDetailedDTO.setLiked(((Boolean) article[12]));
+		articleDetailedDTO.setLikeCount(((BigInteger) article[13]).intValue());
 
 		PublisherDTO publisherDTO = new PublisherDTO();
 		publisherDTO.setName((String) article[9]);
@@ -73,6 +84,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			if (articleDetailedDTO.getCategories() == null) {
 				articleDetailedDTO.setCategories(new HashSet<>());
 			}
+			if (articleDetailedDTO.getComments() == null) {
+				articleDetailedDTO.setComments(new HashSet<>());
+			}
 
 			AppUserDTO appUserDTO = new AppUserDTO();
 			appUserDTO.setUserName((String) row[3]);
@@ -85,6 +99,19 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			categoryDTO.setName((String) row[7]);
 			categoryDTO.setId((String) row[8]);
 			articleDetailedDTO.getCategories().add(categoryDTO);
+
+			CommentDTO commentDTO = new CommentDTO();
+			commentDTO.setId((String) row[14]);
+			commentDTO.setContent((String) row[15]);
+
+			AppUserDTO commentAuthor = new AppUserDTO();
+			commentAuthor.setId((String) row[16]);
+			commentAuthor.setUserName((String) row[17]);
+			commentAuthor.setFirstName((String) row[18]);
+			commentAuthor.setLastName((String) row[19]);
+
+			commentDTO.setAuthor(commentAuthor);
+			articleDetailedDTO.getComments().add(commentDTO);
 		}
 
 		return articleDetailedDTO;
@@ -112,7 +139,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex) {
+	public Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser) {
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
 				"    SELECT *," +
 				"           (SELECT count(relation.id)" +
@@ -135,16 +162,19 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       c.id          AS c_id," +
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
-				"       a.like_count  AS like_count" +
+				"       a.like_count  AS like_count," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked" +
 				"   FROM a" +
 				"         JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"         JOIN app_user au ON aar.app_user_id = au.id" +
 				"         LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
 				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
 				"         LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
-				"   ORDER BY like_count DESC").setParameter(
-				"lowerIndex", lowerIndex).setParameter(
-				"upperIndex", upperIndex - lowerIndex).getResultList();
+				"   ORDER BY like_count DESC")
+				.setParameter("lowerIndex", lowerIndex)
+				.setParameter("upperIndex", upperIndex - lowerIndex)
+				.setParameter("currentUser", currentUser.toString())
+				.getResultList();
 
 		Map<String, ArticleSimpleDTO> map = new LinkedHashMap<>();
 		for (Object[] row : resultList) {
@@ -155,6 +185,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				articleSimpleDTO.setTitle((String) row[1]);
 				articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
 				articleSimpleDTO.setLikeCount(((BigInteger) row[11]).intValue());
+				articleSimpleDTO.setLiked(((Boolean) row[12]));
 
 				PublisherDTO publisherDTO = new PublisherDTO();
 				publisherDTO.setName((String) row[9]);

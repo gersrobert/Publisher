@@ -5,23 +5,16 @@ import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
 import fiit.hipstery.publisher.dto.ArticleInsertDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
 import fiit.hipstery.publisher.dto.ArticleSimpleListDTO;
-import fiit.hipstery.publisher.entity.AppUser;
-import fiit.hipstery.publisher.entity.Article;
 import fiit.hipstery.publisher.exception.InternalServerException;
-import fiit.hipstery.publisher.initDb.dto.ArticleListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,10 +28,10 @@ public class ArticleController extends AbstractController{
     Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<ArticleDetailedDTO> getArticleById(@PathVariable String id) {
+    public ResponseEntity<ArticleDetailedDTO> getArticleById(@PathVariable String id, @RequestHeader("Auth-Token") String userId) {
         ArticleDetailedDTO article;
         try {
-            article = articleService.getArticleById(UUID.fromString(id));
+            article = articleService.getArticleById(UUID.fromString(id), UUID.fromString(userId));
         } catch (Exception e) {
             logger.error("Error getting article with id: " + id, e);
             throw new InternalServerException(e);
@@ -62,10 +55,10 @@ public class ArticleController extends AbstractController{
 
     @GetMapping("/index/{lowerIndex}-{upperIndex}")
     public ResponseEntity<ArticleSimpleListDTO> getArticlesInRange(
-            @PathVariable int lowerIndex, @PathVariable int upperIndex) {
+            @PathVariable int lowerIndex, @PathVariable int upperIndex, @RequestHeader("Auth-Token") String userId) {
         ArticleSimpleListDTO response = new ArticleSimpleListDTO();
         try {
-            response.setArticles(articleService.getArticlesInRange(lowerIndex, upperIndex));
+            response.setArticles(articleService.getArticlesInRange(lowerIndex, upperIndex, UUID.fromString(userId)));
             response.setNumberOfArticles(articleService.getNumberOfArticles());
         } catch (Exception e) {
             logger.error("Error getting article list in range from " + lowerIndex + " to " + upperIndex, e);

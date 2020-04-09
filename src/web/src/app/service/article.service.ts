@@ -15,7 +15,11 @@ export class ArticleService {
   }
 
   public getArticleById(id: string): Observable<ArticleDetailedDTO> {
-    return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/id/' + id);
+    const headers = new HttpHeaders({
+      'Auth-Token': this.sessionService.getSession()
+    });
+
+    return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/id/' + id, {headers});
   }
 
   public getArticles(): Observable<ArticleSimpleDTO[]> {
@@ -23,8 +27,12 @@ export class ArticleService {
   }
 
   public getArticlesInRange(lower: number, upper: number): Observable<ArticleSimpleListDTO> {
+    const headers = new HttpHeaders({
+      'Auth-Token': this.sessionService.getSession()
+    });
+
     return this.httpClient.get<ArticleSimpleListDTO>(
-      environment.ROOT_URL + '/article/index/' + lower + '-' + upper);
+      environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers});
   }
 
   public likeArticle(articleId: string): Observable<number> {

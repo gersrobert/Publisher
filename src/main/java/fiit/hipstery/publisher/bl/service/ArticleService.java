@@ -11,12 +11,12 @@ import java.util.UUID;
 
 public interface ArticleService {
 
-    ArticleDetailedDTO getArticleById(UUID id) throws IOException;
+    ArticleDetailedDTO getArticleById(UUID id, UUID currentUser) throws IOException;
 
     @Deprecated
     List<ArticleSimpleDTO> getArticles();
 
-    Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex);
+    Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser);
 
     List<ArticleSimpleDTO> getArticlesByAuthor(String author);
 

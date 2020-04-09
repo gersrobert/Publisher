@@ -11,8 +11,9 @@
     <div class="article-authors">
       <span>By </span>
       <a *ngFor="let author of article.authors"
-         [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
-      <span>for {{article.publisher.name}}</span>
+         [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName}}</a>
+      <span> for </span>
+      <a [routerLink]="['/home/publisherDetail', article.publisher.id]">{{article.publisher.name}}</a>
     </div>
 
     <div class="article-date">
@@ -29,7 +30,7 @@
 
   <div class="article-content" [innerHTML]="article.content"></div>
 
-  <div class="comments">
+  <div class="comments" *ngIf="article.comments.length > 0">
     <h2>Comments</h2>
 
     <div *ngFor="let comment of article.comments" class="comment">

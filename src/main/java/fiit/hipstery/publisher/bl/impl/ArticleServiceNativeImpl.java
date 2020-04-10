@@ -111,7 +111,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			commentAuthor.setLastName((String) row[19]);
 
 			commentDTO.setAuthor(commentAuthor);
-			articleDetailedDTO.getComments().add(commentDTO);
+			if (commentDTO.getId() != null) {
+				articleDetailedDTO.getComments().add(commentDTO);
+			}
 		}
 
 		return articleDetailedDTO;

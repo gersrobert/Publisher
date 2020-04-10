@@ -27,6 +27,7 @@ import {ShowdownModule} from 'ngx-showdown';
 import {MatRippleModule} from '@angular/material/core';
 import {LoginRedirect} from './core/login-redirect';
 import { PublisherDetailComponent } from './publisher-detail/publisher-detail.component';
+import { RegisterUserComponent } from './register-user/register-user.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { PublisherDetailComponent } from './publisher-detail/publisher-detail.co
     ArticleInsertComponent,
     UserDetailComponent,
     PublisherDetailComponent,
+    RegisterUserComponent,
   ],
     imports: [
         BrowserModule,

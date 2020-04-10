@@ -5,6 +5,7 @@ import {ArticleSimpleDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {SessionService} from './session.service';
+import {FormGroup} from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,31 @@ export class ArticleService {
 
     return this.httpClient.get<ArticleSimpleListDTO>(
       environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers});
+  }
+
+  public insertArticle(articleForm: FormGroup): Observable<any> {
+    let title = articleForm.value['title'];
+    let categories = articleForm.value['categories'].split(", ");
+    let content = articleForm.value['content'];
+    let authors = [this.sessionService.getSession()];
+
+    if (title != '' && content != '' && authors[0] != null) {
+      const body = {
+        title: title,
+        categories: categories,
+        content: content,
+        authors: authors
+      };
+
+      console.log(body);
+
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      });
+
+      return this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers});
+    }
   }
 
   public likeArticle(articleId: string): Observable<number> {

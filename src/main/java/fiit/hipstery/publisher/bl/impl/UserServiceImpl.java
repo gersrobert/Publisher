@@ -44,35 +44,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean registerAppUser(AppUserWithPasswordDTO user) {
-    	int alreadyExists = ((Number)entityManager.createNativeQuery("SELECT COUNT(1) " +
+    	int alreadyExists = ((Number) entityManager.createNativeQuery("SELECT COUNT(1) " +
                 "FROM app_user WHERE user_name = :user_name")
                 .setParameter("user_name", user.getUserName()).getSingleResult()).intValue();
 
-    	if (alreadyExists == 0) {
+    	if (alreadyExists == 1) {
     	    return false;
         }
 
     	UUID userId = UUID.randomUUID();
         entityManager.createNativeQuery("INSERT INTO " +
                 "app_user (id, created_at, state, updated_at, first_name, last_name, password_hash, user_name)" +
-                "VALUES (:id, :createdAt, :state, :updatedAt, :first_name, :last_name, :password_hash, :user_name)")
+                "VALUES (:id, :createdAt, :state, :updatedAt, :firstName, :lastName, :passwordHash, :userName)")
                 .setParameter("id", userId)
                 .setParameter("createdAt", LocalDateTime.now())
                 .setParameter("state", AppUserArticleRelation.STATE_ACTIVE)
                 .setParameter("updatedAt", LocalDateTime.now())
-                .setParameter("first_name", user.getFirstName())
-                .setParameter("last_name", user.getLastName())
-                .setParameter("password_hash", user.getPasswordHash())
-                .setParameter("user_name", user.getUserName()).executeUpdate();
+                .setParameter("firstName", user.getFirstName())
+                .setParameter("lastName", user.getLastName())
+                .setParameter("passwordHash", user.getPasswordHash())
+                .setParameter("userName", user.getUserName()).executeUpdate();
 
-        
+        UUID roleId = UUID.fromString((String) entityManager.createNativeQuery("SELECT id "+
+                "FROM role " +
+                "WHERE name = 'reader'").getSingleResult());
 
-//        entityManager.createNativeQuery("INSERT " +
-//                "INTO app (article_id, categories_id) " +
-//                "VALUES (:article_id, :categories_id)"
-//        ).setParameter("article_id", articleUuid
-//        ).setParameter("categories_id", categoryId).executeUpdate();
+        entityManager.createNativeQuery("INSERT " +
+                "INTO app_user_roles (app_user_id, roles_id) " +
+                "VALUES (:userId, :roleId)")
+        .setParameter("userId", userId)
+        .setParameter("roleId", roleId).executeUpdate();
 
         return true;
     }

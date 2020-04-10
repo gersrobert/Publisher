@@ -1,0 +1,35 @@
+<div class="register-wrapper">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Firstname</mat-label>
+      <input matInput formControlName="firstname">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Lastname</mat-label>
+      <input matInput formControlName="lastname">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Password one more time</mat-label>
+      <input matInput type="password" formControlName="passwordCheck">
+    </mat-form-field>
+
+    <div>
+      <span class="error-message" *ngIf="showPasswordError">Passwords do not match.</span>
+      <span class="error-message" *ngIf="showUserNameError">This username is already taken.</span>
+      <button mat-button type="submit" class="submit-button">Login</button>
+    </div>
+  </form>
+</div>

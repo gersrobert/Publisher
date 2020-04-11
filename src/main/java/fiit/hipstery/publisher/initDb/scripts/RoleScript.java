@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@Order(1)
+@Order(2)
 @Profile("initDb")
 public class RoleScript extends InitDbCsvScript<Role> {
 

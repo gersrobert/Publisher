@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@Order(2)
+@Order(3)
 @Profile("initDb")
 public class AppUserScript extends InitDbScript {
 

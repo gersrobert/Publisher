@@ -1,8 +1,6 @@
 package fiit.hipstery.publisher.bl.service;
 
-import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
-import fiit.hipstery.publisher.dto.ArticleInsertDTO;
-import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
+import fiit.hipstery.publisher.dto.*;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -13,8 +11,7 @@ public interface ArticleService {
 
     ArticleDetailedDTO getArticleById(UUID id, UUID currentUser) throws IOException;
 
-    @Deprecated
-    List<ArticleSimpleDTO> getArticles();
+    ArticleSimpleListDTO getArticles(FilterCriteria filterCriteria, UUID currentUser);
 
     Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser);
 

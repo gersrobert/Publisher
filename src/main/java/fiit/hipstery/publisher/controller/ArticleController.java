@@ -1,10 +1,7 @@
 package fiit.hipstery.publisher.controller;
 
 import fiit.hipstery.publisher.bl.service.ArticleService;
-import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
-import fiit.hipstery.publisher.dto.ArticleInsertDTO;
-import fiit.hipstery.publisher.dto.ArticleSimpleDTO;
-import fiit.hipstery.publisher.dto.ArticleSimpleListDTO;
+import fiit.hipstery.publisher.dto.*;
 import fiit.hipstery.publisher.exception.InternalServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,16 +39,31 @@ public class ArticleController extends AbstractController{
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ArticleSimpleDTO>> getArticles() {
-        List<ArticleSimpleDTO> article;
+    public ResponseEntity<ArticleSimpleListDTO> getArticles(@RequestHeader("Auth-Token") String userId,
+            @RequestParam(required = false, defaultValue = "") String author,
+            @RequestParam(required = false, defaultValue = "") String title,
+            @RequestParam(required = false, defaultValue = "") String category,
+            @RequestParam(required = false, defaultValue = "") String publisher,
+            @RequestParam(required = false, defaultValue = "0") Integer lowerIndex,
+            @RequestParam(required = false, defaultValue = "-1") Integer upperIndex) {
+
+        FilterCriteria criteria = new FilterCriteria();
+        criteria.setAuthor(author);
+        criteria.setTitle(title);
+        criteria.setCategory(category);
+        criteria.setPublisher(publisher);
+        criteria.setLowerIndex(lowerIndex);
+        criteria.setUpperIndex(upperIndex);
+
+        ArticleSimpleListDTO response;
         try {
-            article = articleService.getArticles();
+            response = articleService.getArticles(criteria, UUID.fromString(userId));
         } catch (Exception e) {
             logger.error("Error getting article list", e);
             throw new InternalServerException(e);
         }
 
-        return ResponseEntity.of(Optional.of(article));
+        return ResponseEntity.of(Optional.of(response));
     }
 
     @GetMapping("/index/{lowerIndex}-{upperIndex}")

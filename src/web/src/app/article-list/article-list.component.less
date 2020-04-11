@@ -1,3 +1,26 @@
+.filter {
+  position: relative;
+  min-height: 2em;
+  padding-right: 8em;
+}
+
+.filter-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.filter-row {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+}
+
+.filter-row mat-form-field {
+  margin: 8px 32px;
+  flex-grow: 1;
+}
+
 mat-card {
   margin: 1em 0;
 }
@@ -66,7 +89,12 @@ mat-chip {
   padding-top: 1em;
 }
 
-.paging span {
+.paging-text {
   display: inline-block;
   width: 120px;
+}
+
+.paging-text span {
+  display: inline-block;
+  margin: 0 4px;
 }

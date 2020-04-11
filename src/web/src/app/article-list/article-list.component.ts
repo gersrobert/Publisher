@@ -3,6 +3,7 @@ import {AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
 import {PageEvent} from '@angular/material/paginator';
 import {Router} from '@angular/router';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-article-list',
@@ -11,49 +12,55 @@ import {Router} from '@angular/router';
 })
 export class ArticleListComponent implements OnInit {
 
-  numberOfArticles: number;
+  numberOfArticles = 0;
   articles: ArticleSimpleDTO[];
   titleName: string;
   lower = 0;
   upper = 10;
 
-  constructor(private articleService: ArticleService, public router: Router) {
+  showFilter = false;
+  filterFormGroup: FormGroup;
+
+  constructor(private articleService: ArticleService,
+              public router: Router,
+              private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
-    this.getArticlesInRange();
-  }
-
-  private getArticlesInRange() {
-    this.articleService.getArticlesInRange(this.lower, this.upper).subscribe(response => {
-      this.articles = response.articles;
-      this.numberOfArticles = response.numberOfArticles;
+    this.filterFormGroup = this.formBuilder.group({
+      title: '',
+      author: '',
+      category: '',
+      publisher: '',
     });
+
+    this.filterFormGroup.valueChanges.subscribe(value => {
+      this.updateArticles();
+    });
+
+    this.updateArticles();
   }
 
-  public updateArticles(num: number) {
-    if (this.lower + num >= 0 && this.lower + num < this.numberOfArticles) {
-      this.lower += num;
-      this.upper += num;
-      this.getArticlesInRange();
+  private updateArticles(scrollCount: number = 0) {
+    if (this.lower + scrollCount >= 0 && this.lower + scrollCount < this.numberOfArticles) {
+      this.lower += scrollCount;
+      this.upper += scrollCount;
     }
-  }
 
-  public displayUsers(appUsers: AppUserDTO[]): string {
-    let retVal = '';
-
-    appUsers.forEach((user, i) => {
-      retVal += user.firstName + ' ' + user.lastName;
-      if (i !== appUsers.length - 1) {
-        retVal += ', ';
-      }
-    });
-
-    return retVal;
+    this.articleService.getFilteredArticles(
+      this.filterFormGroup.get('title').value,
+      this.filterFormGroup.get('author').value,
+      this.filterFormGroup.get('category').value,
+      this.filterFormGroup.get('publisher').value,
+      this.lower, this.upper)
+      .subscribe(response => {
+        this.articles = response.articles;
+        this.numberOfArticles = response.numberOfArticles;
+      });
   }
 
   public likeArticle(article: ArticleSimpleDTO) {
-    console.log("likearticle", article);
+    console.log('likearticle', article);
 
     if (article.liked) {
       this.articleService.unlikeArticle(article.id).subscribe(response => {

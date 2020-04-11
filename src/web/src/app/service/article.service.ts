@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {ArticleDetailedDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleSimpleDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
@@ -22,8 +22,39 @@ export class ArticleService {
     return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/id/' + id, {headers});
   }
 
-  public getArticles(): Observable<ArticleSimpleDTO[]> {
-    return this.httpClient.get<ArticleSimpleDTO[]>(environment.ROOT_URL + '/article');
+  public getFilteredArticles(
+    title?: string,
+    author?: string,
+    category?: string,
+    publisher?: string,
+    lowerIndex?: number,
+    upperIndex?: number,
+  ): Observable<ArticleSimpleListDTO> {
+    const headers = new HttpHeaders({
+      'Auth-Token': this.sessionService.getSession()
+    });
+
+    let params = new HttpParams();
+    if (title && title !== '') {
+      params = params.append('title', title);
+    }
+    if (author && author !== '') {
+      params = params.append('author', author);
+    }
+    if (category && category !== '') {
+      params = params.append('category', category);
+    }
+    if (publisher && publisher !== '') {
+      params = params.append('publisher', publisher);
+    }
+    if (lowerIndex) {
+      params = params.append('lowerIndex', String(lowerIndex));
+    }
+    if (upperIndex) {
+      params = params.append('upperIndex', String(upperIndex));
+    }
+
+    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article', {headers, params});
   }
 
   public getArticlesInRange(lower: number, upper: number): Observable<ArticleSimpleListDTO> {

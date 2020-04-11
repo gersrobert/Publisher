@@ -121,22 +121,92 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Deprecated
-	public List<ArticleSimpleDTO> getArticles() {
-//		List<Object[]> articles = entityManager.createNativeQuery("SELECT " +
-//				"   a.id," +
-//				"   a.title," +
-//				"   a.created_at," +
-//				"   string_agg(au.user_name, ';') AS user_name," +
-//				"   string_agg(au.first_name, ';') AS first_name," +
-//				"   string_agg(au.last_name, ';') AS last_name," +
-//				"   string_agg(au.id, ';') AS author_id" +
-//				"   FROM article a" +
-//				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
-//				"   JOIN app_user au ON aa.app_user_id = au.id" +
-//				"   GROUP BY a.id").getResultList();
-//		return articles.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
-		return null;
+	public ArticleSimpleListDTO getArticles(FilterCriteria filterCriteria, UUID currentUser) {
+		String firstName = filterCriteria.getAuthor().split(" ")[0];
+		String lastName = "";
+		if (filterCriteria.getAuthor().split(" ").length > 1) {
+			lastName = filterCriteria.getAuthor().split(" ")[1];
+		}
+
+		Object totalCount = entityManager.createNativeQuery("SELECT count(1) OVER()" +
+				"            FROM article a" +
+				"                     JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"                     JOIN app_user au ON aar.app_user_id = au.id" +
+				"                     LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
+				"                     LEFT OUTER JOIN category c on ac.categories_id = c.id" +
+				"                     LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
+				"            GROUP BY a.id" +
+				"            HAVING lower((array_agg(a.title))[1]) LIKE lower(('%' || :title || '%'))" +
+				"               AND lower(('%' || :firstName || '%' || :lastName || '%')) ~~~~ ANY(array_agg(au.first_name || au.last_name))" +
+				"               AND lower(('%' || :category || '%')) ~~~~ ANY(array_agg(c.name))" +
+				"               AND lower((array_agg(p.name))[1]) LIKE lower('%' || :publisher || '%')" +
+				"            LIMIT 1")
+				.setParameter("title", filterCriteria.getTitle())
+				.setParameter("firstName", firstName)
+				.setParameter("lastName", lastName)
+				.setParameter("category", filterCriteria.getCategory())
+				.setParameter("publisher", filterCriteria.getPublisher())
+				.getSingleResult();
+
+		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
+				"    SELECT a.id," +
+				"           (SELECT count(relation.id)" +
+				"                    FROM app_user_article_relation relation" +
+				"                    WHERE relation.article_id = a.id" +
+				"                      AND relation.relation_type = 'LIKE') AS like_count" +
+				"            FROM article a" +
+				"                     JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"                     JOIN app_user au ON aar.app_user_id = au.id" +
+				"                     LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
+				"                     LEFT OUTER JOIN category c on ac.categories_id = c.id" +
+				"                     LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
+				"            GROUP BY a.id" +
+				"            HAVING lower((array_agg(a.title))[1]) LIKE lower(('%' || :title || '%'))" +
+				"               AND lower(('%' || :firstName || '%' || :lastName || '%')) ~~~~ ANY(array_agg(au.first_name || au.last_name))" +
+				"               AND lower(('%' || :category || '%')) ~~~~ ANY(array_agg(c.name))" +
+				"               AND lower((array_agg(p.name))[1]) LIKE lower('%' || :publisher || '%')" +
+				"            ORDER BY like_count DESC" +
+				"                OFFSET :lowerIndex ROWS" +
+				"            FETCH NEXT :upperIndex ROWS ONLY" +
+				"   )" +
+				"   SELECT art.id," +
+				"       art.title," +
+				"       art.created_at," +
+				"       au.user_name  AS user_name," +
+				"       au.first_name AS first_name," +
+				"       au.last_name  AS last_name," +
+				"       au.id         AS author_id," +
+				"       c.name        AS c_name," +
+				"       c.id          AS c_id," +
+				"       p.name        AS p_name," +
+				"       p.id          AS p_id," +
+				"       a.like_count  AS like_count," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked" +
+				"   FROM a" +
+				"         JOIN article art ON art.id = a.id" +
+				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"         JOIN app_user au ON aar.app_user_id = au.id" +
+				"         LEFT OUTER JOIN article_categories ac on art.id = ac.article_id" +
+				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
+				"         LEFT OUTER JOIN publisher p on art.publisher_id = p.id" +
+				"   WHERE art.id = a.id" +
+				"   ORDER BY like_count DESC")
+				.setParameter("currentUser", currentUser.toString())
+				.setParameter("title", filterCriteria.getTitle())
+				.setParameter("firstName", firstName)
+				.setParameter("lastName", lastName)
+				.setParameter("category", filterCriteria.getCategory())
+				.setParameter("publisher", filterCriteria.getPublisher())
+				.setParameter("lowerIndex", filterCriteria.getLowerIndex())
+				.setParameter("upperIndex", filterCriteria.getUpperIndex() == -1 ?
+						Integer.MAX_VALUE :
+						filterCriteria.getUpperIndex() - filterCriteria.getLowerIndex())
+				.getResultList();
+
+		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
+		articleSimpleListDTO.setNumberOfArticles(((BigInteger) totalCount).intValue());
+		articleSimpleListDTO.setArticles(parseArticleList(resultList));
+		return articleSimpleListDTO;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -178,47 +248,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				.setParameter("currentUser", currentUser.toString())
 				.getResultList();
 
-		Map<String, ArticleSimpleDTO> map = new LinkedHashMap<>();
-		for (Object[] row : resultList) {
-			ArticleSimpleDTO articleSimpleDTO = map.get(row[0]);
-			if (articleSimpleDTO == null) {
-				articleSimpleDTO = new ArticleSimpleDTO();
-				articleSimpleDTO.setId((String) row[0]);
-				articleSimpleDTO.setTitle((String) row[1]);
-				articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
-				articleSimpleDTO.setLikeCount(((BigInteger) row[11]).intValue());
-				articleSimpleDTO.setLiked(((Boolean) row[12]));
-
-				PublisherDTO publisherDTO = new PublisherDTO();
-				publisherDTO.setName((String) row[9]);
-				publisherDTO.setId((String) row[10]);
-				articleSimpleDTO.setPublisher(publisherDTO);
-
-			}
-
-			if (articleSimpleDTO.getAuthors() == null) {
-				articleSimpleDTO.setAuthors(new HashSet<>());
-			}
-			if (articleSimpleDTO.getCategories() == null) {
-				articleSimpleDTO.setCategories(new HashSet<>());
-			}
-
-			AppUserDTO appUserDTO = new AppUserDTO();
-			appUserDTO.setUserName((String) row[3]);
-			appUserDTO.setFirstName((String) row[4]);
-			appUserDTO.setLastName((String) row[5]);
-			appUserDTO.setId((String) row[6]);
-			articleSimpleDTO.getAuthors().add(appUserDTO);
-
-			CategoryDTO categoryDTO = new CategoryDTO();
-			categoryDTO.setName((String) row[7]);
-			categoryDTO.setId((String) row[8]);
-			articleSimpleDTO.getCategories().add(categoryDTO);
-
-			map.put(articleSimpleDTO.getId(), articleSimpleDTO);
-		}
-
-		return map.values();
+		return parseArticleList(resultList);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -285,7 +315,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		for (String category : article.getCategories()) {
 			UUID categoryId;
 			try {
-				categoryId = UUID.fromString((String) entityManager.createNativeQuery("SELECT id "+
+				categoryId = UUID.fromString((String) entityManager.createNativeQuery("SELECT id " +
 						"FROM category " +
 						"WHERE name = :category").setParameter("category", category).getSingleResult());
 			} catch (NoResultException e) {
@@ -354,7 +384,52 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		return null;
 	}
 
+	@Override
 	public int getNumberOfArticles() {
 		return ((Number) entityManager.createNativeQuery("SELECT COUNT(id) FROM article;").getSingleResult()).intValue();
+	}
+
+	private Collection<ArticleSimpleDTO> parseArticleList(List<Object[]> resultList) {
+		Map<String, ArticleSimpleDTO> map = new LinkedHashMap<>();
+		for (Object[] row : resultList) {
+			ArticleSimpleDTO articleSimpleDTO = map.get(row[0]);
+			if (articleSimpleDTO == null) {
+				articleSimpleDTO = new ArticleSimpleDTO();
+				articleSimpleDTO.setId((String) row[0]);
+				articleSimpleDTO.setTitle((String) row[1]);
+				articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
+				articleSimpleDTO.setLikeCount(((BigInteger) row[11]).intValue());
+				articleSimpleDTO.setLiked(((Boolean) row[12]));
+
+				PublisherDTO publisherDTO = new PublisherDTO();
+				publisherDTO.setName((String) row[9]);
+				publisherDTO.setId((String) row[10]);
+				articleSimpleDTO.setPublisher(publisherDTO);
+
+			}
+
+			if (articleSimpleDTO.getAuthors() == null) {
+				articleSimpleDTO.setAuthors(new HashSet<>());
+			}
+			if (articleSimpleDTO.getCategories() == null) {
+				articleSimpleDTO.setCategories(new HashSet<>());
+			}
+
+			AppUserDTO appUserDTO = new AppUserDTO();
+			appUserDTO.setUserName((String) row[3]);
+			appUserDTO.setFirstName((String) row[4]);
+			appUserDTO.setLastName((String) row[5]);
+			appUserDTO.setId((String) row[6]);
+			articleSimpleDTO.getAuthors().add(appUserDTO);
+
+			CategoryDTO categoryDTO = new CategoryDTO();
+			categoryDTO.setName((String) row[7]);
+			categoryDTO.setId((String) row[8]);
+			articleSimpleDTO.getCategories().add(categoryDTO);
+
+			map.put(articleSimpleDTO.getId(), articleSimpleDTO);
+		}
+
+		return map.values();
 	}
 }

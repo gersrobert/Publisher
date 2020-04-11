@@ -1,9 +1,52 @@
+<div class="filter">
+
+  <button mat-button (click)="showFilter=!showFilter" class="filter-button">
+    <mat-icon style="margin-right: .5em">filter_list</mat-icon>
+    Filter
+  </button>
+
+  <form [formGroup]="filterFormGroup" *ngIf="showFilter">
+
+    <div class="filter-row">
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Author</mat-label>
+        <input matInput formControlName="author">
+      </mat-form-field>
+    </div>
+
+    <div class="filter-row">
+      <mat-form-field>
+        <mat-label>Category</mat-label>
+        <input matInput formControlName="category">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Publisher</mat-label>
+        <input matInput formControlName="publisher">
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</div>
+
 <div class="paging" *ngIf="articles">
   <button mat-icon-button (click)="updateArticles(-10)">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
-  <span>{{ lower }} - {{ upper }} / {{ numberOfArticles }}</span>
+  <div class="paging-text">
+    <span [textContent]="lower"></span>
+    <span>-</span>
+    <span [textContent]="upper"></span>
+    <span>/</span>
+    <span [textContent]="numberOfArticles"></span>
+  </div>
 
   <button mat-icon-button (click)="updateArticles(10)">
     <mat-icon>keyboard_arrow_right</mat-icon>
@@ -14,7 +57,8 @@
 
   <mat-card>
     <mat-card-content>
-      <span class="article-title" (click)="router.navigate(['/home/articleDetail', article.id])">{{article.title}}</span>
+      <span class="article-title"
+            (click)="router.navigate(['/home/articleDetail', article.id])">{{article.title}}</span>
 
       <div class="article-menu">
         <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -40,7 +84,8 @@
 
       <div class="article-authors">
         <span>By </span>
-        <a *ngFor="let author of article.authors" [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
+        <a *ngFor="let author of article.authors"
+           [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
         <span>for </span>
         <a [routerLink]="['/home/publisherDetail', article.publisher.id]">{{article.publisher.name}}</a>
       </div>
@@ -59,7 +104,13 @@
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
-  <span>{{ lower }} - {{ upper }} / {{ numberOfArticles }}</span>
+  <div class="paging-text">
+    <span [textContent]="lower"></span>
+    <span>-</span>
+    <span [textContent]="upper"></span>
+    <span>/</span>
+    <span [textContent]="numberOfArticles"></span>
+  </div>
 
   <button mat-icon-button (click)="updateArticles(10)">
     <mat-icon>keyboard_arrow_right</mat-icon>

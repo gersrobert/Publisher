@@ -3,6 +3,7 @@ import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
 import {AppUserDTO} from '../../dto/dtos';
 import {SessionService} from '../../service/session.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +16,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(private matIconRegistry: MatIconRegistry,
               private domSanitizer: DomSanitizer,
+              private router: Router,
               private sessionService: SessionService) {
   }
 

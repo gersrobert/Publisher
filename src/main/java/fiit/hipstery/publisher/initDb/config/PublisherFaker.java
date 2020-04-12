@@ -17,9 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-@Profile("initDb")
-public class PublisherFaker {
+public abstract class PublisherFaker {
 
 	@Autowired
 	Faker faker;
@@ -30,44 +28,9 @@ public class PublisherFaker {
 	public static final String API_URL = "http://newsapi.org/v2/";
 	public static final String API_KEY = "ead3711124aa48a0a078a8e6e4b6190e";
 
-	public List<ArticleDTO> getArticleContent() {
-		String request = API_URL + "everything?apiKey=" + API_KEY + "&language=en&q=";
-		List<ArticleDTO> retVal = new ArrayList<>();
+	public abstract List<ArticleDTO> getArticleContent();
 
-		retVal.addAll(getArticlesForKeyword(request,"AI", "technology", "AI"));
-		retVal.addAll(getArticlesForKeyword(request,"blockchain", "technology", "blockchain"));
-		retVal.addAll(getArticlesForKeyword(request,"covid-19", "healthcare", "covid-19"));
-		retVal.addAll(getArticlesForKeyword(request,"economy", "finance"));
-		retVal.addAll(getArticlesForKeyword(request,"bitcoin", "technology", "blockchain", "bitcoin"));
-		retVal.addAll(getArticlesForKeyword(request,"startup", "finance", "technology"));
-		retVal.addAll(getArticlesForKeyword(request,"fintech", "finance", "technology"));
-		retVal.addAll(getArticlesForKeyword(request,"user-experience", "technology", "ux"));
-		retVal.addAll(getArticlesForKeyword(request,"art", "art"));
-		retVal.addAll(getArticlesForKeyword(request,"cooking", "cooking"));
-		retVal.addAll(getArticlesForKeyword(request,"sport", "sport"));
-		retVal.addAll(getArticlesForKeyword(request,"EU-news", "news", "europe"));
-		retVal.addAll(getArticlesForKeyword(request,"China-news", "news", "asia"));
-		retVal.addAll(getArticlesForKeyword(request,"USA-news", "news", "usa"));
-		retVal.addAll(getArticlesForKeyword(request,"politics", "politics"));
-		retVal.addAll(getArticlesForKeyword(request,"software-engineering", "technology", "software-engineering"));
-		retVal.addAll(getArticlesForKeyword(request,"business", "business"));
-		retVal.addAll(getArticlesForKeyword(request,"space", "science", "space"));
-		retVal.addAll(getArticlesForKeyword(request,"science", "science"));
-		retVal.addAll(getArticlesForKeyword(request,"NASA", "science", "space", "nasa"));
-		retVal.addAll(getArticlesForKeyword(request,"budget", "politics", "finance"));
-		retVal.addAll(getArticlesForKeyword(request,"agriculture", "news", "agriculture"));
-		retVal.addAll(getArticlesForKeyword(request,"farming", "news", "agriculture", "farming"));
-		retVal.addAll(getArticlesForKeyword(request,"industry", "industry"));
-		retVal.addAll(getArticlesForKeyword(request,"manufacturing", "industry", "manufacturing"));
-		retVal.addAll(getArticlesForKeyword(request,"transport", "industry", "transport"));
-		retVal.addAll(getArticlesForKeyword(request,"global-warming", "climate-change", "global-warming"));
-		retVal.addAll(getArticlesForKeyword(request,"climate-change", "climate-change"));
-
-		Collections.shuffle(retVal);
-		return retVal;
-	}
-
-	private List<ArticleDTO> getArticlesForKeyword(String request, String keyword, String... assignedCategories) {
+	protected List<ArticleDTO> getArticlesForKeyword(String request, String keyword, String... assignedCategories) {
 		ArticleListDTO response = restTemplate.getForObject(URI.create(request + keyword), ArticleListDTO.class);
 		if (response != null && response.getStatus().equals("ok")) {
 			return response.getArticles().stream().map(a -> {
@@ -87,7 +50,7 @@ public class PublisherFaker {
 		return Collections.emptyList();
 	}
 
-	private String formatContent(String content) {
+	protected String formatContent(String content) {
 		int lookupState = 0;
 		String result = "";
 

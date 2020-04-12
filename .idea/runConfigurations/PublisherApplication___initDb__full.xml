@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PublisherApplication - initDb, full" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="publisher.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="fiit.hipstery.publisher.PublisherApplication" />
+    <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev,initDb,full" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

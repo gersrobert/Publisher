@@ -28,6 +28,7 @@ import {MatRippleModule} from '@angular/material/core';
 import {LoginRedirect} from './core/login-redirect';
 import { PublisherDetailComponent } from './publisher-detail/publisher-detail.component';
 import { RegisterUserComponent } from './register-user/register-user.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { RegisterUserComponent } from './register-user/register-user.component';
         MatCardModule,
         MatChipsModule,
         ShowdownModule,
-        MatRippleModule
+        MatRippleModule,
+        MatProgressSpinnerModule
     ],
   providers: [LoginRedirect],
   bootstrap: [AppComponent]

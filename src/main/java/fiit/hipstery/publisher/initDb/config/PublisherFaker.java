@@ -48,6 +48,20 @@ public class PublisherFaker {
 		retVal.addAll(getArticlesForKeyword(request,"EU-news", "news", "europe"));
 		retVal.addAll(getArticlesForKeyword(request,"China-news", "news", "asia"));
 		retVal.addAll(getArticlesForKeyword(request,"USA-news", "news", "usa"));
+		retVal.addAll(getArticlesForKeyword(request,"politics", "politics"));
+		retVal.addAll(getArticlesForKeyword(request,"software-engineering", "technology", "software-engineering"));
+		retVal.addAll(getArticlesForKeyword(request,"business", "business"));
+		retVal.addAll(getArticlesForKeyword(request,"space", "science", "space"));
+		retVal.addAll(getArticlesForKeyword(request,"science", "science"));
+		retVal.addAll(getArticlesForKeyword(request,"NASA", "science", "space", "nasa"));
+		retVal.addAll(getArticlesForKeyword(request,"budget", "politics", "finance"));
+		retVal.addAll(getArticlesForKeyword(request,"agriculture", "news", "agriculture"));
+		retVal.addAll(getArticlesForKeyword(request,"farming", "news", "agriculture", "farming"));
+		retVal.addAll(getArticlesForKeyword(request,"industry", "industry"));
+		retVal.addAll(getArticlesForKeyword(request,"manufacturing", "industry", "manufacturing"));
+		retVal.addAll(getArticlesForKeyword(request,"transport", "industry", "transport"));
+		retVal.addAll(getArticlesForKeyword(request,"global-warming", "climate-change", "global-warming"));
+		retVal.addAll(getArticlesForKeyword(request,"climate-change", "climate-change"));
 
 		Collections.shuffle(retVal);
 		return retVal;

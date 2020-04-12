@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@SuppressWarnings("unchecked")
 @Service
 @Profile("!jpa")
 public class ArticleServiceNativeImpl implements ArticleService {
@@ -23,7 +24,6 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ArticleDetailedDTO getArticleById(UUID id, UUID currentUser) {
 		List<Object[]> rows = entityManager.createNativeQuery("SELECT a.id," +
@@ -119,7 +119,6 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		return articleDetailedDTO;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ArticleSimpleListDTO getArticles(FilterCriteria filterCriteria, UUID currentUser) {
 		String firstName = filterCriteria.getAuthor().split(" ")[0];
@@ -128,32 +127,8 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			lastName = filterCriteria.getAuthor().split(" ")[1];
 		}
 
-		Object totalCount = entityManager.createNativeQuery("SELECT count(1) OVER()" +
-				"            FROM article a" +
-				"                     JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
-				"                     JOIN app_user au ON aar.app_user_id = au.id" +
-				"                     LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
-				"                     LEFT OUTER JOIN category c on ac.categories_id = c.id" +
-				"                     LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
-				"            GROUP BY a.id" +
-				"            HAVING lower((array_agg(a.title))[1]) LIKE lower(('%' || :title || '%'))" +
-				"               AND lower(('%' || :firstName || '%' || :lastName || '%')) ~~~~ ANY(array_agg(au.first_name || au.last_name))" +
-				"               AND lower(('%' || :category || '%')) ~~~~ ANY(array_agg(c.name))" +
-				"               AND lower((array_agg(p.name))[1]) LIKE lower('%' || :publisher || '%')" +
-				"            LIMIT 1")
-				.setParameter("title", filterCriteria.getTitle())
-				.setParameter("firstName", firstName)
-				.setParameter("lastName", lastName)
-				.setParameter("category", filterCriteria.getCategory())
-				.setParameter("publisher", filterCriteria.getPublisher())
-				.getSingleResult();
-
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
-				"    SELECT a.id," +
-				"           (SELECT count(relation.id)" +
-				"                    FROM app_user_article_relation relation" +
-				"                    WHERE relation.article_id = a.id" +
-				"                      AND relation.relation_type = 'LIKE') AS like_count" +
+				"    SELECT a.id, count(1) OVER() as len" +
 				"            FROM article a" +
 				"                     JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"                     JOIN app_user au ON aar.app_user_id = au.id" +
@@ -165,7 +140,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"               AND lower(('%' || :firstName || '%' || :lastName || '%')) ~~~~ ANY(array_agg(au.first_name || au.last_name))" +
 				"               AND lower(('%' || :category || '%')) ~~~~ ANY(array_agg(c.name))" +
 				"               AND lower((array_agg(p.name))[1]) LIKE lower('%' || :publisher || '%')" +
-				"            ORDER BY like_count DESC" +
+				"            ORDER BY max(a.like_count) DESC" +
 				"                OFFSET :lowerIndex ROWS" +
 				"            FETCH NEXT :upperIndex ROWS ONLY" +
 				"   )" +
@@ -180,8 +155,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       c.id          AS c_id," +
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
-				"       a.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked" +
+				"       art.like_count  AS like_count," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       a.len AS len" +
 				"   FROM a" +
 				"         JOIN article art ON art.id = a.id" +
 				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
@@ -203,29 +179,31 @@ public class ArticleServiceNativeImpl implements ArticleService {
 						filterCriteria.getUpperIndex() - filterCriteria.getLowerIndex())
 				.getResultList();
 
+		if (resultList.size() == 0) {
+			ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
+			articleSimpleListDTO.setNumberOfArticles(0);
+			articleSimpleListDTO.setArticles(new ArrayList<>());
+			return articleSimpleListDTO;
+		}
+
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
-		articleSimpleListDTO.setNumberOfArticles(((BigInteger) totalCount).intValue());
+		articleSimpleListDTO.setNumberOfArticles(((Number) resultList.get(0)[13]).intValue());
 		articleSimpleListDTO.setArticles(parseArticleList(resultList));
 		return articleSimpleListDTO;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser) {
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
-				"    SELECT *," +
-				"           (SELECT count(relation.id)" +
-				"            FROM app_user_article_relation relation" +
-				"            WHERE relation.article_id = a.id" +
-				"              AND relation.relation_type = 'LIKE') AS like_count" +
-				"    FROM article a" +
-				"    ORDER BY like_count DESC" +
-				"    OFFSET :lowerIndex ROWS" +
-				"    FETCH NEXT :upperIndex ROWS ONLY" +
+				"    SELECT a.id, count(1) OVER() as len" +
+				"            FROM article a" +
+				"            ORDER BY a.like_count DESC" +
+				"                OFFSET :lowerIndex ROWS" +
+				"            FETCH NEXT :upperIndex ROWS ONLY" +
 				"   )" +
-				"   SELECT a.id," +
-				"       a.title," +
-				"       a.created_at," +
+				"   SELECT art.id," +
+				"       art.title," +
+				"       art.created_at," +
 				"       au.user_name  AS user_name," +
 				"       au.first_name AS first_name," +
 				"       au.last_name  AS last_name," +
@@ -234,14 +212,17 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       c.id          AS c_id," +
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
-				"       a.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked" +
+				"       art.like_count  AS like_count," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       a.len AS len" +
 				"   FROM a" +
-				"         JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"         JOIN article art ON art.id = a.id" +
+				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"         JOIN app_user au ON aar.app_user_id = au.id" +
-				"         LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
+				"         LEFT OUTER JOIN article_categories ac on art.id = ac.article_id" +
 				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
-				"         LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
+				"         LEFT OUTER JOIN publisher p on art.publisher_id = p.id" +
+				"   WHERE art.id = a.id" +
 				"   ORDER BY like_count DESC")
 				.setParameter("lowerIndex", lowerIndex)
 				.setParameter("upperIndex", upperIndex - lowerIndex)
@@ -251,7 +232,6 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		return parseArticleList(resultList);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ArticleSimpleDTO> getArticlesByAuthor(String author) {
 //		List<Object[]> resultList = entityManager.createNativeQuery("SELECT " +
@@ -346,12 +326,12 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		entityManager.createNativeQuery("INSERT " +
 				"   INTO comment (id, created_at, state, updated_at, article_id, content, author_id)" +
 				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :articleId, :content, :authorId)")
-		.setParameter("id", UUID.randomUUID())
-		.setParameter("created_at", LocalDateTime.now())
-		.setParameter("updated_at", LocalDateTime.now())
-		.setParameter("articleId", comment.getArticleId())
-		.setParameter("content", comment.getContent())
-		.setParameter("authorId", comment.getAppUserId()).executeUpdate();
+				.setParameter("id", UUID.randomUUID())
+				.setParameter("created_at", LocalDateTime.now())
+				.setParameter("updated_at", LocalDateTime.now())
+				.setParameter("articleId", comment.getArticleId())
+				.setParameter("content", comment.getContent())
+				.setParameter("authorId", comment.getAppUserId()).executeUpdate();
 	}
 
 	@Override
@@ -372,6 +352,11 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		Object likeCount = entityManager.createNativeQuery("SELECT count(id) FROM app_user_article_relation " +
 				"WHERE article_id=:articleId and relation_type='LIKE'").setParameter("articleId", articleId.toString()).getSingleResult();
 
+		entityManager.createNativeQuery("UPDATE article SET like_count = :likeCount WHERE id = :articleId")
+				.setParameter("likeCount", likeCount)
+				.setParameter("articleId", articleId.toString())
+				.executeUpdate();
+
 		return ((BigInteger) likeCount).intValue();
 	}
 
@@ -389,6 +374,11 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		entityManager.flush();
 		Object likeCount = entityManager.createNativeQuery("SELECT count(id) FROM app_user_article_relation " +
 				"WHERE article_id=:articleId and relation_type='LIKE'").setParameter("articleId", articleId.toString()).getSingleResult();
+
+		entityManager.createNativeQuery("UPDATE article SET like_count = :likeCount WHERE id = :articleId")
+				.setParameter("likeCount", likeCount)
+				.setParameter("articleId", articleId.toString())
+				.executeUpdate();
 
 		return ((BigInteger) likeCount).intValue();
 	}
@@ -412,7 +402,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				articleSimpleDTO.setId((String) row[0]);
 				articleSimpleDTO.setTitle((String) row[1]);
 				articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
-				articleSimpleDTO.setLikeCount(((BigInteger) row[11]).intValue());
+				articleSimpleDTO.setLikeCount(((Number) row[11]).intValue());
 				articleSimpleDTO.setLiked(((Boolean) row[12]));
 
 				PublisherDTO publisherDTO = new PublisherDTO();

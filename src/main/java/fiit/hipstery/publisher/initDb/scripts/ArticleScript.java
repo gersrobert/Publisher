@@ -56,6 +56,10 @@ public class ArticleScript extends InitDbScript {
 			article.setPublisher(publisherEntityCache.getEntities(Publisher.class)
 					.get((int) (Math.random() * publisherEntityCache.getEntities(Publisher.class).size()))
 			);
+
+			int likeCount = (int) (Math.random() * (appUserEntityCache.getEntities(AppUser.class).size() * 0.025) * 2);
+			article.setLikeCount(likeCount);
+
 			entityManager.persist(article);
 			articleEntityCache.save(article);
 
@@ -70,7 +74,6 @@ public class ArticleScript extends InitDbScript {
 				persistRelation(article, AppUserArticleRelation.RelationType.AUTHOR);
 			}
 
-			int likeCount = (int) (Math.random() * (appUserEntityCache.getEntities(AppUser.class).size() * 0.025) * 2);
 			for (int i = 0; i < likeCount; i++) {
 				persistRelation(article, AppUserArticleRelation.RelationType.LIKE);
 			}

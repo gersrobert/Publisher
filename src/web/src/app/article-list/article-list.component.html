@@ -11,11 +11,17 @@
       <mat-form-field>
         <mat-label>Title</mat-label>
         <input matInput formControlName="title">
+        <button *ngIf="filterFormGroup.get('title').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({title: ''})">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Author</mat-label>
         <input matInput formControlName="author">
+        <button *ngIf="filterFormGroup.get('author').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({author: ''})">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-form-field>
     </div>
 
@@ -23,11 +29,17 @@
       <mat-form-field>
         <mat-label>Category</mat-label>
         <input matInput formControlName="category">
+        <button *ngIf="filterFormGroup.get('category').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({category: ''})">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Publisher</mat-label>
         <input matInput formControlName="publisher">
+        <button *ngIf="filterFormGroup.get('publisher').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({publisher: ''})">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-form-field>
     </div>
 
@@ -35,8 +47,8 @@
 
 </div>
 
-<div class="paging" *ngIf="articles">
-  <button mat-icon-button (click)="updateArticles(-10)">
+<div class="paging" *ngIf="articles && articles.length > 0">
+  <button mat-icon-button (click)="updateArticles(-pageSize)">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
@@ -48,9 +60,14 @@
     <span [textContent]="numberOfArticles"></span>
   </div>
 
-  <button mat-icon-button (click)="updateArticles(10)">
+  <button mat-icon-button (click)="updateArticles(pageSize)">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
+</div>
+
+<div class="no-content-message" *ngIf="!articles || articles.length == 0">
+  <mat-icon>block</mat-icon>
+  <span>No articles found</span>
 </div>
 
 <div *ngFor="let article of articles">
@@ -99,8 +116,8 @@
 
 </div>
 
-<div class="paging" *ngIf="articles">
-  <button mat-icon-button (click)="updateArticles(-10)">
+<div class="paging" *ngIf="articles && articles.length > 0">
+  <button mat-icon-button (click)="updateArticles(-pageSize)">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
@@ -112,7 +129,7 @@
     <span [textContent]="numberOfArticles"></span>
   </div>
 
-  <button mat-icon-button (click)="updateArticles(10)">
+  <button mat-icon-button (click)="updateArticles(pageSize)">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>

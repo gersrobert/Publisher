@@ -24,7 +24,6 @@ public class Article extends AbstractEntity {
     @Type(type="text")
     protected String content;
 
-    @Formula(value = "(SELECT count(*) FROM app_user_article_relation aar WHERE aar.article_id = id AND aar.relation_type = 'LIKE')")
     protected int likeCount;
 
     public String getTitle() {
@@ -61,6 +60,10 @@ public class Article extends AbstractEntity {
 
     public int getLikeCount() {
         return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
     public List<Comment> getComments() {

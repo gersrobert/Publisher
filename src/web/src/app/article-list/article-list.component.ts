@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
+import {ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
-import {PageEvent} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-article-list',
@@ -15,8 +15,10 @@ export class ArticleListComponent implements OnInit {
   numberOfArticles = 0;
   articles: ArticleSimpleDTO[];
   titleName: string;
+
+  readonly pageSize = 10;
   lower = 0;
-  upper = 10;
+  upper = this.pageSize;
 
   showFilter = false;
   filterFormGroup: FormGroup;
@@ -47,16 +49,34 @@ export class ArticleListComponent implements OnInit {
       this.upper += scrollCount;
     }
 
-    this.articleService.getFilteredArticles(
-      this.filterFormGroup.get('title').value,
-      this.filterFormGroup.get('author').value,
-      this.filterFormGroup.get('category').value,
-      this.filterFormGroup.get('publisher').value,
-      this.lower, this.upper)
-      .subscribe(response => {
-        this.articles = response.articles;
-        this.numberOfArticles = response.numberOfArticles;
-      });
+    let request: Observable<ArticleSimpleListDTO>;
+    if (this.filterFormGroup.get('title').value.length > 2 ||
+      this.filterFormGroup.get('author').value.length > 2 ||
+      this.filterFormGroup.get('category').value.length > 2 ||
+      this.filterFormGroup.get('publisher').value.length > 2) {
+
+      request = this.articleService.getFilteredArticles(
+        this.filterFormGroup.get('title').value,
+        this.filterFormGroup.get('author').value,
+        this.filterFormGroup.get('category').value,
+        this.filterFormGroup.get('publisher').value,
+        this.lower, this.upper);
+
+    } else {
+      request = this.articleService.getArticlesInRange(this.lower, this.upper);
+    }
+
+    request.subscribe(response => {
+      if (response.numberOfArticles > 0 && this.lower >= response.numberOfArticles) {
+        this.upper = this.pageSize;
+        this.lower = 0;
+        this.updateArticles(0);
+        return;
+      }
+
+      this.articles = response.articles;
+      this.numberOfArticles = response.numberOfArticles;
+    });
   }
 
   public likeArticle(article: ArticleSimpleDTO) {

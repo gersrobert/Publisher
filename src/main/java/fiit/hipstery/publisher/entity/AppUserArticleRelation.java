@@ -6,10 +6,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(indexes = {
-		@Index(columnList = "article_id"),
-		@Index(columnList = "app_user_id")
-})
 public class AppUserArticleRelation extends AbstractEntity {
 
 	protected String relationType;

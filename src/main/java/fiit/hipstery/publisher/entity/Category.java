@@ -5,9 +5,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Entity
-@Table(indexes = {
-        @Index(columnList = "name")
-})
 public class Category extends AbstractEntity {
 
     protected String name;

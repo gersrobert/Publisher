@@ -8,6 +8,7 @@ import fiit.hipstery.publisher.entity.AppUserArticleRelation;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -35,6 +36,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public AppUserDTO getAppUser(UUID uuid) {
         AppUser appUser = entityManager.find(AppUser.class, uuid);
+        if (appUser == null) {
+            throw new NoResultException();
+        }
+
         AppUserDTO dto = new AppUserDTO();
         dto.setId(appUser.getId().toString());
         dto.setFirstName(appUser.getFirstName());

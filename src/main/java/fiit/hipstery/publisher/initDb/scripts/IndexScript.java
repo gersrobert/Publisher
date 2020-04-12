@@ -13,5 +13,6 @@ public class IndexScript extends InitDbScript {
 	public void run() {
 		entityManager.createNativeQuery("CREATE INDEX ON app_user_article_relation (article_id, app_user_id, relation_type)").executeUpdate();
 		entityManager.createNativeQuery("CREATE INDEX ON article (id, like_count, title)").executeUpdate();
+		entityManager.createNativeQuery("CREATE INDEX ON category (name)").executeUpdate();
 	}
 }

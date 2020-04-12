@@ -60,9 +60,6 @@ export class ArticleDetailComponent implements OnInit {
     this.articleService.getArticleById(this.id).subscribe(response => {
       console.log(response);
       this.article = response;
-
-      const converter = new Converter();
-      this.article.content = converter.makeHtml(this.article.content);
     });
   }
 }

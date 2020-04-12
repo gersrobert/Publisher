@@ -41,7 +41,7 @@ export class ArticleListComponent implements OnInit {
     this.updateArticles();
   }
 
-  private updateArticles(scrollCount: number = 0) {
+  public updateArticles(scrollCount: number = 0) {
     if (this.lower + scrollCount >= 0 && this.lower + scrollCount < this.numberOfArticles) {
       this.lower += scrollCount;
       this.upper += scrollCount;

@@ -92,6 +92,24 @@ export class ArticleService {
     }
   }
 
+  public insertComment(articleId: string, commentForm: FormGroup) {
+
+    const body = {
+      content: commentForm.value["comment"],
+      articleId: articleId,
+      appUserId: this.sessionService.getSession()
+    };
+
+    console.log(body);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    return this.httpClient.post(environment.ROOT_URL + '/article/insert/comment', body, {headers});
+  }
+
   public likeArticle(articleId: string): Observable<number> {
     const headers = new HttpHeaders({
       'Auth-Token': this.sessionService.getSession()

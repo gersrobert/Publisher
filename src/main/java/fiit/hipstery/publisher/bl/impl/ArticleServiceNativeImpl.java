@@ -342,6 +342,20 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 	@Override
 	@Transactional
+	public void insertComment(CommentInsertDTO comment) {
+		entityManager.createNativeQuery("INSERT " +
+				"   INTO comment (id, created_at, state, updated_at, article_id, content, author_id)" +
+				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :articleId, :content, :authorId)")
+		.setParameter("id", UUID.randomUUID())
+		.setParameter("created_at", LocalDateTime.now())
+		.setParameter("updated_at", LocalDateTime.now())
+		.setParameter("articleId", comment.getArticleId())
+		.setParameter("content", comment.getContent())
+		.setParameter("authorId", comment.getAppUserId()).executeUpdate();
+	}
+
+	@Override
+	@Transactional
 	public int likeArticle(UUID articleId, UUID userId) {
 		entityManager.createNativeQuery("INSERT INTO " +
 				"app_user_article_relation (id, created_at, state, updated_at, relation_type, app_user_id, article_id)" +

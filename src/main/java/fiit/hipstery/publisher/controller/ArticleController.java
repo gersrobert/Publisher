@@ -124,6 +124,18 @@ public class ArticleController extends AbstractController{
         }
     }
 
+    @PostMapping(value = "/insert/comment", headers = "Accept=application/json", produces = "application/json")
+    public ResponseEntity insertComment(@RequestBody CommentInsertDTO comment) {
+        try {
+            articleService.insertComment(comment);
+        } catch (Exception e) {
+            logger.error("Error commenting article", e);
+            throw new InternalServerException(e);
+        }
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
     @PutMapping(value = "like/{articleId}")
     public ResponseEntity<Integer> likeArticle(@RequestHeader("Auth-Token") String userId, @PathVariable String articleId) {
         int response;

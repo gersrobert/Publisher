@@ -21,6 +21,8 @@ public interface ArticleService {
 
     boolean insertArticle(ArticleInsertDTO article);
 
+    void insertComment(CommentInsertDTO comment);
+
     int likeArticle(UUID articleId, UUID userId);
 
     int unlikeArticle(UUID articleId, UUID userId);

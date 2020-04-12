@@ -28,6 +28,7 @@ import {MatRippleModule} from '@angular/material/core';
 import {LoginRedirect} from './core/login-redirect';
 import { PublisherDetailComponent } from './publisher-detail/publisher-detail.component';
 import { RegisterUserComponent } from './register-user/register-user.component';
+import { TopPublishersComponent } from './top-publishers/top-publishers.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { RegisterUserComponent } from './register-user/register-user.component';
     UserDetailComponent,
     PublisherDetailComponent,
     RegisterUserComponent,
+    TopPublishersComponent,
   ],
     imports: [
         BrowserModule,

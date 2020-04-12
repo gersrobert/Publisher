@@ -1,0 +1,12 @@
+<div *ngFor="let publisher of publishers; let i = index">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <span>{{i+1}}</span>
+        <span class="name">{{publisher.name}}</span>
+        <span class="likeCount">{{publisher.likeCount}}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <br>
+</div>

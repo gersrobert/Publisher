@@ -12,8 +12,9 @@ import {FormGroup} from '@angular/forms';
 })
 export class ArticleService {
 
-  constructor(private httpClient: HttpClient, private sessionService: SessionService) {
-  }
+  constructor(private httpClient: HttpClient,
+              private sessionService: SessionService
+  ) {}
 
   public getArticleById(id: string): Observable<ArticleDetailedDTO> {
     const headers = new HttpHeaders({

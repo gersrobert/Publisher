@@ -28,7 +28,9 @@ import {MatRippleModule} from '@angular/material/core';
 import {LoginRedirect} from './core/login-redirect';
 import { PublisherDetailComponent } from './publisher-detail/publisher-detail.component';
 import { RegisterUserComponent } from './register-user/register-user.component';
+import { TopPublishersComponent } from './top-publishers/top-publishers.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     UserDetailComponent,
     PublisherDetailComponent,
     RegisterUserComponent,
+    TopPublishersComponent,
   ],
     imports: [
         BrowserModule,

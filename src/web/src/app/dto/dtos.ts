@@ -27,6 +27,7 @@ export class AppUserDTO {
   public firstName: string;
   public lastName: string;
   public userName: string;
+  public publishedAt: Date;
 }
 
 export class ArticleSimpleListDTO {
@@ -42,6 +43,7 @@ export class Category {
 export class Publisher {
   public id: string;
   public name: string;
+  public likeCount: number;
 }
 
 export class Comment {

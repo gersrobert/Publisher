@@ -57,9 +57,11 @@ export class ArticleDetailComponent implements OnInit {
     this.commentForm = this.formBuilder.group({
       comment: ''
     });
-    this.articleService.getArticleById(this.id).subscribe(response => {
-      console.log(response);
-      this.article = response;
-    });
+    setTimeout(() => {
+      this.articleService.getArticleById(this.id).subscribe(response => {
+        console.log(response);
+        this.article = response;
+      });
+    }, 10);
   }
 }

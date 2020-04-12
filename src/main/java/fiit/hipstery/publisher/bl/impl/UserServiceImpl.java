@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
         dto.setFirstName(appUser.getFirstName());
         dto.setLastName(appUser.getLastName());
         dto.setUserName(appUser.getUserName());
+        dto.setPublishedAt(appUser.getCreatedAt());
         return dto;
     }
 

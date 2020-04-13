@@ -29,7 +29,7 @@ export class AppUserDTO {
   public userName: string;
 }
 
-export class AppUserDetailedDTO extends AppUserDTO{
+export class AppUserDetailedDTO extends AppUserDTO {
   public createdAt: Date;
   public roles: string[];
 }

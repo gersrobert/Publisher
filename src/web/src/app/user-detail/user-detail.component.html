@@ -2,16 +2,16 @@
   <mat-card-content>
     <div>
       <span class="leftPart">Name :</span>
-      <span class="rightPart">{{appUser.firstName}} {{appUser.lastName}}</span>
+      <span class="rightPart" *ngIf="appUser">{{appUser.firstName}} {{appUser.lastName}}</span>
     </div>
     <div>
       <span class="leftPart">Registered :</span>
-      <span class="rightPart">{{appUser.createdAt | date:'mediumDate'}}</span>
+      <span class="rightPart" *ngIf="appUser">{{appUser.createdAt | date:'mediumDate'}}</span>
     </div>
     <div style="height: 50px">
       <span class="rolesLeftPart">Roles :</span>
       <div class="rolesRightPart">
-        <mat-chip-list>
+        <mat-chip-list *ngIf="appUser">
           <mat-chip *ngFor="let role of appUser.roles">{{role}}</mat-chip>
         </mat-chip-list>
       </div>
@@ -19,13 +19,5 @@
   </mat-card-content>
 </mat-card>
 
-<mat-list>
-  <mat-list-item *ngFor="let article of articles">
-    <div>
-      <span (click)="router.navigate(['/home/articleDetail', article.id])"
-        >{{article.title}}</span>
-      <span class="articleDate">{{article.publishedAt | date:'mediumDate'}}</span>
-    </div>
-  </mat-list-item>
-</mat-list>
-
+<br>
+<app-article-list *ngIf="isWriter" [writer]="appUser"></app-article-list>

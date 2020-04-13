@@ -12,7 +12,7 @@ import {ArticleService} from '../service/article.service';
 export class UserDetailComponent implements OnInit {
   userId: string;
   appUser: AppUserDetailedDTO;
-  articles: ArticleSimpleDTO[];
+  isWriter = false;
 
   constructor(private appUserService: AppuserService,
               private articleService: ArticleService,
@@ -25,10 +25,13 @@ export class UserDetailComponent implements OnInit {
       this.userId = params['id'];
     });
 
-    this.appUserService.getAppUser(this.userId).subscribe(response => this.appUser = response);
+    this.appUserService.getAppUser(this.userId).subscribe(response => {
+      this.appUser = response;
 
-    this.articleService.getArticlesByAuthor(this.userId).subscribe(response => {
-      this.articles = response.articles;
+      if (this.appUser.roles.indexOf('writer') > -1) {
+        this.isWriter = true;
+      }
     });
+
   }
 }

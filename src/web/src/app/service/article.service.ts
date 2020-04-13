@@ -68,14 +68,6 @@ export class ArticleService {
       environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers});
   }
 
-  public getArticlesByAuthor(authorId: string): Observable<ArticleSimpleListDTO> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
-
-    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article/author/' + authorId, {headers});
-  }
-
   public insertArticle(articleForm: FormGroup): Observable<any> {
     let title = articleForm.value['title'];
     let categories = articleForm.value['categories'].split(", ");

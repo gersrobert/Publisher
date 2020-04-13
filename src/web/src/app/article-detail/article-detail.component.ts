@@ -16,7 +16,7 @@ export class ArticleDetailComponent implements OnInit {
   id: string;
 
   constructor(private articleService: ArticleService,
-              private route:ActivatedRoute,
+              private route: ActivatedRoute,
               private formBuilder: FormBuilder,
   ) {}
 
@@ -50,6 +50,7 @@ export class ArticleDetailComponent implements OnInit {
       });
     }
   }
+
   public insertComment() {
     this.articleService.insertComment(this.article.id, this.commentForm).subscribe(response => {
       console.log('success', response);

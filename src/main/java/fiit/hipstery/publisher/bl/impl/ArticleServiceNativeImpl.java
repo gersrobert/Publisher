@@ -38,7 +38,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name                                  AS p_name," +
 				"       p.id                                    AS p_id," +
 				"       a.content                               AS content," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND aar.relation_type='LIKE') AS liked," +
 				"       (SELECT count(relation.id)" +
 				"        FROM app_user_article_relation relation" +
 				"        WHERE relation.article_id = a.id" +
@@ -156,7 +156,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
 				"       art.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND aar.relation_type='LIKE') AS liked," +
 				"       a.len AS len" +
 				"   FROM a" +
 				"         JOIN article art ON art.id = a.id" +
@@ -213,7 +213,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
 				"       art.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND aar.relation_type='LIKE') AS liked," +
 				"       a.len AS len" +
 				"   FROM a" +
 				"         JOIN article art ON art.id = a.id" +
@@ -251,7 +251,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
 				"       art.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND aar.relation_type='LIKE') AS liked," +
 				"       a.len AS len" +
 				"   FROM a" +
 				"         JOIN article art ON art.id = a.id" +

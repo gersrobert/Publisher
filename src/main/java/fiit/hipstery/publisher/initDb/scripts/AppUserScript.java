@@ -2,6 +2,7 @@ package fiit.hipstery.publisher.initDb.scripts;
 
 import com.github.javafaker.Faker;
 import fiit.hipstery.publisher.entity.AppUser;
+import fiit.hipstery.publisher.entity.Publisher;
 import fiit.hipstery.publisher.entity.Role;
 import fiit.hipstery.publisher.initDb.InitDbScript;
 import fiit.hipstery.publisher.initDb.config.EntityCache;
@@ -13,12 +14,13 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@Order(3)
+@Order(4)
 @Profile("initDb")
 public class AppUserScript extends InitDbScript {
 
-	public static final int USER_COUNT = 100_000;
-	
+	public static final int READER_COUNT = 100_000;
+	public static final int MAX_WRITERS_PER_PUBLISHER = 10;
+
 	private Role writer;
 	private Role reader;
 	private Role publisher_owner;
@@ -32,46 +34,52 @@ public class AppUserScript extends InitDbScript {
 
 	@Autowired
 	private EntityCache<Role> roleEntityCache;
+
+	@Autowired
+	private EntityCache<Publisher> publisherEntityCache;
 	
 	@Override
 	public void run() {
-		writer = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("writer")).findAny().orElseThrow();
-		reader = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("reader")).findAny().orElseThrow();
-		publisher_owner = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("publisher_owner")).findAny().orElseThrow();
-		admin = roleEntityCache.getEntities(Role.class).stream().filter(role -> role.getName().equals("admin")).findAny().orElseThrow();
+		writer = roleEntityCache.get("role").stream().filter(role -> role.getName().equals("writer")).findAny().orElseThrow();
+		reader = roleEntityCache.get("role").stream().filter(role -> role.getName().equals("reader")).findAny().orElseThrow();
+		publisher_owner = roleEntityCache.get("role").stream().filter(role -> role.getName().equals("publisher_owner")).findAny().orElseThrow();
+		admin = roleEntityCache.get("role").stream().filter(role -> role.getName().equals("admin")).findAny().orElseThrow();
 
-		for (int i = 0; i < USER_COUNT; i++) {
-			AppUser user = new AppUser();
-			user.setFirstName(faker.name().firstName());
-			user.setLastName(faker.name().lastName());
-			user.setPasswordHash("56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005"); // sha256 hashed "heslo"
+		createUser(null, admin);
+		for (Publisher publisher : publisherEntityCache.get("publisher")) {
+			createUser(publisher, reader, writer, publisher_owner);
 
-			int random = (int) (Math.random() * generators.size());
-			user.setUserName(generators.get(random).generate(faker, user));
-
-			user.setRoles(getRolesForIndex(i));
-
-			entityManager.persist(user);
-			appUserCache.save(user);
+			for (int i = (int) (Math.random() * MAX_WRITERS_PER_PUBLISHER) - 1; i < MAX_WRITERS_PER_PUBLISHER; i++) {
+				createUser(publisher, reader, writer);
+			}
+		}
+		for (int i = 0; i < READER_COUNT; i++) {
+			createUser(null, reader);
 		}
 	}
 
-	private List<Role> getRolesForIndex(int i) {
-		if (i == 0) {
-			return Collections.singletonList(admin);
+	private void createUser(Publisher publisher, Role... roles) {
+		AppUser user = new AppUser();
+		user.setFirstName(faker.name().firstName());
+		user.setLastName(faker.name().lastName());
+		user.setPasswordHash("56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005"); // sha256 hashed "heslo"
+
+		int random = (int) (Math.random() * generators.size());
+		user.setUserName(generators.get(random).generate(faker, user));
+
+		if (publisher != null) {
+			user.setPublisher(publisher);
 		}
 
-		List<Role> roles = new ArrayList<>();
-		roles.add(reader);
+		user.setRoles(Arrays.asList(roles));
 
-		if (i % (USER_COUNT / 20) == 0) {
-			roles.add(writer);
-		}
-		if (i % (USER_COUNT / 50) == 0) {
-			roles.add(publisher_owner);
-		}
+		entityManager.persist(user);
+		appUserCache.append("appUser", user);
 
-		return roles;
+		if (user.getRoles().contains(writer)) {
+			user.setPublisher(publisherEntityCache.getRandom("publisher"));
+			appUserCache.append("author" + user.getPublisher().getName(), user);
+		}
 	}
 
 	public abstract static class UserNameGenerator {

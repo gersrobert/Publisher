@@ -18,6 +18,10 @@ public class RoleScript extends InitDbCsvScript<Role> {
 	@Value("classpath:db/roles.csv")
 	private Resource resource;
 
+	protected RoleScript() {
+		super(Role.class);
+	}
+
 	@Override
 	protected Resource getDataFile() {
 		return resource;

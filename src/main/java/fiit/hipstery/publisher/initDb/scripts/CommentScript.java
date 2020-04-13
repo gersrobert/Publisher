@@ -1,6 +1,5 @@
 package fiit.hipstery.publisher.initDb.scripts;
 
-import com.github.javafaker.App;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Article;
 import fiit.hipstery.publisher.entity.Comment;
@@ -26,9 +25,9 @@ public class CommentScript extends InitDbScript {
 
 	@Override
 	public void run() {
-		List<AppUser> appUsers = appUserEntityCache.getEntities(AppUser.class);
+		List<AppUser> appUsers = appUserEntityCache.get("appUser");
 
-		articleEntityCache.getEntities(Article.class).forEach(article -> {
+		articleEntityCache.get("article").forEach(article -> {
 			int commentCount = (int) (Math.random() * 5);
 			for (int i = 0; i < commentCount; i++) {
 				Comment comment = new Comment();

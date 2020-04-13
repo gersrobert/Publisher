@@ -4,7 +4,6 @@ import fiit.hipstery.publisher.entity.*;
 import fiit.hipstery.publisher.initDb.InitDbScript;
 import fiit.hipstery.publisher.initDb.config.EntityCache;
 import fiit.hipstery.publisher.initDb.dto.ArticleDTO;
-import fiit.hipstery.publisher.initDb.dto.ArticleListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -53,15 +52,13 @@ public class ArticleScript extends InitDbScript {
 				}
 				return category;
 			}).collect(Collectors.toList()));
-			article.setPublisher(publisherEntityCache.getEntities(Publisher.class)
-					.get((int) (Math.random() * publisherEntityCache.getEntities(Publisher.class).size()))
-			);
+			article.setPublisher(publisherEntityCache.getRandom("publisher"));
 
-			int likeCount = (int) (Math.random() * (appUserEntityCache.getEntities(AppUser.class).size() * 0.025) * 2);
+			int likeCount = (int) (Math.random() * (appUserEntityCache.get("appUser").size() * 0.025) * 2);
 			article.setLikeCount(likeCount);
 
 			entityManager.persist(article);
-			articleEntityCache.save(article);
+			articleEntityCache.append("article", article);
 
 			double random = Math.random();
 			if (random > 0) {
@@ -81,7 +78,12 @@ public class ArticleScript extends InitDbScript {
 	}
 
 	private void persistRelation(Article article, AppUserArticleRelation.RelationType relationType) {
-		AppUser appUser = appUserEntityCache.getEntities(AppUser.class).get((int) (Math.random() * appUserEntityCache.getEntities(AppUser.class).size()));
+		AppUser appUser;
+		if (relationType == AppUserArticleRelation.RelationType.AUTHOR) {
+			appUser = appUserEntityCache.getRandom("author" + article.getPublisher().getName());
+		} else {
+			appUser = appUserEntityCache.getRandom("appUser");
+		}
 		AppUserArticleRelation relation = new AppUserArticleRelation();
 		relation.setAppUser(appUser);
 		relation.setArticle(article);

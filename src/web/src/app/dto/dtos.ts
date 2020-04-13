@@ -27,7 +27,11 @@ export class AppUserDTO {
   public firstName: string;
   public lastName: string;
   public userName: string;
-  public publishedAt: Date;
+}
+
+export class AppUserDetailedDTO extends AppUserDTO{
+  public createdAt: Date;
+  public roles: string[];
 }
 
 export class ArticleSimpleListDTO {

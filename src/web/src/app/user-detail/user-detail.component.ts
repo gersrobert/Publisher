@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {AppuserService} from '../service/appuser.service';
-import {AppUserDTO} from '../dto/dtos';
+import {AppUserDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
+import {ArticleService} from '../service/article.service';
 
 @Component({
   selector: 'app-user-detail',
@@ -10,9 +11,11 @@ import {AppUserDTO} from '../dto/dtos';
 })
 export class UserDetailComponent implements OnInit {
   userId: string;
-  appUser: AppUserDTO;
+  appUser: AppUserDetailedDTO;
+  articles: ArticleSimpleDTO[];
 
   constructor(private appUserService: AppuserService,
+              private articleService: ArticleService,
               private route:ActivatedRoute
   ) {}
 
@@ -22,5 +25,9 @@ export class UserDetailComponent implements OnInit {
     });
 
     this.appUserService.getAppUser(this.userId).subscribe(response => this.appUser = response);
+
+    this.articleService.getArticlesByAuthor(this.userId).subscribe(response => {
+      this.articles = response.articles;
+    });
   }
 }

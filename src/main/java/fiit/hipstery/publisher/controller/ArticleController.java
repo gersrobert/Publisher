@@ -81,17 +81,19 @@ public class ArticleController extends AbstractController{
         return ResponseEntity.of(Optional.of(response));
     }
 
-    @GetMapping("/author/{author}")
-    public ResponseEntity<List<ArticleSimpleDTO>> getArticlesByAuthor(@PathVariable String author) {
-        List<ArticleSimpleDTO> article;
+    @GetMapping("/author/{authorId}")
+    public ResponseEntity<ArticleSimpleListDTO> getArticlesByAuthor(
+            @PathVariable String authorId, @RequestHeader("Auth-Token") String currentUserId) {
+        ArticleSimpleListDTO response = new ArticleSimpleListDTO();
         try {
-            article = articleService.getArticlesByAuthor(author);
+            response.setArticles(articleService.getArticlesByAuthor(UUID.fromString(authorId), UUID.fromString(currentUserId)));
+            response.setNumberOfArticles(articleService.getNumberOfArticles());
         } catch (Exception e) {
-            logger.error("Error getting list of articles written by : " + author, e);
+            logger.error("Error getting list of articles written by : " + authorId, e);
             throw new InternalServerException(e);
         }
 
-        return ResponseEntity.of(Optional.of(article));
+        return ResponseEntity.of(Optional.of(response));
     }
 
     @GetMapping("/forUser/{id}")

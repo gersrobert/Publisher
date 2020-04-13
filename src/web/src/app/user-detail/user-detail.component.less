@@ -3,19 +3,40 @@ div {
   height: 30px;
 }
 
-span {
+.part {
   line-height: 30px;
   vertical-align: middle;
-}
-
-.leftPart {
-  float: left;
   padding-left: 30px;
   font-size: 30px;
 }
 
-.rightPart {
-  float: right;
-  padding-right: 30px;
-  font-size: 30px;
+.leftPart {
+  .part();
+  float: left;
 }
+
+.rightPart {
+  .part();
+  float: right;
+}
+
+.rolesLeftPart {
+  .part();
+  line-height: 50px;
+  float: left;
+}
+
+.rolesRightPart {
+  .part();
+  line-height: 50px;
+  float: right;
+}
+
+.articleTitle {
+  float: left;
+}
+
+.articleDate {
+  float: right;
+}
+

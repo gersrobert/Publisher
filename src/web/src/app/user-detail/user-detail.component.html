@@ -6,7 +6,25 @@
     </div>
     <div>
       <span class="leftPart">Registered :</span>
-      <span class="rightPart">{{appUser.publishedAt | date:'mediumDate'}}</span>
+      <span class="rightPart">{{appUser.createdAt | date:'mediumDate'}}</span>
+    </div>
+    <div style="height: 50px">
+      <span class="rolesLeftPart">Roles :</span>
+      <div class="rolesRightPart">
+        <mat-chip-list>
+          <mat-chip *ngFor="let role of appUser.roles">{{role}}</mat-chip>
+        </mat-chip-list>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
+
+<mat-list>
+  <mat-list-item *ngFor="let article of articles">
+    <div>
+      <span class="articleTitle">{{article.title}}</span>
+      <span class="articleDate">{{article.publishedAt | date:'mediumDate'}}</span>
+    </div>
+  </mat-list-item>
+</mat-list>
+

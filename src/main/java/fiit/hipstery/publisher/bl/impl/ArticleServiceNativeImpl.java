@@ -295,8 +295,8 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		UUID articleUuid = UUID.randomUUID();
 
 		entityManager.createNativeQuery("INSERT " +
-				"   INTO article (id, created_at, state, updated_at, content, title)" +
-				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, :title)"
+				"   INTO article (id, created_at, state, updated_at, content, like_count, title)" +
+				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, 0,:title)"
 		).setParameter("id", articleUuid
 		).setParameter("created_at", LocalDateTime.now()
 		).setParameter("updated_at", LocalDateTime.now()

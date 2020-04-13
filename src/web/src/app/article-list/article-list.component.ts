@@ -16,7 +16,7 @@ export class ArticleListComponent implements OnInit {
   articles: ArticleSimpleDTO[];
   titleName: string;
 
-  readonly pageSize = 10;
+  readonly pageSize = 50;
   lower = 0;
   upper = this.pageSize;
 
@@ -76,6 +76,7 @@ export class ArticleListComponent implements OnInit {
 
       this.articles = response.articles;
       this.numberOfArticles = response.numberOfArticles;
+      console.log(this.articles);
     });
   }
 

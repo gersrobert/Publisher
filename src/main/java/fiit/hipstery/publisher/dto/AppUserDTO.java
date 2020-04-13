@@ -9,7 +9,6 @@ public class AppUserDTO extends AbstractDTO {
 	protected String firstName;
 	protected String lastName;
 	protected String userName;
-	protected LocalDateTime publishedAt;
 
 	public String getFirstName() {
 		return firstName;
@@ -36,14 +35,5 @@ public class AppUserDTO extends AbstractDTO {
 	@JsonSetter
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public LocalDateTime getPublishedAt() {
-		return publishedAt;
-	}
-
-	@JsonSetter
-	public void setPublishedAt(LocalDateTime publishedAt) {
-		this.publishedAt = publishedAt;
 	}
 }

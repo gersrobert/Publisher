@@ -15,7 +15,7 @@ public interface ArticleService {
 
     Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser);
 
-    List<ArticleSimpleDTO> getArticlesByAuthor(String author);
+    Collection<ArticleSimpleDTO> getArticlesByAuthor(UUID authorId, UUID currentUserId);
 
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 

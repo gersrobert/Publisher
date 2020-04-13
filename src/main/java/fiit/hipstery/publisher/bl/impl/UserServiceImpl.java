@@ -2,6 +2,7 @@ package fiit.hipstery.publisher.bl.impl;
 
 import fiit.hipstery.publisher.bl.service.UserService;
 import fiit.hipstery.publisher.dto.AppUserDTO;
+import fiit.hipstery.publisher.dto.AppUserDetailedDTO;
 import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
@@ -11,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,9 +43,26 @@ public class UserServiceImpl implements UserService {
         dto.setFirstName(appUser.getFirstName());
         dto.setLastName(appUser.getLastName());
         dto.setUserName(appUser.getUserName());
-        dto.setPublishedAt(appUser.getCreatedAt());
         return dto;
     }
+
+    @Override
+    public AppUserDetailedDTO getAppUserDetailed(UUID uuid) {
+        List<String> roles = new ArrayList<>();
+
+        AppUser appUser = entityManager.find(AppUser.class, uuid);
+        AppUserDetailedDTO dto = new AppUserDetailedDTO();
+        dto.setId(appUser.getId().toString());
+        dto.setFirstName(appUser.getFirstName());
+        dto.setLastName(appUser.getLastName());
+        dto.setUserName(appUser.getUserName());
+        dto.setCreatedAt(appUser.getCreatedAt());
+
+        appUser.getRoles().forEach(role -> roles.add(role.getName()));
+        dto.setRoles(roles);
+        return dto;
+    }
+
 
     @Override
     @Transactional

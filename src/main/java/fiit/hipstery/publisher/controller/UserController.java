@@ -2,6 +2,7 @@ package fiit.hipstery.publisher.controller;
 
 import fiit.hipstery.publisher.bl.service.UserService;
 import fiit.hipstery.publisher.dto.AppUserDTO;
+import fiit.hipstery.publisher.dto.AppUserDetailedDTO;
 import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 import fiit.hipstery.publisher.dto.LoginRequestDTO;
 import fiit.hipstery.publisher.exception.InternalServerException;
@@ -46,6 +47,21 @@ public class UserController extends AbstractController {
 		AppUserDTO response;
 		try {
 			response = userService.getAppUser(UUID.fromString(uuid));
+		} catch (NoResultException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		} catch (Exception e) {
+			logger.error("Could not find user", e);
+			throw new InternalServerException(e);
+		}
+
+		return ResponseEntity.of(Optional.of(response));
+	}
+
+	@GetMapping(value = "/detailed/{uuid}")
+	public ResponseEntity<AppUserDetailedDTO> getUserDetailed(@PathVariable String uuid) {
+		AppUserDetailedDTO response;
+		try {
+			response = userService.getAppUserDetailed(UUID.fromString(uuid));
 		} catch (NoResultException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		} catch (Exception e) {

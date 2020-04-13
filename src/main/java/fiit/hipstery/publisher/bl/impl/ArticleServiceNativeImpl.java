@@ -233,20 +233,40 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	}
 
 	@Override
-	public List<ArticleSimpleDTO> getArticlesByAuthor(String author) {
-//		List<Object[]> resultList = entityManager.createNativeQuery("SELECT " +
-//				"   a.id," +
-//				"   a.title," +
-//				"   a.created_at," +
-//				"   au.user_name," +
-//				"   au.id AS author_id" +
-//				"   FROM article a" +
-//				"   JOIN app_user_article_relation aa ON a.id = aa.article_id AND aa.relation_type = '" + AppUserArticleRelation.RelationType.AUTHOR + "'" +
-//				"   JOIN app_user au ON aa.app_user_id = au.id" +
-//				"   WHERE au.user_name = :authorName").setParameter("authorName", author).getResultList();
-//
-//		return resultList.stream().map(this::mapRowToArticleSimpleDTO).collect(Collectors.toList());
-		return null;
+	public Collection<ArticleSimpleDTO> getArticlesByAuthor(UUID authorId, UUID currentUserId) {
+		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
+				"    SELECT a.id, count(1) OVER() as len" +
+				"            FROM article a" +
+				"            ORDER BY a.like_count DESC" +
+				"   )" +
+				"   SELECT art.id," +
+				"       art.title," +
+				"       art.created_at," +
+				"       au.user_name  AS user_name," +
+				"       au.first_name AS first_name," +
+				"       au.last_name  AS last_name," +
+				"       au.id         AS author_id," +
+				"       c.name        AS c_name," +
+				"       c.id          AS c_id," +
+				"       p.name        AS p_name," +
+				"       p.id          AS p_id," +
+				"       art.like_count  AS like_count," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser) AS liked," +
+				"       a.len AS len" +
+				"   FROM a" +
+				"         JOIN article art ON art.id = a.id" +
+				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"         JOIN app_user au ON aar.app_user_id = au.id" +
+				"         LEFT OUTER JOIN article_categories ac on art.id = ac.article_id" +
+				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
+				"         LEFT OUTER JOIN publisher p on art.publisher_id = p.id" +
+				"   WHERE art.id = a.id AND aar.relation_type = 'AUTHOR' AND au.id = :authorId" +
+				"   ORDER BY like_count DESC")
+				.setParameter("currentUser", currentUserId.toString())
+				.setParameter("authorId", authorId.toString())
+				.getResultList();
+
+		return parseArticleList(resultList);
 	}
 
 	@Transactional

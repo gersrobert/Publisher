@@ -5,24 +5,25 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Profile("initDb")
 @Scope("singleton")
-public class EntityCache<E extends AbstractEntity> {
+public class EntityCache<E> {
 
-	protected Map<Class<? extends AbstractEntity>, List<E>> entities = new HashMap<>();
+	protected Map<String, List<E>> entities = new HashMap<>();
 
-	public void save(E entity) {
-		entities.putIfAbsent(entity.getClass(), new ArrayList<>());
-		entities.get(entity.getClass()).add(entity);
+	public void append(String key, E object) {
+		entities.putIfAbsent(key, new ArrayList<>());
+		entities.get(key).add(object);
 	}
 
-	public List<E> getEntities(Class<E> c) {
-		return entities.get(c);
+	public List<E> get(String key) {
+		return entities.get(key);
+	}
+
+	public E getRandom(String key) {
+		return entities.get(key).get((int) (entities.get(key).size() * Math.random()));
 	}
 }

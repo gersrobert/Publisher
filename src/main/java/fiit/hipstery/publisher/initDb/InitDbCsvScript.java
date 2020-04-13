@@ -3,11 +3,13 @@ package fiit.hipstery.publisher.initDb;
 import fiit.hipstery.publisher.entity.AbstractEntity;
 import fiit.hipstery.publisher.initDb.config.EntityCache;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -19,12 +21,18 @@ public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbSc
 	@Autowired
 	private EntityCache<E> entityCache;
 
+	private Class<E> typeOfE;
+
+	protected InitDbCsvScript(Class<E> type) {
+		this.typeOfE = type;
+	}
+
 	@Override
 	public void run() {
 		List<List<String>> data = getData(getDataFile());
 		data.stream().map(this::mapRowToEntity).forEach(e -> {
 			entityManager.persist(e);
-			entityCache.save(e);
+			entityCache.append(typeOfE.getSimpleName().toLowerCase(), e);
 		});
 	}
 

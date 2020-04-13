@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("initDb")
-@Order(4)
+@Order(3)
 public class PublisherScript extends InitDbScript {
 
 	@Autowired
@@ -26,7 +26,7 @@ public class PublisherScript extends InitDbScript {
 			publisher.setName(source.getName());
 
 			entityManager.persist(publisher);
-			publisherEntityCache.save(publisher);
+			publisherEntityCache.append("publisher", publisher);
 		});
 	}
 }

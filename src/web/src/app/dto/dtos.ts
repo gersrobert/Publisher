@@ -46,8 +46,10 @@ export class Category {
 
 export class Publisher {
   public id: string;
+  public createdAt: Date;
   public name: string;
   public likeCount: number;
+  public order: number;
 }
 
 export class Comment {

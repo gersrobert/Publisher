@@ -1,1 +1,20 @@
-<p>publisher-detail works!</p>
+<mat-card>
+  <mat-card-content>
+    <div>
+      <span class="leftPart">Name :</span>
+      <span class="rightPart" *ngIf="publisher">{{publisher.name}}</span>
+    </div>
+    <div>
+      <span class="leftPart">Created on :</span>
+      <span class="rightPart" *ngIf="publisher">{{publisher.createdAt | date:'mediumDate'}}</span>
+    </div>
+    <div>
+      <span class="leftPart">Number of likes :</span>
+      <span class="rightPart" *ngIf="publisher">{{publisher.likeCount}}</span>
+    </div>
+    <div>
+      <span class="leftPart">Chart of popularity  :</span>
+      <span class="rightPart" *ngIf="publisher">{{publisher.order}}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

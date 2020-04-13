@@ -14,4 +14,8 @@ export class PublisherService {
   public getTopPublishers(): Observable<Publisher[]> {
     return this.httpClient.get<Publisher[]>(environment.ROOT_URL + '/publisher/top');
   }
+
+  public getRowOfPublisher(publisherId: string) {
+    return this.httpClient.get<Publisher>(environment.ROOT_URL + '/publisher/rowOf/' + publisherId);
+  }
 }

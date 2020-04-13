@@ -69,12 +69,10 @@ export class ArticleListComponent implements OnInit {
 
       request = this.articleService.getFilteredArticles(
         this.filterFormGroup.get('title').value,
-        this.writer.firstName,
+        this.writer.firstName + ' ' + this.writer.lastName,
         this.filterFormGroup.get('category').value,
         this.filterFormGroup.get('publisher').value,
         this.lower, this.upper);
-      // request = this.articleService.getFilteredArticles(
-      //   '', this.writer.firstName + ' ' + this.writer.lastName, '', '', this.lower, this.upper);
     } else {
       request = this.articleService.getArticlesInRange(this.lower, this.upper);
     }

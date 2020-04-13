@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AppuserService} from '../service/appuser.service';
 import {AppUserDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
@@ -16,6 +16,7 @@ export class UserDetailComponent implements OnInit {
 
   constructor(private appUserService: AppuserService,
               private articleService: ArticleService,
+              public router: Router,
               private route:ActivatedRoute
   ) {}
 

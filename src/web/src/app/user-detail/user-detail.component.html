@@ -22,7 +22,8 @@
 <mat-list>
   <mat-list-item *ngFor="let article of articles">
     <div>
-      <span class="articleTitle">{{article.title}}</span>
+      <span (click)="router.navigate(['/home/articleDetail', article.id])"
+        >{{article.title}}</span>
       <span class="articleDate">{{article.publishedAt | date:'mediumDate'}}</span>
     </div>
   </mat-list-item>

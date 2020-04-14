@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
+import {Component, Input, OnInit} from '@angular/core';
+import {AppUserDetailedDTO, AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -12,9 +12,10 @@ import {Observable} from 'rxjs';
 })
 export class ArticleListComponent implements OnInit {
 
+  @Input() writer: AppUserDetailedDTO;
+
   numberOfArticles = 0;
   articles: ArticleSimpleDTO[];
-  titleName: string;
 
   readonly pageSize = 50;
   lower = 0;
@@ -62,6 +63,16 @@ export class ArticleListComponent implements OnInit {
         this.filterFormGroup.get('publisher').value,
         this.lower, this.upper);
 
+    } else if (this.writer != null) {
+      console.log(this.writer.id);
+      console.log(this.writer.firstName);
+
+      request = this.articleService.getFilteredArticles(
+        this.filterFormGroup.get('title').value,
+        this.writer.firstName + ' ' + this.writer.lastName,
+        this.filterFormGroup.get('category').value,
+        this.filterFormGroup.get('publisher').value,
+        this.lower, this.upper);
     } else {
       request = this.articleService.getArticlesInRange(this.lower, this.upper);
     }

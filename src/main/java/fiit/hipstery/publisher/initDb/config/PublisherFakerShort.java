@@ -9,8 +9,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-@Profile("initDb & !full")
+@Profile("initDb & !initDbFull")
 public class PublisherFakerShort extends PublisherFaker {
+
+	@Override
+	public int getMaxIndex() {
+		return 1;
+	}
 
 	@Override
 	public List<ArticleDTO> getArticleContent() {

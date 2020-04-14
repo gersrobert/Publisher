@@ -5,6 +5,8 @@ import fiit.hipstery.publisher.entity.Article;
 import fiit.hipstery.publisher.initDb.dto.ArticleDTO;
 import fiit.hipstery.publisher.initDb.dto.ArticleListDTO;
 import fiit.hipstery.publisher.initDb.dto.SourcesDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -25,13 +27,27 @@ public abstract class PublisherFaker {
 	@Autowired
 	RestTemplate restTemplate;
 
+	protected Logger logger = LoggerFactory.getLogger(getClass().getName());
+
 	public static final String API_URL = "http://newsapi.org/v2/";
-	public static final String API_KEY = "ead3711124aa48a0a078a8e6e4b6190e";
+	public static final String API_KEY = "5960adeca78845af8b9fa2a77d5afcf0";
+
+	protected int index = 0;
+
+	public boolean hasNext() {
+		return index < getMaxIndex();
+	}
 
 	public abstract List<ArticleDTO> getArticleContent();
+	public abstract int getMaxIndex();
 
 	protected List<ArticleDTO> getArticlesForKeyword(String request, String keyword, String... assignedCategories) {
-		ArticleListDTO response = restTemplate.getForObject(URI.create(request + keyword), ArticleListDTO.class);
+		ArticleListDTO response;
+		try {
+			response = restTemplate.getForObject(URI.create(request + keyword), ArticleListDTO.class);
+		} catch (Exception e) {
+			return Collections.emptyList();
+		}
 		if (response != null && response.getStatus().equals("ok")) {
 			return response.getArticles().stream().map(a -> {
 				ArticleDTO result = new ArticleDTO();

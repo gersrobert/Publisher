@@ -4,6 +4,7 @@ import fiit.hipstery.publisher.entity.Publisher;
 import fiit.hipstery.publisher.initDb.InitDbScript;
 import fiit.hipstery.publisher.initDb.config.EntityCache;
 import fiit.hipstery.publisher.initDb.dto.SourcesDTO;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -21,7 +22,12 @@ public class PublisherScript extends InitDbScript {
 	public void run() {
 		SourcesDTO sources = publisherFaker.getSources();
 
+//		MutableInt count = new MutableInt(0);
 		sources.getSources().forEach(source -> {
+//			if (count.getAndIncrement() > 10) {
+//				return;
+//			}
+
 			Publisher publisher = new Publisher();
 			publisher.setName(source.getName());
 

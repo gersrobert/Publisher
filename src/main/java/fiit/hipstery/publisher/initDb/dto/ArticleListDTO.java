@@ -1,5 +1,8 @@
 package fiit.hipstery.publisher.initDb.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,58 +46,72 @@ public class ArticleListDTO {
 		String publishedAt;
 		String content;
 
+		@JsonGetter
 		public String getAuthor() {
 			return author;
 		}
 
+		@JsonSetter
 		public void setAuthor(String author) {
 			this.author = author;
 		}
 
+		@JsonGetter
 		public String getTitle() {
 			return title;
 		}
 
+		@JsonSetter
 		public void setTitle(String title) {
 			this.title = title;
 		}
 
+		@JsonGetter
 		public String getDescription() {
 			return description;
 		}
 
+		@JsonSetter
 		public void setDescription(String description) {
 			this.description = description;
 		}
 
+		@JsonGetter
 		public String getUrl() {
 			return url;
 		}
 
+		@JsonSetter
 		public void setUrl(String url) {
 			this.url = url;
 		}
 
+		@JsonGetter
 		public String getUrlToImage() {
 			return urlToImage;
 		}
 
+		@JsonSetter
 		public void setUrlToImage(String urlToImage) {
 			this.urlToImage = urlToImage;
 		}
 
+		@JsonGetter
 		public String getPublishedAt() {
 			return publishedAt;
 		}
 
+		@JsonSetter
 		public void setPublishedAt(String publishedAt) {
 			this.publishedAt = publishedAt;
 		}
 
+		@JsonGetter
 		public String getContent() {
 			return content;
 		}
 
+		@JsonSetter
 		public void setContent(String content) {
 			this.content = content;
 		}

@@ -39,14 +39,14 @@
       <p class="comment-content">{{comment.content}}</p>
       <mat-divider></mat-divider>
     </div>
-  </div>
 
-
-  <div class="comments">
-    <form [formGroup]="commentForm" (ngSubmit)="insertComment()">
-      <mat-form-field>
-        <input matInput formControlName="comment">
-      </mat-form-field>
+    <form class="new-comment" [formGroup]="commentForm" (ngSubmit)="insertComment()">
+      <div >
+        <mat-form-field>
+          <mat-label>Say something</mat-label>
+          <input matInput formControlName="comment">
+        </mat-form-field>
+      </div>
       <button mat-button type="submit" class="submit-button">Add Comment</button>
     </form>
   </div>

@@ -118,6 +118,6 @@ export class ArticleDetailComponent implements OnInit {
         console.log(response);
         this.article = response;
       });
-    }, 10);
+    }, 100);
   }
 }

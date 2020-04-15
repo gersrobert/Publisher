@@ -57,3 +57,7 @@ export class Comment {
   public content: string;
   public author: AppUserDTO;
 }
+
+export class IdDTO {
+  public id: string;
+}

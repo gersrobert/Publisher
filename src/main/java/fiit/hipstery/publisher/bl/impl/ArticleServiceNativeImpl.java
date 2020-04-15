@@ -3,6 +3,8 @@ package fiit.hipstery.publisher.bl.impl;
 import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.dto.*;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -228,46 +230,70 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 	@Transactional
 	@Override
-	public boolean insertArticle(ArticleInsertDTO article) {
+	public String insertArticle(ArticleInsertDTO article) {
 		AtomicBoolean isWriter = new AtomicBoolean(false);
+		Mutable<String> publisherId = new MutableObject<>();
 
 		for (UUID author : article.getAuthors()) {
-			entityManager.createNativeQuery("SELECT " +
-					"   r.name " +
+			List<Object[]> rows = entityManager.createNativeQuery("SELECT " +
+					"   r.name," +
+					"   users.publisher_id " +
 					"   FROM app_user users " +
 					"   JOIN app_user_roles bind " +
 					"   ON users.id = bind.app_user_id " +
 					"   JOIN role r ON bind.roles_id = r.id" +
-					"   WHERE users.id = :uid").setParameter("uid", author.toString()).getResultList().stream().forEach(role -> {
-				if (role.equals("writer")) {
+					"   WHERE users.id = :uid").setParameter("uid", author.toString()).getResultList();
+			for (Object[] row : rows) {
+				if (row[0].equals("writer")) {
 					isWriter.set(true);
+					publisherId.setValue((String) row[1]);
 				}
-			});
+			}
 		}
 
 		if (!isWriter.get()) {
-			return false;
+			return null;
 		}
 
-		UUID articleUuid = UUID.randomUUID();
+		if (article.getId() == null) {
 
-		entityManager.createNativeQuery("INSERT " +
-				"   INTO article (id, created_at, state, updated_at, content, like_count, title)" +
-				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, 0,:title)"
-		).setParameter("id", articleUuid
-		).setParameter("created_at", LocalDateTime.now()
-		).setParameter("updated_at", LocalDateTime.now()
-		).setParameter("content", article.getContent()
-		).setParameter("title", article.getTitle()).executeUpdate();
-		article.getAuthors().forEach(a -> entityManager.createNativeQuery("INSERT " +
-				"   INTO app_user_article_relation (" +
-				"   id, created_at, state, updated_at, article_id, app_user_id, relation_type) " +
-				"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :article_id, :authors_id, 'AUTHOR')"
-		).setParameter("id", UUID.randomUUID()
-		).setParameter("created_at", LocalDateTime.now()
-		).setParameter("updated_at", LocalDateTime.now()
-		).setParameter("article_id", articleUuid
-		).setParameter("authors_id", a).executeUpdate());
+			article.setId(UUID.randomUUID());
+
+			entityManager.createNativeQuery("INSERT " +
+					"   INTO article (id, created_at, state, updated_at, content, like_count, title, publisher_id)" +
+					"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :content, 0,:title, :publisher_id)")
+			.setParameter("id", article.getId().toString())
+			.setParameter("created_at", LocalDateTime.now())
+			.setParameter("updated_at", LocalDateTime.now())
+			.setParameter("content", article.getContent())
+			.setParameter("title", article.getTitle())
+			.setParameter("publisher_id", publisherId.getValue()).executeUpdate();
+			article.getAuthors().forEach(author -> entityManager.createNativeQuery("INSERT " +
+					"   INTO app_user_article_relation (" +
+					"   id, created_at, state, updated_at, article_id, app_user_id, relation_type) " +
+					"   VALUES (:id, :created_at, 'ACTIVE', :updated_at, :article_id, :authors_id, 'AUTHOR')")
+			.setParameter("id", UUID.randomUUID())
+			.setParameter("created_at", LocalDateTime.now())
+			.setParameter("updated_at", LocalDateTime.now())
+			.setParameter("article_id", article.getId())
+			.setParameter("authors_id", author).executeUpdate());
+		} else {
+
+			entityManager.createNativeQuery("UPDATE article " +
+					"SET updated_at = :updated_at, content = :content, title = :title " +
+					"WHERE id = :article_id")
+			.setParameter("article_id", article.getId().toString())
+			.setParameter("updated_at", LocalDateTime.now())
+			.setParameter("content", article.getContent())
+			.setParameter("title", article.getTitle()).executeUpdate();
+
+
+			entityManager.createNativeQuery("DELETE " +
+					"FROM article_categories" +
+					"   WHERE article_id = :id")
+					.setParameter("id", article.getId().toString())
+					.executeUpdate();
+		}
 
 		for (String category : article.getCategories()) {
 			UUID categoryId;
@@ -279,22 +305,21 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				categoryId = UUID.randomUUID();
 				entityManager.createNativeQuery("INSERT " +
 						"INTO category (id, created_at, state, updated_at, name) " +
-						"VALUES (:id, :created_at, 'ACTIVE', :updated_at, :name)"
-				).setParameter("id", categoryId
-				).setParameter("created_at", LocalDateTime.now()
-				).setParameter("updated_at", LocalDateTime.now()
-				).setParameter("name", category).executeUpdate();
+						"VALUES (:id, :created_at, 'ACTIVE', :updated_at, :name)")
+						.setParameter("id", categoryId)
+						.setParameter("created_at", LocalDateTime.now())
+						.setParameter("updated_at", LocalDateTime.now())
+						.setParameter("name", category).executeUpdate();
 			}
-			System.out.println(categoryId);
 
 			entityManager.createNativeQuery("INSERT " +
 					"INTO article_categories (article_id, categories_id) " +
 					"VALUES (:article_id, :categories_id)"
-			).setParameter("article_id", articleUuid
+			).setParameter("article_id", article.getId()
 			).setParameter("categories_id", categoryId).executeUpdate();
 		}
 
-		return true;
+		return article.getId().toString();
 	}
 
 	@Override

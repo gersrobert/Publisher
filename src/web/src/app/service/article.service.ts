@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {ArticleDetailedDTO, ArticleSimpleListDTO} from '../dto/dtos';
+import {ArticleDetailedDTO, ArticleSimpleListDTO, IdDTO} from '../dto/dtos';
 import {ArticleSimpleDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
@@ -68,7 +68,8 @@ export class ArticleService {
       environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers});
   }
 
-  public insertArticle(articleForm: FormGroup): Observable<any> {
+  public insertArticle(articleForm: FormGroup): Observable<IdDTO> {
+    let id = articleForm.value['id'];
     let title = articleForm.value['title'];
     let categories = articleForm.value['categories'].split(", ");
     let content = articleForm.value['content'];
@@ -76,6 +77,7 @@ export class ArticleService {
 
     if (title != '' && content != '' && authors[0] != null) {
       const body = {
+        id: id,
         title: title,
         categories: categories,
         content: content,
@@ -89,7 +91,7 @@ export class ArticleService {
         'Accept': 'application/json'
       });
 
-      return this.httpClient.post(environment.ROOT_URL + '/article/insert', body, {headers});
+      return this.httpClient.post<IdDTO>(environment.ROOT_URL + '/article/insert', body, {headers});
     }
   }
 

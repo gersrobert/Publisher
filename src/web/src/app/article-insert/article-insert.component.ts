@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SessionService} from '../service/session.service';
 import {Router} from '@angular/router';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
 import {ArticleService} from '../service/article.service';
+import {ArticleDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
 
 @Component({
   selector: 'app-article-insert',
@@ -12,6 +12,8 @@ import {ArticleService} from '../service/article.service';
   styleUrls: ['./article-insert.component.less']
 })
 export class ArticleInsertComponent implements OnInit {
+
+  @Input() updateArticle: ArticleDetailedDTO;
   articleForm: FormGroup;
   insertArticleError = false;
 
@@ -23,20 +25,36 @@ export class ArticleInsertComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.articleForm = this.formBuilder.group({
-      title: '',
-      categories: '',
-      content: ''
-    });
+    if (this.updateArticle == null) {
+      this.articleForm = this.formBuilder.group({
+        id: '',
+        title: '',
+        categories: '',
+        content: ''
+      });
+    } else {
+      let categories = '';
+
+      this.updateArticle.categories.forEach(category => {
+        categories += category.name + ', ';
+      });
+      categories = categories.replace(/, $/, '');
+      this.articleForm = this.formBuilder.group({
+        id: this.updateArticle.id,
+        title: this.updateArticle.title,
+        categories: categories,
+        content: this.updateArticle.content
+      });
+      console.log(this.articleForm);
+    }
   }
 
   public onSubmit() {
-  this.articleService.insertArticle(this.articleForm).subscribe(response => {
+    this.articleService.insertArticle(this.articleForm).subscribe(response => {
       console.log('success', response);
-      this.router.navigate(['home/articleList']);
+      this.router.navigate(['home/articleDetail/' + response.id]);
     }, error => {
       console.log('error', error);
-      this.insertArticleError = true;
     });
   }
 }

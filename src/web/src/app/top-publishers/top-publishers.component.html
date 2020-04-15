@@ -3,7 +3,7 @@
     <mat-card-content>
       <div>
         <span>{{i+1}}</span>
-        <span class="name">{{publisher.name}}</span>
+        <a [routerLink]="['/home/publisherDetail/', publisher.id]" class="name">{{publisher.name}}</a>
         <span class="likeCount">{{publisher.likeCount}}</span>
       </div>
     </mat-card-content>

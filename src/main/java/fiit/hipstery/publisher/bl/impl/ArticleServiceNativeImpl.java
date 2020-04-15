@@ -180,9 +180,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
 		articleSimpleListDTO.setHasMore(false);
-		if (articleSimpleListDTO.isHasMore()) {
-			articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
-		}
+		articleSimpleListDTO.setArticles(parseArticleList(resultList));
 		return articleSimpleListDTO;
 	}
 
@@ -223,9 +221,12 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				.getResultList();
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
-		articleSimpleListDTO.setHasMore(resultList.size() > upperIndex - lowerIndex);
+		Collection<ArticleSimpleDTO> parsed = parseArticleList(resultList);
+		articleSimpleListDTO.setHasMore(parsed.size() > upperIndex - lowerIndex);
 		if (articleSimpleListDTO.isHasMore()) {
-			articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+			articleSimpleListDTO.setArticles(removeLast(parsed));
+		} else {
+			articleSimpleListDTO.setArticles(parsed);
 		}
 		return articleSimpleListDTO;
 	}
@@ -268,9 +269,12 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				.getResultList();
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
-		articleSimpleListDTO.setHasMore(resultList.size() > upperIndex - lowerIndex);
+		Collection<ArticleSimpleDTO> parsed = parseArticleList(resultList);
+		articleSimpleListDTO.setHasMore(parsed.size() > upperIndex - lowerIndex);
 		if (articleSimpleListDTO.isHasMore()) {
-			articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+			articleSimpleListDTO.setArticles(removeLast(parsed));
+		} else {
+			articleSimpleListDTO.setArticles(parsed);
 		}
 		return articleSimpleListDTO;
 	}

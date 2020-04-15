@@ -14,7 +14,7 @@
     </div>
     <div>
       <span class="leftPart">Chart of popularity  :</span>
-      <span class="rightPart" *ngIf="publisher">{{publisher.order}}</span>
+      <a class="rightPart" [routerLink]="['/home/topPublishers']" *ngIf="publisher">{{publisher.order}}</a>
     </div>
   </mat-card-content>
 </mat-card>

@@ -16,6 +16,8 @@ public interface ArticleService {
 
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 
+    ArticleSimpleListDTO getArticlesByAuthor(UUID authorId, UUID currentUserId, int lowerIndex, int upperIndex);
+
     String insertArticle(ArticleInsertDTO article);
 
     void insertComment(CommentInsertDTO comment);

@@ -68,6 +68,14 @@ export class ArticleService {
       environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers});
   }
 
+  public getArticlesByAuthor(authorId: string, lower: number, upper: number): Observable<ArticleSimpleListDTO> {
+    const headers = new HttpHeaders({
+      'Auth-Token': this.sessionService.getSession()
+    });
+
+    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article/author/' + authorId + '/' + lower + '-' + upper, {headers});
+  }
+
   public insertArticle(articleForm: FormGroup): Observable<IdDTO> {
     let id = articleForm.value['id'];
     let title = articleForm.value['title'];

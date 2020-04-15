@@ -23,6 +23,9 @@ export class ArticleListComponent implements OnInit {
   @Input()
   enablePaging = true;
 
+  @Input()
+  enableFilter = true;
+
   filterLabel = 'Filter';
   showFilter = false;
   filterFormGroup: FormGroup;
@@ -68,7 +71,7 @@ export class ArticleListComponent implements OnInit {
   }
 
   public updateArticles(scrollCount: number = 0) {
-    if (this.getLower() + scrollCount * this.pageSize >= 0 && this.hasMore) {
+    if (this.getLower() + scrollCount * this.pageSize >= 0 && (scrollCount < 0 || this.hasMore)) {
       this.pageIndex += scrollCount;
     } else {
       return;

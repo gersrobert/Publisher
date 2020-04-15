@@ -20,5 +20,8 @@ public class IndexScript implements Runnable {
 		entityManager.createNativeQuery("CREATE INDEX ON app_user_article_relation (article_id, app_user_id, relation_type)").executeUpdate();
 		entityManager.createNativeQuery("CREATE INDEX ON article (id, like_count, title)").executeUpdate();
 		entityManager.createNativeQuery("CREATE INDEX ON category (name)").executeUpdate();
+		entityManager.createNativeQuery("CREATE INDEX ON app_user (id, user_name, first_name, last_name)").executeUpdate();
+		entityManager.createNativeQuery("create index on article (like_count DESC)").executeUpdate();
+		entityManager.createNativeQuery("create index on article_categories (article_id, categories_id)").executeUpdate();
 	}
 }

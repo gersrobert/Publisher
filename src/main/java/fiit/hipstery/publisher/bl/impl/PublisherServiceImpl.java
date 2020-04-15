@@ -23,43 +23,32 @@ public class PublisherServiceImpl implements PublisherService {
 
 	@Override
 	public List<PublisherLeadershipDTO> getTopPublishers() {
-		List<Object[]> rows = entityManager.createNativeQuery("SELECT " +
-				"       p.name         AS p_name," +
-				"       p.id           AS p_id," +
-				"       count(auar.id) AS like_count" +
-				"   FROM article a" +
-				"       LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
-				"       JOIN app_user_article_relation auar on a.id = auar.article_id and auar.relation_type = 'LIKE'" +
-				"   GROUP BY p.name, p.id" +
-				"   HAVING count(auar.id) > 10000" +
-				"   ORDER BY like_count DESC").getResultList();
+		List<Object[]> rows = entityManager.createNativeQuery("select * from (" +
+				"    SELECT p.name," +
+				"           p.id," +
+				"           sum(a.like_count) as likes" +
+				"    FROM publisher p" +
+				"    JOIN article a ON p.id = a.publisher_id" +
+				"    GROUP BY p.id) AS p" +
+				"    ORDER BY likes DESC ").getResultList();
 
 		return rows.stream().map(this::rowToLeadershipDto).collect(Collectors.toList());
 	}
 
 	@Override
 	public PublisherDetailedDTO getRowOfPublisher(UUID publisherId) {
-		System.out.println(publisherId);
-		List<Object[]> rows = entityManager.createNativeQuery("WITH a AS ( " +
-		"   	SELECT " +
-		"          p.id as p_id, " +
-		"          p.created_at as p_created_at, " +
-		"          p.name AS p_name, " +
-		"          count(auar.id) AS like_count," +
-		"          row_number() over (ORDER BY count(auar.id) DESC) AS rn " +
-		"      FROM article a " +
-		"          LEFT OUTER JOIN publisher p on a.publisher_id = p.id " +
-		"          JOIN app_user_article_relation auar on a.id = auar.article_id and auar.relation_type = 'LIKE' " +
-		"      GROUP BY p.name, p.id " +
-		"      ORDER BY like_count DESC" +
-		"   ) SELECT " +
-		"       p_id, " +
-		"       p_created_at, " +
-		"       p_name, " +
-		"       like_count, " +
-		"       rn " +
-		"   FROM a " +
-		"   WHERE p_id=:publisher_id").setParameter("publisher_id", publisherId.toString()).getResultList();
+		List<Object[]> rows = entityManager.createNativeQuery("select * from (" +
+				"    SELECT p.id," +
+				"           p.created_at," +
+				"           p.name," +
+				"           sum(a.like_count) AS likes," +
+				"           row_number() OVER (ORDER BY sum(like_count) DESC ) AS rn" +
+				"    FROM publisher p" +
+				"    JOIN article a ON p.id = a.publisher_id" +
+				"    GROUP BY p.id) AS p" +
+				"    WHERE id=:publisher_id")
+				.setParameter("publisher_id", publisherId.toString())
+				.getResultList();
 
 		return rowToDetailedDto(rows.get(0));
 	}

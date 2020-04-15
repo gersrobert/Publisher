@@ -226,6 +226,49 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		return articleSimpleListDTO;
 	}
 
+	@Override
+	public ArticleSimpleListDTO getArticlesByAuthor(UUID authorId, UUID currentUserId, int lowerIndex, int upperIndex) {
+		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
+				"    SELECT a.id" +
+				"    FROM (select * from article ORDER BY like_count DESC) as a" +
+				"    JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"    WHERE aar.app_user_id=:authorId" +
+				"    OFFSET :lower" +
+				"    LIMIT :upper" +
+				" )" +
+				" SELECT art.id," +
+				"       art.title," +
+				"       art.created_at," +
+				"       au.user_name  AS user_name," +
+				"       au.first_name AS first_name," +
+				"       au.last_name  AS last_name," +
+				"       au.id         AS author_id," +
+				"       c.name        AS c_name," +
+				"       c.id          AS c_id," +
+				"       p.name        AS p_name," +
+				"       p.id          AS p_id," +
+				"       art.like_count  AS like_count," +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=art.id AND app_user_id=:currentUser AND relation_type='LIKE') AS liked" +
+				" FROM a" +
+				"         JOIN article art ON art.id = a.id" +
+				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
+				"         JOIN app_user au ON aar.app_user_id = au.id" +
+				"         LEFT OUTER JOIN article_categories ac on art.id = ac.article_id" +
+				"         LEFT OUTER JOIN category c on ac.categories_id = c.id" +
+				"         LEFT OUTER JOIN publisher p on art.publisher_id = p.id" +
+				" ORDER BY like_count DESC")
+				.setParameter("currentUser", currentUserId.toString())
+				.setParameter("authorId", authorId.toString())
+				.setParameter("lower", lowerIndex)
+				.setParameter("upper", upperIndex - lowerIndex + 1)
+				.getResultList();
+
+		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
+		articleSimpleListDTO.setHasMore(resultList.size() > upperIndex - lowerIndex);
+		articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		return articleSimpleListDTO;
+	}
+
 	@Transactional
 	@Override
 	public boolean insertArticle(ArticleInsertDTO article) {
@@ -406,7 +449,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 			CategoryDTO categoryDTO = new CategoryDTO();
 			categoryDTO.setName((String) row[7]);
 			categoryDTO.setId((String) row[8]);
-			articleSimpleDTO.getCategories().add(categoryDTO);
+			if (categoryDTO.getName() != null) {
+				articleSimpleDTO.getCategories().add(categoryDTO);
+			}
 
 			map.put(articleSimpleDTO.getId(), articleSimpleDTO);
 		}

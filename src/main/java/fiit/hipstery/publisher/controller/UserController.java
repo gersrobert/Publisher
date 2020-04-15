@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -87,5 +88,18 @@ public class UserController extends AbstractController {
 		} else {
 			return new ResponseEntity(HttpStatus.FORBIDDEN);
 		}
+	}
+
+	@GetMapping(value = "/actions/{userId}/{articleId}")
+	public ResponseEntity<Collection<String>> getActions(@PathVariable String userId, @PathVariable String articleId) {
+		Collection<String> response;
+		try {
+			response = userService.getActionsForArticle(UUID.fromString(userId), UUID.fromString(articleId));
+		} catch (Exception e) {
+			logger.error("Error registering user", e);
+			throw new InternalServerException(e);
+		}
+
+		return ResponseEntity.ok(response);
 	}
 }

@@ -1,10 +1,10 @@
 package fiit.hipstery.publisher.bl.service;
 
-import com.github.javafaker.App;
 import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.dto.AppUserDetailedDTO;
 import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public interface UserService {
@@ -16,4 +16,6 @@ public interface UserService {
     AppUserDetailedDTO getAppUserDetailed(UUID uuid);
 
     boolean registerAppUser(AppUserWithPasswordDTO user);
+
+    Collection<String> getActionsForArticle(UUID userId, UUID articleId);
 }

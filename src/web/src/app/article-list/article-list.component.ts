@@ -58,6 +58,7 @@ export class ArticleListComponent implements OnInit {
         this.enablePaging = false;
       } else {
         this.enablePaging = true;
+        this.hasMore = true;
       }
       this.updateArticles();
       this.filterLabel = 'Filter';

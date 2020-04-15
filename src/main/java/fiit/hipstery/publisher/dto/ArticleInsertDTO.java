@@ -9,10 +9,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class ArticleInsertDTO {
+	private UUID id;
 	private List<UUID> authors;
 	private String title;
 	private List<String> categories;
 	private String content;
+
+	public UUID getId() {
+		return id;
+	}
+
+	@JsonSetter
+	public void setId(UUID id) {
+		this.id = id;
+	}
 
 	public List<UUID> getAuthors() {
 		return authors;

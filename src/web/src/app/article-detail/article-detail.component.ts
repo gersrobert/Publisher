@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AppUserDTO, ArticleDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
 import {ArticleService} from '../service/article.service';
 import {Converter} from 'showdown';
@@ -36,6 +36,7 @@ export class ArticleDetailComponent implements OnInit {
               private appuserService: AppuserService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
+              private router: Router
   ) {
   }
 
@@ -77,7 +78,7 @@ export class ArticleDetailComponent implements OnInit {
     console.log(action);
 
     if (action === 'edit') {
-
+      this.router.navigate(['home/updateArticle/' + this.article.id]);
     } else if (action === 'delete') {
 
     } else if (action === 'addToCollection') {

@@ -30,6 +30,7 @@ import { PublisherDetailComponent } from './publisher-detail/publisher-detail.co
 import { RegisterUserComponent } from './register-user/register-user.component';
 import { TopPublishersComponent } from './top-publishers/top-publishers.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ArticleUpdateComponent } from './article-update/article-update.component';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     PublisherDetailComponent,
     RegisterUserComponent,
     TopPublishersComponent,
+    ArticleUpdateComponent,
   ],
     imports: [
         BrowserModule,

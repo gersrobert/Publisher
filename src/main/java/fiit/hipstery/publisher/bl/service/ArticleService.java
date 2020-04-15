@@ -18,7 +18,7 @@ public interface ArticleService {
 
     ArticleSimpleListDTO getArticlesByAuthor(UUID authorId, UUID currentUserId, int lowerIndex, int upperIndex);
 
-    boolean insertArticle(ArticleInsertDTO article);
+    String insertArticle(ArticleInsertDTO article);
 
     void insertComment(CommentInsertDTO comment);
 

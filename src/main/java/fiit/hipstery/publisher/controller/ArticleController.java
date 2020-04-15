@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Id;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -107,8 +109,8 @@ public class ArticleController extends AbstractController{
     }
 
     @PostMapping(value = "/insert", headers = "Accept=application/json", produces = "application/json")
-    public ResponseEntity insertArticle(@RequestBody ArticleInsertDTO article) {
-    	boolean response;
+    public ResponseEntity<IdDTO> insertArticle(@RequestBody ArticleInsertDTO article) {
+    	String response;
         try {
             response = articleService.insertArticle(article);
         } catch (Exception e) {
@@ -116,10 +118,12 @@ public class ArticleController extends AbstractController{
             throw new InternalServerException(e);
         }
 
-        if (response) {
-            return new ResponseEntity(HttpStatus.CREATED);
-        } else {
+        if (response == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
+        } else {
+            IdDTO responseDTO = new IdDTO();
+            responseDTO.setId(response);
+            return ResponseEntity.ok(responseDTO);
         }
     }
 

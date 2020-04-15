@@ -14,7 +14,7 @@ export class ArticleListComponent implements OnInit {
 
   @Input() writer: AppUserDetailedDTO;
 
-  hasMore = false;
+  hasMore = true;
   articles: ArticleSimpleDTO[];
 
   readonly pageSize = 10;
@@ -67,11 +67,18 @@ export class ArticleListComponent implements OnInit {
   }
 
   public updateArticles(scrollCount: number = 0) {
-    this.loading = true;
-
     if (this.getLower() + scrollCount * this.pageSize >= 0 && this.hasMore) {
       this.pageIndex += scrollCount;
+    } else {
+      return;
     }
+
+    let receivedReponse = false;
+    setTimeout(() => {
+      if (!receivedReponse) {
+        this.loading = true;
+      }
+    }, 100);
 
     console.log('updating articles');
     let request: Observable<ArticleSimpleListDTO>;
@@ -102,9 +109,11 @@ export class ArticleListComponent implements OnInit {
     }
 
     request.subscribe(response => {
+      receivedReponse = true;
       this.articles = response.articles;
       this.hasMore = response.hasMore;
       console.log(this.articles);
+
       this.loading = false;
     });
   }

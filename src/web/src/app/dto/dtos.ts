@@ -36,7 +36,7 @@ export class AppUserDetailedDTO extends AppUserDTO {
 
 export class ArticleSimpleListDTO {
   public articles: ArticleSimpleDTO[];
-  public numberOfArticles: number;
+  public hasMore: boolean;
 }
 
 export class Category {

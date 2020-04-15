@@ -14,15 +14,20 @@ export class ArticleListComponent implements OnInit {
 
   @Input() writer: AppUserDetailedDTO;
 
-  numberOfArticles = 0;
+  hasMore = false;
   articles: ArticleSimpleDTO[];
 
-  readonly pageSize = 50;
-  lower = 0;
-  upper = this.pageSize;
+  readonly pageSize = 10;
+  pageIndex = 1;
 
+  @Input()
+  enablePaging = true;
+
+  filterLabel = 'Filter';
   showFilter = false;
   filterFormGroup: FormGroup;
+
+  loading = false;
 
   constructor(private articleService: ArticleService,
               public router: Router,
@@ -44,15 +49,30 @@ export class ArticleListComponent implements OnInit {
     this.showFilter = !this.showFilter;
 
     if (!this.showFilter) {
+      if (this.filterFormGroup.get('title').value.length > 2 ||
+        this.filterFormGroup.get('author').value.length > 2 ||
+        this.filterFormGroup.get('category').value.length > 2 ||
+        this.filterFormGroup.get('publisher').value.length > 2) {
+
+        this.pageIndex = 1;
+        this.enablePaging = false;
+      } else {
+        this.enablePaging = true;
+      }
       this.updateArticles();
+      this.filterLabel = 'Filter';
+    } else {
+      this.filterLabel = 'Apply Filter';
     }
   }
 
   public updateArticles(scrollCount: number = 0) {
-    if (this.lower + scrollCount >= 0 && this.lower + scrollCount < this.numberOfArticles) {
-      this.lower += scrollCount;
-      this.upper += scrollCount;
+    this.loading = true;
+
+    if (this.getLower() + scrollCount * this.pageSize >= 0 && this.hasMore) {
+      this.pageIndex += scrollCount;
     }
+
     console.log('updating articles');
     let request: Observable<ArticleSimpleListDTO>;
     if (this.filterFormGroup.get('title').value.length > 2 ||
@@ -65,7 +85,7 @@ export class ArticleListComponent implements OnInit {
         this.filterFormGroup.get('author').value,
         this.filterFormGroup.get('category').value,
         this.filterFormGroup.get('publisher').value,
-        this.lower, this.upper);
+        this.getLower(), this.getUpper());
 
     } else if (this.writer != null) {
       console.log(this.writer.id);
@@ -76,23 +96,25 @@ export class ArticleListComponent implements OnInit {
         this.writer.firstName + ' ' + this.writer.lastName,
         this.filterFormGroup.get('category').value,
         this.filterFormGroup.get('publisher').value,
-        this.lower, this.upper);
+        this.getLower(), this.getUpper());
     } else {
-      request = this.articleService.getArticlesInRange(this.lower, this.upper);
+      request = this.articleService.getArticlesInRange(this.getLower(), this.getUpper());
     }
 
     request.subscribe(response => {
-      if (response.numberOfArticles > 0 && this.lower >= response.numberOfArticles) {
-        this.upper = this.pageSize;
-        this.lower = 0;
-        this.updateArticles(0);
-        return;
-      }
-
       this.articles = response.articles;
-      this.numberOfArticles = response.numberOfArticles;
+      this.hasMore = response.hasMore;
       console.log(this.articles);
+      this.loading = false;
     });
+  }
+
+  private getLower() {
+    return (this.pageIndex - 1) * this.pageSize;
+  }
+
+  private getUpper() {
+    return this.pageIndex * this.pageSize;
   }
 
   public likeArticle(article: ArticleSimpleDTO) {

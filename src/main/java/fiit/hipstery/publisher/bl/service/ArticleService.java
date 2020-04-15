@@ -3,7 +3,6 @@ package fiit.hipstery.publisher.bl.service;
 import fiit.hipstery.publisher.dto.*;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +12,7 @@ public interface ArticleService {
 
     ArticleSimpleListDTO getArticles(FilterCriteria filterCriteria, UUID currentUser);
 
-    Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser);
+    ArticleSimpleListDTO getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser);
 
     List<ArticleSimpleDTO> getArticleListForUser(UUID userId);
 

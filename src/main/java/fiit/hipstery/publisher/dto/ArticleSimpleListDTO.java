@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ArticleSimpleListDTO {
 	protected Collection<ArticleSimpleDTO> articles;
-	protected int numberOfArticles;
+	protected boolean hasMore;
 
 	public Collection<ArticleSimpleDTO> getArticles() {
 		return articles;
@@ -16,11 +16,11 @@ public class ArticleSimpleListDTO {
 		this.articles = articles;
 	}
 
-	public int getNumberOfArticles() {
-		return numberOfArticles;
+	public boolean isHasMore() {
+		return hasMore;
 	}
 
-	public void setNumberOfArticles(int numberOfArticles) {
-		this.numberOfArticles = numberOfArticles;
+	public void setHasMore(boolean hasMore) {
+		this.hasMore = hasMore;
 	}
 }

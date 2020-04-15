@@ -2,7 +2,7 @@
 
   <button mat-button (click)="toggleFilter()" class="filter-button">
     <mat-icon style="margin-right: .5em">filter_list</mat-icon>
-    Filter
+    <span>{{filterLabel}}</span>
   </button>
 
   <form [formGroup]="filterFormGroup" *ngIf="showFilter">
@@ -47,29 +47,31 @@
 
 </div>
 
-<div class="paging" *ngIf="articles && articles.length > 0">
-  <button mat-icon-button (click)="updateArticles(-pageSize)">
+<div class="paging" *ngIf="enablePaging && articles && articles.length > 0">
+  <button mat-icon-button (click)="updateArticles(-1)">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
   <div class="paging-text">
-    <span [textContent]="lower"></span>
-    <span>-</span>
-    <span [textContent]="upper"></span>
-    <span>/</span>
-    <span [textContent]="numberOfArticles"></span>
+    <span>Page </span>
+    <span [textContent]="pageIndex"></span>
   </div>
 
-  <button mat-icon-button (click)="updateArticles(pageSize)">
+  <button mat-icon-button (click)="updateArticles(1)">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>
 
-<div class="no-content-message" *ngIf="!articles || articles.length == 0">
+<div class="loading" *ngIf="loading">
+  <mat-spinner diameter="30"></mat-spinner>
+</div>
+
+<div class="no-content-message" *ngIf="!loading && (!articles || articles.length == 0)">
   <mat-icon>block</mat-icon>
   <span>No articles found</span>
 </div>
 
+<div *ngIf="!loading">
 <div *ngFor="let article of articles">
 
   <mat-card>
@@ -104,21 +106,19 @@
   </mat-card>
 
 </div>
+</div>
 
-<div class="paging" *ngIf="articles && articles.length > 0">
-  <button mat-icon-button (click)="updateArticles(-pageSize)">
+<div class="paging" *ngIf="enablePaging && articles && articles.length > 0">
+  <button mat-icon-button (click)="updateArticles(-1)">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
   <div class="paging-text">
-    <span [textContent]="lower"></span>
-    <span>-</span>
-    <span [textContent]="upper"></span>
-    <span>/</span>
-    <span [textContent]="numberOfArticles"></span>
+    <span>Page </span>
+    <span [textContent]="pageIndex"></span>
   </div>
 
-  <button mat-icon-button (click)="updateArticles(pageSize)">
+  <button mat-icon-button (click)="updateArticles(1)">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>

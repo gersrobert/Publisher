@@ -128,21 +128,18 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		}
 
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
-				"    SELECT a.id, count(1) OVER() as len" +
-				"            FROM article a" +
+				"    SELECT a.id" +
+				"            FROM (select * from article ORDER BY like_count DESC) as a" +
 				"                     JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"                     JOIN app_user au ON aar.app_user_id = au.id" +
 				"                     LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
 				"                     LEFT OUTER JOIN category c on ac.categories_id = c.id" +
 				"                     LEFT OUTER JOIN publisher p on a.publisher_id = p.id" +
-				"            GROUP BY a.id" +
-				"            HAVING lower((array_agg(a.title))[1]) LIKE lower(('%' || :title || '%'))" +
+				"            GROUP BY a.id, a.title" +
+				"            HAVING lower(a.title) LIKE lower(('%' || :title || '%'))" +
 				"               AND ('%' || :firstName || '%' || :lastName || '%') ~~~~ ANY(array_agg(au.first_name || au.last_name))" +
 				"               AND ('%' || :category || '%') ~~~~ ANY(array_agg(c.name))" +
 				"               AND lower((array_agg(p.name))[1]) LIKE lower('%' || :publisher || '%')" +
-				"            ORDER BY max(a.like_count) DESC" +
-				"                OFFSET :lowerIndex ROWS" +
-				"            FETCH NEXT :upperIndex ROWS ONLY" +
 				"   )" +
 				"   SELECT art.id," +
 				"       art.title," +
@@ -156,8 +153,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
 				"       art.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND relation_type='LIKE') AS liked," +
-				"       a.len AS len" +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND relation_type='LIKE') AS liked" +
 				"   FROM a" +
 				"         JOIN article art ON art.id = a.id" +
 				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
@@ -173,29 +169,25 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				.setParameter("lastName", lastName)
 				.setParameter("category", filterCriteria.getCategory())
 				.setParameter("publisher", filterCriteria.getPublisher())
-				.setParameter("lowerIndex", filterCriteria.getLowerIndex())
-				.setParameter("upperIndex", filterCriteria.getUpperIndex() == -1 ?
-						Integer.MAX_VALUE :
-						filterCriteria.getUpperIndex() - filterCriteria.getLowerIndex())
 				.getResultList();
 
 		if (resultList.size() == 0) {
 			ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
-			articleSimpleListDTO.setNumberOfArticles(0);
+			articleSimpleListDTO.setHasMore(false);
 			articleSimpleListDTO.setArticles(new ArrayList<>());
 			return articleSimpleListDTO;
 		}
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
-		articleSimpleListDTO.setNumberOfArticles(((Number) resultList.get(0)[13]).intValue());
+		articleSimpleListDTO.setHasMore(false);
 		articleSimpleListDTO.setArticles(parseArticleList(resultList));
 		return articleSimpleListDTO;
 	}
 
 	@Override
-	public Collection<ArticleSimpleDTO> getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser) {
+	public ArticleSimpleListDTO getArticlesInRange(int lowerIndex, int upperIndex, UUID currentUser) {
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
-				"    SELECT a.id, count(1) OVER() as len" +
+				"    SELECT a.id" +
 				"            FROM article a" +
 				"            ORDER BY a.like_count DESC" +
 				"                OFFSET :lowerIndex ROWS" +
@@ -213,8 +205,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"       p.name        AS p_name," +
 				"       p.id          AS p_id," +
 				"       art.like_count  AS like_count," +
-				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND relation_type='LIKE') AS liked," +
-				"       a.len AS len" +
+				"       exists(SELECT id FROM app_user_article_relation WHERE article_id=a.id AND app_user_id=:currentUser AND relation_type='LIKE') AS liked" +
 				"   FROM a" +
 				"         JOIN article art ON art.id = a.id" +
 				"         JOIN app_user_article_relation aar ON art.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
@@ -225,11 +216,14 @@ public class ArticleServiceNativeImpl implements ArticleService {
 				"   WHERE art.id = a.id" +
 				"   ORDER BY like_count DESC")
 				.setParameter("lowerIndex", lowerIndex)
-				.setParameter("upperIndex", upperIndex - lowerIndex)
+				.setParameter("upperIndex", upperIndex - lowerIndex + 1)
 				.setParameter("currentUser", currentUser.toString())
 				.getResultList();
 
-		return parseArticleList(resultList);
+		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
+		articleSimpleListDTO.setHasMore(resultList.size() > upperIndex - lowerIndex);
+		articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		return articleSimpleListDTO;
 	}
 
 	@Transactional
@@ -418,5 +412,19 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		}
 
 		return map.values();
+	}
+
+	private Collection<ArticleSimpleDTO> removeLast(Collection<ArticleSimpleDTO> parsed) {
+		Iterator<ArticleSimpleDTO> iterator = parsed.iterator();
+		ArticleSimpleDTO prev = null;
+
+		Collection<ArticleSimpleDTO> articleSimpleDTOS = new ArrayList<>();
+		while (iterator.hasNext()) {
+			if (prev != null) {
+				articleSimpleDTOS.add(prev);
+			}
+			prev = iterator.next();
+		}
+		return articleSimpleDTOS;
 	}
 }

@@ -69,10 +69,9 @@ public class ArticleController extends AbstractController{
     @GetMapping("/index/{lowerIndex}-{upperIndex}")
     public ResponseEntity<ArticleSimpleListDTO> getArticlesInRange(
             @PathVariable int lowerIndex, @PathVariable int upperIndex, @RequestHeader("Auth-Token") String userId) {
-        ArticleSimpleListDTO response = new ArticleSimpleListDTO();
+        ArticleSimpleListDTO response;
         try {
-            response.setArticles(articleService.getArticlesInRange(lowerIndex, upperIndex, UUID.fromString(userId)));
-            response.setNumberOfArticles(articleService.getNumberOfArticles());
+            response = articleService.getArticlesInRange(lowerIndex, upperIndex, UUID.fromString(userId));
         } catch (Exception e) {
             logger.error("Error getting article list in range from " + lowerIndex + " to " + upperIndex, e);
             throw new InternalServerException(e);

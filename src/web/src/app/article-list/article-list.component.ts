@@ -37,11 +37,15 @@ export class ArticleListComponent implements OnInit {
       publisher: '',
     });
 
-    this.filterFormGroup.valueChanges.subscribe(value => {
-      this.updateArticles();
-    });
-
     this.updateArticles();
+  }
+
+  public toggleFilter() {
+    this.showFilter = !this.showFilter;
+
+    if (!this.showFilter) {
+      this.updateArticles();
+    }
   }
 
   public updateArticles(scrollCount: number = 0) {
@@ -49,7 +53,7 @@ export class ArticleListComponent implements OnInit {
       this.lower += scrollCount;
       this.upper += scrollCount;
     }
-
+    console.log('updating articles');
     let request: Observable<ArticleSimpleListDTO>;
     if (this.filterFormGroup.get('title').value.length > 2 ||
       this.filterFormGroup.get('author').value.length > 2 ||

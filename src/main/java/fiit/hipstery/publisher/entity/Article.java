@@ -18,7 +18,7 @@ public class Article extends AbstractEntity {
     @ManyToMany
     protected List<Category> categories;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", cascade=CascadeType.PERSIST)
     protected List<Comment> comments;
 
     @Type(type="text")

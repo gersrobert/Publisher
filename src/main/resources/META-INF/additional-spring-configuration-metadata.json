@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "publisher.initDb.appuser.reader_count",
+      "type": "java.lang.Integer",
+      "description": "Description for publisher.initDb.appuser.reader_count."
+    },
+    {
+      "name": "publisher.initDb.appuser.max_writers_per_publisher",
+      "type": "java.lang.Integer",
+      "description": "Description for publisher.initDb.appuser.max_writers_per_publisher."
+    }
+  ] }

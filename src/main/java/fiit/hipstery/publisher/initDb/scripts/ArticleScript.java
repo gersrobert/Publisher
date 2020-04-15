@@ -26,17 +26,15 @@ public class ArticleScript extends InitDbScript {
 	@Autowired
 	private EntityCache<Publisher> publisherEntityCache;
 
-	@Autowired
-	private EntityCache<Article> articleEntityCache;
-
 	private Map<String, Category> categoryMap = new HashMap<>();
 
 	@Override
 	@Transactional
 	public void run() {
 		List<ArticleDTO> articleContent = publisherFaker.getArticleContent();
-
 		articleContent.forEach(articleDTO -> {
+			logger.info("Persisting article");
+
 			Article article = new Article();
 			article.setTitle(articleDTO.getTitle());
 			article.setContent(articleDTO.getContent());
@@ -54,11 +52,19 @@ public class ArticleScript extends InitDbScript {
 			}).collect(Collectors.toList()));
 			article.setPublisher(publisherEntityCache.getRandom("publisher"));
 
-			int likeCount = (int) (Math.random() * (appUserEntityCache.get("appUser").size() * 0.025) * 2);
+			int likeCount = (int) (Math.random() * 5000) + 1000;
 			article.setLikeCount(likeCount);
 
+			int commentCount = (int) (Math.random() * 5);
+			for (int i = 0; i < commentCount; i++) {
+				Comment comment = new Comment();
+				comment.setArticle(article);
+				comment.setAuthor(appUserEntityCache.getRandom("appUser"));
+				comment.setContent(faker.rickAndMorty().quote());
+				entityManager.persist(comment);
+			}
+
 			entityManager.persist(article);
-			articleEntityCache.append("article", article);
 
 			double random = Math.random();
 			if (random > 0) {
@@ -71,10 +77,11 @@ public class ArticleScript extends InitDbScript {
 				persistRelation(article, AppUserArticleRelation.RelationType.AUTHOR);
 			}
 
-			for (int i = 0; i < likeCount; i++) {
+			for (int i = 0; i < article.getLikeCount(); i++) {
 				persistRelation(article, AppUserArticleRelation.RelationType.LIKE);
 			}
 		});
+
 	}
 
 	private void persistRelation(Article article, AppUserArticleRelation.RelationType relationType) {

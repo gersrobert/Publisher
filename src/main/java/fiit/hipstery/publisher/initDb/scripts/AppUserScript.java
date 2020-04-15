@@ -7,6 +7,7 @@ import fiit.hipstery.publisher.entity.Role;
 import fiit.hipstery.publisher.initDb.InitDbScript;
 import fiit.hipstery.publisher.initDb.config.EntityCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,11 @@ import java.util.*;
 @Profile("initDb")
 public class AppUserScript extends InitDbScript {
 
-	public static final int READER_COUNT = 100_000;
-	public static final int MAX_WRITERS_PER_PUBLISHER = 10;
+	@Value("${publisher.initDb.appuser.reader_count}")
+	private int READER_COUNT;
+
+	@Value("${publisher.initDb.appuser.max_writers_per_publisher}")
+	private int MAX_WRITERS_PER_PUBLISHER;
 
 	private Role writer;
 	private Role reader;
@@ -45,7 +49,7 @@ public class AppUserScript extends InitDbScript {
 		publisher_owner = roleEntityCache.get("role").stream().filter(role -> role.getName().equals("publisher_owner")).findAny().orElseThrow();
 		admin = roleEntityCache.get("role").stream().filter(role -> role.getName().equals("admin")).findAny().orElseThrow();
 
-		createUser(null, admin);
+		createDefaultUsers();
 		for (Publisher publisher : publisherEntityCache.get("publisher")) {
 			createUser(publisher, reader, writer, publisher_owner);
 
@@ -80,6 +84,47 @@ public class AppUserScript extends InitDbScript {
 			user.setPublisher(publisherEntityCache.getRandom("publisher"));
 			appUserCache.append("author" + user.getPublisher().getName(), user);
 		}
+	}
+
+	private void createDefaultUsers() {
+		AppUser reader = new AppUser();
+		reader.setFirstName("Vili");
+		reader.setLastName("Citatel");
+		reader.setUserName("reader");
+		reader.setPasswordHash("56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005"); // sha256 hashed "heslo"
+		reader.setRoles(Collections.singletonList(this.reader));
+		entityManager.persist(reader);
+		appUserCache.append("appUser", reader);
+
+		AppUser writer = new AppUser();
+		writer.setFirstName("Domino");
+		writer.setLastName("Spisovatel");
+		writer.setUserName("writer");
+		writer.setPasswordHash("56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005"); // sha256 hashed "heslo"
+		writer.setRoles(Arrays.asList(this.reader, this.writer));
+		writer.setPublisher(publisherEntityCache.get("publisher").get(0));
+		entityManager.persist(writer);
+		appUserCache.append("appUser", writer);
+		appUserCache.append("author" + writer.getPublisher().getName(), writer);
+
+		AppUser publisher = new AppUser();
+		publisher.setFirstName("Janik");
+		publisher.setLastName("Publisher");
+		publisher.setUserName("publisher");
+		publisher.setPasswordHash("56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005"); // sha256 hashed "heslo"
+		publisher.setRoles(Arrays.asList(this.reader, this.writer, this.publisher_owner));
+		publisher.setPublisher(publisherEntityCache.get("publisher").get(0));
+		entityManager.persist(publisher);
+		appUserCache.append("appUser", publisher);
+		appUserCache.append("author" + publisher.getPublisher().getName(), publisher);
+
+		AppUser admin = new AppUser();
+		admin.setFirstName("Admin");
+		admin.setLastName("Admin");
+		admin.setUserName("admin");
+		admin.setPasswordHash("56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005"); // sha256 hashed "heslo"
+		admin.setRoles(Collections.singletonList(this.admin));
+		entityManager.persist(admin);
 	}
 
 	public abstract static class UserNameGenerator {

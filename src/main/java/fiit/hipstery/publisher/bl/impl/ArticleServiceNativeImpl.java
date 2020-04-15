@@ -180,7 +180,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
 		articleSimpleListDTO.setHasMore(false);
-		articleSimpleListDTO.setArticles(parseArticleList(resultList));
+		if (articleSimpleListDTO.isHasMore()) {
+			articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		}
 		return articleSimpleListDTO;
 	}
 
@@ -222,7 +224,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
 		articleSimpleListDTO.setHasMore(resultList.size() > upperIndex - lowerIndex);
-		articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		if (articleSimpleListDTO.isHasMore()) {
+			articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		}
 		return articleSimpleListDTO;
 	}
 
@@ -265,7 +269,9 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 		ArticleSimpleListDTO articleSimpleListDTO = new ArticleSimpleListDTO();
 		articleSimpleListDTO.setHasMore(resultList.size() > upperIndex - lowerIndex);
-		articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		if (articleSimpleListDTO.isHasMore()) {
+			articleSimpleListDTO.setArticles(removeLast(parseArticleList(resultList)));
+		}
 		return articleSimpleListDTO;
 	}
 

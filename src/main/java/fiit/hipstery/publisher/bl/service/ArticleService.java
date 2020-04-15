@@ -20,6 +20,8 @@ public interface ArticleService {
 
     String insertArticle(ArticleInsertDTO article);
 
+    boolean deleteArticle(UUID articleId);
+
     void insertComment(CommentInsertDTO comment);
 
     int likeArticle(UUID articleId, UUID userId);

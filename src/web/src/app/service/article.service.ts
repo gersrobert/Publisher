@@ -103,6 +103,10 @@ export class ArticleService {
     }
   }
 
+  public deleteArticle(articleId: string) {
+    return this.httpClient.delete(environment.ROOT_URL + '/article/delete/' + articleId);
+  }
+
   public insertComment(articleId: string, commentForm: FormGroup) {
 
     const body = {

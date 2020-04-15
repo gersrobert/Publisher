@@ -373,6 +373,18 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 	@Override
 	@Transactional
+	public boolean deleteArticle(UUID articleId) {
+		System.out.println(articleId);
+		entityManager.createNativeQuery("UPDATE article " +
+				"SET updated_at = :updated_at, state = 'DELETED' " +
+				"WHERE id = :article_id")
+				.setParameter("article_id", articleId.toString())
+				.setParameter("updated_at", LocalDateTime.now()).executeUpdate();
+		return true;
+	}
+
+	@Override
+	@Transactional
 	public void insertComment(CommentInsertDTO comment) {
 		entityManager.createNativeQuery("INSERT " +
 				"   INTO comment (id, created_at, state, updated_at, article_id, content, author_id)" +

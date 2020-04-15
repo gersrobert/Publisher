@@ -80,7 +80,13 @@ export class ArticleDetailComponent implements OnInit {
     if (action === 'edit') {
       this.router.navigate(['home/updateArticle/' + this.article.id]);
     } else if (action === 'delete') {
-
+      this.articleService.deleteArticle(this.article.id).subscribe(response => {
+          this.router.navigate(['home/articleList']);
+          console.log("Successful");
+        }, error => {
+          console.log("Couldn't delete article");
+        }
+      );
     } else if (action === 'addToCollection') {
 
     }

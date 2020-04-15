@@ -127,6 +127,19 @@ public class ArticleController extends AbstractController{
         }
     }
 
+    @DeleteMapping("/delete/{articleId}")
+    public ResponseEntity deleteArticle(@PathVariable String articleId) {
+        boolean response;
+        try {
+            response = articleService.deleteArticle(UUID.fromString(articleId));
+        } catch (Exception e) {
+            logger.error("Error deleting article", e);
+            throw new InternalServerException(e);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping(value = "/insert/comment", headers = "Accept=application/json", produces = "application/json")
     public ResponseEntity insertComment(@RequestBody CommentInsertDTO comment) {
         try {

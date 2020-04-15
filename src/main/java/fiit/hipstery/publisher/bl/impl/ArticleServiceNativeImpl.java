@@ -131,7 +131,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
 				"    SELECT a.id" +
-				"            FROM (select * from article ORDER BY like_count DESC) as a" +
+				"            FROM (select * from article WHERE state='ACTIVE' ORDER BY like_count DESC) as a" +
 				"                     JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"                     JOIN app_user au ON aar.app_user_id = au.id" +
 				"                     LEFT OUTER JOIN article_categories ac on a.id = ac.article_id" +
@@ -191,6 +191,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
 				"    SELECT a.id" +
 				"            FROM article a" +
+				"            WHERE state='ACTIVE'" +
 				"            ORDER BY a.like_count DESC" +
 				"                OFFSET :lowerIndex ROWS" +
 				"            FETCH NEXT :upperIndex ROWS ONLY" +
@@ -237,7 +238,7 @@ public class ArticleServiceNativeImpl implements ArticleService {
 	public ArticleSimpleListDTO getArticlesByAuthor(UUID authorId, UUID currentUserId, int lowerIndex, int upperIndex) {
 		List<Object[]> resultList = entityManager.createNativeQuery("WITH a AS (" +
 				"    SELECT a.id" +
-				"    FROM (select * from article ORDER BY like_count DESC) as a" +
+				"    FROM (select * from article WHERE state='ACTIVE' ORDER BY like_count DESC) as a" +
 				"    JOIN app_user_article_relation aar ON a.id = aar.article_id AND aar.relation_type = 'AUTHOR'" +
 				"    WHERE aar.app_user_id=:authorId" +
 				"    OFFSET :lower" +

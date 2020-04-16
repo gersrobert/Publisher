@@ -21,6 +21,9 @@ create table category
 
 alter table category owner to postgres;
 
+create index category_name_idx
+    on category (name);
+
 create table publisher
 (
     id varchar(255) not null
@@ -55,6 +58,9 @@ create table app_user
 
 alter table app_user owner to postgres;
 
+create index app_user_id_user_name_first_name_last_name_idx
+    on app_user (id, user_name, first_name, last_name);
+
 create table app_user_subscribed_categories
 (
     app_user_id varchar(255) not null
@@ -76,6 +82,7 @@ create table article
     state varchar(255),
     updated_at timestamp,
     content text,
+    like_count integer not null,
     title varchar(255),
     publisher_id varchar(255)
         constraint fkad5iivhsmwwugsh8yj77jlk0i
@@ -103,11 +110,14 @@ create table app_user_article_relation
 
 alter table app_user_article_relation owner to postgres;
 
-create index idxp6am8mryjykoe3n5amtbqqbck
-    on app_user_article_relation (article_id);
+create index app_user_article_relation_article_id_app_user_id_relation_t_idx
+    on app_user_article_relation (article_id, app_user_id, relation_type);
 
-create index idxefq25xury3o8eouemsxp45dik
-    on app_user_article_relation (app_user_id);
+create index article_id_like_count_title_idx
+    on article (id, like_count, title);
+
+create index article_like_count_idx
+    on article (like_count desc);
 
 create table article_categories
 (
@@ -120,6 +130,9 @@ create table article_categories
 );
 
 alter table article_categories owner to postgres;
+
+create index article_categories_article_id_categories_id_idx
+    on article_categories (article_id, categories_id);
 
 create table collection
 (
@@ -220,4 +233,16 @@ create table app_user_roles
 );
 
 alter table app_user_roles owner to postgres;
+
+create function like_rev(text, text) returns boolean
+    language sql
+as $$
+select $2 like $1
+$$;
+
+alter function like_rev(text, text) owner to postgres;
+
+create operator ~~~~ (procedure = like_rev, leftarg = text, rightarg = text);
+
+alter operator ~~~~(text, text) owner to postgres;
 

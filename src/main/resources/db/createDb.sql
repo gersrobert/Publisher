@@ -1,6 +1,4 @@
-create schema public;
-
-comment on schema public is 'standard public schema';
+create schema if not exists public;
 
 alter schema public owner to postgres;
 

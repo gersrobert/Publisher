@@ -23,7 +23,7 @@ public class PublisherServiceImpl implements PublisherService {
 
 	@Override
 	public List<PublisherLeadershipDTO> getTopPublishers() {
-		List<Object[]> rows = entityManager.createNativeQuery("select * from (" +
+		List<Object[]> rows = entityManager.createNativeQuery("SELECT * FROM (" +
 				"    SELECT p.name," +
 				"           p.id," +
 				"           sum(a.like_count) as likes" +
@@ -37,7 +37,7 @@ public class PublisherServiceImpl implements PublisherService {
 
 	@Override
 	public PublisherDetailedDTO getRowOfPublisher(UUID publisherId) {
-		List<Object[]> rows = entityManager.createNativeQuery("select * from (" +
+		List<Object[]> rows = entityManager.createNativeQuery("SELECT * FROM (" +
 				"    SELECT p.id," +
 				"           p.created_at," +
 				"           p.name," +

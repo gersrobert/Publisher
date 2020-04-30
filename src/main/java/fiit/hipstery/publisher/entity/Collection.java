@@ -13,6 +13,8 @@ public class Collection extends AbstractEntity {
 
 	protected String description;
 
+	protected String title;
+
 	@ManyToMany
 	protected List<Article> articles;
 
@@ -38,5 +40,13 @@ public class Collection extends AbstractEntity {
 
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

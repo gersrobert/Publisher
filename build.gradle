@@ -18,6 +18,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+	compile('org.modelmapper:modelmapper:1.1.0')
+
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	compile group: 'com.github.javafaker', name: 'javafaker', version: '0.15'
 

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AppuserService} from '../service/appuser.service';
-import {AppUserDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
-import {ArticleService} from '../service/article.service';
+import {AppuserService} from '../core/service/appuser.service';
+import {AppUserDetailedDTO, ArticleSimpleDTO} from '../core/dto/dtos';
+import {ArticleService} from '../core/service/article.service';
 
 @Component({
   selector: 'app-user-detail',

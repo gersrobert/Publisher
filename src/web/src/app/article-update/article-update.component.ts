@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ArticleDetailedDTO} from '../dto/dtos';
-import {ArticleService} from '../service/article.service';
+import {ArticleDetailedDTO} from '../core/dto/dtos';
+import {ArticleService} from '../core/service/article.service';
 
 @Component({
   selector: 'app-article-update',

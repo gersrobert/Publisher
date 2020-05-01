@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ArticleDetailedDTO, ArticleSimpleDTO} from './dto/dtos';
+import {ArticleDetailedDTO, ArticleSimpleDTO} from './core/dto/dtos';
 import {environment} from '../environments/environment';
-import {ArticleService} from './service/article.service';
+import {ArticleService} from './core/service/article.service';
 
 @Component({
   selector: 'app-root',

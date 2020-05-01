@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Publisher} from '../dto/dtos';
-import {PublisherService} from '../service/publisher.service';
+import {Publisher} from '../core/dto/dtos';
+import {PublisherService} from '../core/service/publisher.service';
 
 @Component({
   selector: 'app-top-publishers',

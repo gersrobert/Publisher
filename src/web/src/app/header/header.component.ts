@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
-import {AppUserDTO} from '../../dto/dtos';
-import {SessionService} from '../../service/session.service';
+import {AppUserDTO} from '../core/dto/dtos';
+import {SessionService} from '../core/service/session.service';
 import {Router} from '@angular/router';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {Publisher} from '../dto/dtos';
+import {Publisher} from '../core/dto/dtos';
 import {ActivatedRoute} from '@angular/router';
-import {PublisherService} from '../service/publisher.service';
+import {PublisherService} from '../core/service/publisher.service';
 
 @Component({
   selector: 'app-publisher-detail',

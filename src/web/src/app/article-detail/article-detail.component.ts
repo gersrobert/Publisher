@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AppUserDTO, ArticleDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
-import {ArticleService} from '../service/article.service';
+import {AppUserDTO, ArticleDetailedDTO, ArticleSimpleDTO, CollectionDTO} from '../core/dto/dtos';
+import {ArticleService} from '../core/service/article.service';
 import {Converter} from 'showdown';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {AppuserService} from '../service/appuser.service';
+import {AppuserService} from '../core/service/appuser.service';
+import {CollectionService} from '../core/service/collection.service';
 
 @Component({
   selector: 'app-article-detail',
@@ -16,24 +17,33 @@ export class ArticleDetailComponent implements OnInit {
   commentForm: FormGroup;
   id: string;
 
-  actions;
-  private readonly actionList = {
+  @ViewChild('collectionsMenu')
+  set collectionsMenu(collectionsMenu) {
+    this.actionList.addToCollection.triggerMenu = collectionsMenu;
+  }
+
+  actions: any;
+  private actionList = {
     addToCollection: {
       label: 'Add to Collection',
-      action: 'addToCollection'
+      action: 'addToCollection',
+      triggerMenu: undefined
     },
     edit: {
       label: 'Edit',
-      action: 'edit'
+      action: 'edit',
     },
     delete: {
       label: 'Delete',
-      action: 'delete'
+      action: 'delete',
     },
   };
 
+  collections: CollectionDTO[] = [];
+
   constructor(private articleService: ArticleService,
               private appuserService: AppuserService,
+              private collectionService: CollectionService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
               private router: Router
@@ -62,6 +72,7 @@ export class ArticleDetailComponent implements OnInit {
   private getActions() {
     this.appuserService.getActions(this.id).subscribe(response => {
       this.actions = [];
+      console.log(this.actionList);
       for (let item of response) {
         if (item === 'addToCollection') {
           this.actions.push(this.actionList.addToCollection);
@@ -82,13 +93,13 @@ export class ArticleDetailComponent implements OnInit {
     } else if (action === 'delete') {
       this.articleService.deleteArticle(this.article.id).subscribe(response => {
           this.router.navigate(['home/articleList']);
-          console.log("Successful");
+          console.log('Successful');
         }, error => {
-          console.log("Couldn't delete article");
+          console.log('Couldn\'t delete article');
         }
       );
     } else if (action === 'addToCollection') {
-
+      this.collectionService.getCollectionForUser().subscribe(result => this.collections = result);
     }
   }
 
@@ -119,5 +130,13 @@ export class ArticleDetailComponent implements OnInit {
         this.article = response;
       });
     }, 100);
+  }
+
+  public assignToCollection(collection: CollectionDTO) {
+    console.log('assign');
+    this.collectionService.assignToCollection(this.article.id, collection.id).subscribe(
+      result => {},
+      error => console.log(error.error)
+      );
   }
 }

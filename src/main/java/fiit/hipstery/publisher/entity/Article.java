@@ -3,6 +3,7 @@ package fiit.hipstery.publisher.entity;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,6 +26,8 @@ public class Article extends AbstractEntity {
     protected String content;
 
     protected int likeCount;
+
+    protected transient boolean liked;
 
     public String getTitle() {
         return title;
@@ -72,5 +75,13 @@ public class Article extends AbstractEntity {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 }

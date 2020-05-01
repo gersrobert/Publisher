@@ -3,6 +3,7 @@ package fiit.hipstery.publisher.entity;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,7 @@ public class Collection extends AbstractEntity {
 	protected String title;
 
 	@ManyToMany
+	@OrderBy(value = "likeCount desc")
 	protected List<Article> articles;
 
 	public AppUser getAuthor() {

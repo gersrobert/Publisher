@@ -10,6 +10,8 @@ import {PublisherDetailComponent} from './publisher-detail/publisher-detail.comp
 import {RegisterUserComponent} from './register-user/register-user.component';
 import {TopPublishersComponent} from './top-publishers/top-publishers.component';
 import {ArticleUpdateComponent} from './article-update/article-update.component';
+import {CollectionDetailComponent} from './collection-detail/collection-detail.component';
+import {CollectionListComponent} from './collection-list/collection-list.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'home/articleList', pathMatch: 'full'},
@@ -22,7 +24,8 @@ const routes: Routes = [
   {path: 'home/userDetail/:id', component: UserDetailComponent, canActivate: [LoginRedirect]},
   {path: 'home/publisherDetail/:id', component: PublisherDetailComponent, canActivate: [LoginRedirect]},
   {path: 'home/topPublishers', component: TopPublishersComponent, canActivate: [LoginRedirect]},
-
+  {path: 'home/collectionList', component: CollectionListComponent, canActivate: [LoginRedirect]},
+  {path: 'home/collectionDetail/:id', component: CollectionDetailComponent, canActivate: [LoginRedirect]},
 ];
 
 @NgModule({

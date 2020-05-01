@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {SessionService} from '../service/session.service';
+import {SessionService} from '../core/service/session.service';
 import {Router} from '@angular/router';
 
 @Component({

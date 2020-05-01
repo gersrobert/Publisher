@@ -2,16 +2,14 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {AppUserDetailedDTO} from '../dto/dtos';
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
 import {SessionService} from './session.service';
+import {AbstractService} from './abstract.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AppuserService {
-
-  constructor(private httpClient: HttpClient) {
-  }
+export class AppuserService extends AbstractService{
 
   public getAppUser(userId: string): Observable<AppUserDetailedDTO> {
     return this.httpClient.get<AppUserDetailedDTO>(environment.ROOT_URL + '/user/detailed/' + userId);

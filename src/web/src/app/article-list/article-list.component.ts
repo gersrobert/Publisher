@@ -1,9 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AppUserDetailedDTO, AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO} from '../dto/dtos';
-import {ArticleService} from '../service/article.service';
+import {AppUserDetailedDTO, AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO, CollectionDTO} from '../core/dto/dtos';
+import {ArticleService} from '../core/service/article.service';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs';
+import {CollectionService} from '../core/service/collection.service';
 
 @Component({
   selector: 'app-article-list',
@@ -12,19 +13,23 @@ import {Observable} from 'rxjs';
 })
 export class ArticleListComponent implements OnInit {
 
-  @Input() writer: AppUserDetailedDTO;
+  @Input()
+  writer: AppUserDetailedDTO;
 
-  hasMore = true;
-  articles: ArticleSimpleDTO[];
-
-  readonly pageSize = 10;
-  pageIndex = 1;
+  @Input()
+  collection: CollectionDTO;
 
   @Input()
   enablePaging = true;
 
   @Input()
   enableFilter = true;
+
+  hasMore = true;
+  articles: ArticleSimpleDTO[];
+
+  readonly pageSize = 10;
+  pageIndex = 1;
 
   filterLabel = 'Filter';
   showFilter = false;
@@ -33,6 +38,7 @@ export class ArticleListComponent implements OnInit {
   loading = false;
 
   constructor(private articleService: ArticleService,
+              private collectionService: CollectionService,
               public router: Router,
               private formBuilder: FormBuilder) {
   }
@@ -77,44 +83,60 @@ export class ArticleListComponent implements OnInit {
       return;
     }
 
-    let receivedReponse = false;
+    let receivedResponse = false;
     setTimeout(() => {
-      if (!receivedReponse) {
+      if (!receivedResponse) {
         this.loading = true;
       }
     }, 100);
 
     console.log('updating articles');
     let request: Observable<ArticleSimpleListDTO>;
-    if (this.filterFormGroup.get('title').value.length > 2 ||
+    if (this.writer != null) {
+      request = this.filterByAuthor();
+    } else if (this.collection != null) {
+      request = new Observable<ArticleSimpleListDTO>((observer) => {
+        const val = {
+          articles: this.collection.articles,
+          hasMore: false
+        };
+        observer.next(val);
+        observer.complete();
+      });
+    } else if (this.filterFormGroup.get('title').value.length > 2 ||
       this.filterFormGroup.get('author').value.length > 2 ||
       this.filterFormGroup.get('category').value.length > 2 ||
       this.filterFormGroup.get('publisher').value.length > 2) {
-
-      request = this.articleService.getFilteredArticles(
-        this.filterFormGroup.get('title').value,
-        this.filterFormGroup.get('author').value,
-        this.filterFormGroup.get('category').value,
-        this.filterFormGroup.get('publisher').value,
-        this.getLower(), this.getUpper());
-
-    } else if (this.writer != null) {
-      console.log(this.writer.id);
-      console.log(this.writer.firstName);
-
-      request = this.articleService.getArticlesByAuthor(this.writer.id, this.getLower(), this.getUpper());
+      request = this.filterByCriteria();
     } else {
-      request = this.articleService.getArticlesInRange(this.getLower(), this.getUpper());
+      request = this.filterByPage();
     }
 
     request.subscribe(response => {
-      receivedReponse = true;
+      receivedResponse = true;
       this.articles = response.articles;
       this.hasMore = response.hasMore;
       console.log(this.articles);
 
       this.loading = false;
     });
+  }
+
+  private filterByAuthor() {
+    return this.articleService.getArticlesByAuthor(this.writer.id, this.getLower(), this.getUpper());
+  }
+
+  private filterByCriteria() {
+    return this.articleService.getFilteredArticles(
+      this.filterFormGroup.get('title').value,
+      this.filterFormGroup.get('author').value,
+      this.filterFormGroup.get('category').value,
+      this.filterFormGroup.get('publisher').value,
+      this.getLower(), this.getUpper());
+  }
+
+  private filterByPage() {
+    return this.articleService.getArticlesInRange(this.getLower(), this.getUpper());
   }
 
   private getLower() {

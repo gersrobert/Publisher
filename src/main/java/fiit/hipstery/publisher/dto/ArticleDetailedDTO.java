@@ -1,16 +1,13 @@
 package fiit.hipstery.publisher.dto;
 
-import fiit.hipstery.publisher.entity.AppUser;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 public class ArticleDetailedDTO extends AbstractDTO {
 
 	protected String title;
 	protected String content;
-	protected LocalDateTime publishedAt;
+	protected LocalDateTime createdAt;
 	protected Set<AppUserDTO> authors;
 	protected Set<CategoryDTO> categories;
 	protected PublisherDTO publisher;
@@ -34,12 +31,12 @@ public class ArticleDetailedDTO extends AbstractDTO {
 		this.content = content;
 	}
 
-	public LocalDateTime getPublishedAt() {
-		return publishedAt;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setPublishedAt(LocalDateTime publishedAt) {
-		this.publishedAt = publishedAt;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public Set<AppUserDTO> getAuthors() {

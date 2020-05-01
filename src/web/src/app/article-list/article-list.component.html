@@ -1,4 +1,4 @@
-<div class="filter">
+<div class="filter" *ngIf="enableFilter">
   <button mat-button (click)="toggleFilter()" class="filter-button">
     <mat-icon style="margin-right: .5em">filter_list</mat-icon>
     <span>{{filterLabel}}</span>
@@ -98,7 +98,7 @@
       </div>
 
       <div class="article-date">
-        <span>{{ article.publishedAt | date }}</span>
+        <span>{{ article.createdAt | date }}</span>
       </div>
 
     </mat-card-content>

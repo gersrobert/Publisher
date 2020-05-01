@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {SessionService} from '../service/session.service';
+import {SessionService} from '../core/service/session.service';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {ArticleService} from '../service/article.service';
-import {ArticleDetailedDTO, ArticleSimpleDTO} from '../dto/dtos';
+import {ArticleService} from '../core/service/article.service';
+import {ArticleDetailedDTO, ArticleSimpleDTO} from '../core/dto/dtos';
 
 @Component({
   selector: 'app-article-insert',

@@ -2,7 +2,7 @@ export class ArticleDetailedDTO {
   public id: string;
   public title: string;
   public content: string;
-  public publishedAt: Date;
+  public createdAt: Date;
   public authors: AppUserDTO[];
   public categories: Category[];
   public publisher: Publisher;
@@ -14,7 +14,7 @@ export class ArticleDetailedDTO {
 export class ArticleSimpleDTO {
   public id: string;
   public title: string;
-  public publishedAt: Date;
+  public createdAt: Date;
   public authors: AppUserDTO[];
   public categories: Category[];
   public publisher: Publisher;
@@ -60,4 +60,12 @@ export class Comment {
 
 export class IdDTO {
   public id: string;
+}
+
+export class CollectionDTO {
+  public id: string;
+  public title: string;
+  public description: string;
+  public author: AppUserDTO;
+  public articles: ArticleSimpleDTO[];
 }

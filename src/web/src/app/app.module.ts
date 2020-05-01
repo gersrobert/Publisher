@@ -4,7 +4,7 @@ import {MainRoutingModule} from './app.routing';
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import {HeaderComponent} from './components/header/header.component';
+import {HeaderComponent} from './header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
@@ -33,6 +33,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ArticleUpdateComponent } from './article-update/article-update.component';
 import { VerticalMenuComponent } from './vertical-menu/vertical-menu.component';
 import {MatTreeModule} from '@angular/material/tree';
+import { CollectionDetailComponent } from './collection-detail/collection-detail.component';
+import { CollectionListComponent } from './collection-list/collection-list.component';
 
 
 @NgModule({
@@ -49,6 +51,8 @@ import {MatTreeModule} from '@angular/material/tree';
     TopPublishersComponent,
     ArticleUpdateComponent,
     VerticalMenuComponent,
+    CollectionDetailComponent,
+    CollectionListComponent,
   ],
   imports: [
     BrowserModule,

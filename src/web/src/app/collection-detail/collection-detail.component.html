@@ -1,0 +1,13 @@
+<div>
+
+  <div class="collection-header" *ngIf="collection">
+    <h1 class="collection-title">{{ collection.title }}</h1>
+
+    <p class="collection-description">{{ collection.description }}</p>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <app-article-list *ngIf="collection" [collection]="collection" [enableFilter]="false" [enablePaging]="false"></app-article-list>
+
+</div>

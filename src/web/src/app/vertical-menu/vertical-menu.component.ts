@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {AppuserService} from '../service/appuser.service';
-import {SessionService} from '../service/session.service';
+import {AppuserService} from '../core/service/appuser.service';
+import {SessionService} from '../core/service/session.service';
 
 @Component({
   selector: 'app-vertical-menu',

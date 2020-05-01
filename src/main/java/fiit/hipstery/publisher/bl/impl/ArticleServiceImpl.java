@@ -5,7 +5,6 @@ import fiit.hipstery.publisher.dto.*;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -68,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 		articleDetailedDTO.setId((String) article[0]);
 		articleDetailedDTO.setTitle((String) article[1]);
-		articleDetailedDTO.setPublishedAt(((Timestamp) article[2]).toLocalDateTime());
+		articleDetailedDTO.setCreatedAt(((Timestamp) article[2]).toLocalDateTime());
 		articleDetailedDTO.setContent((String) article[11]);
 		articleDetailedDTO.setLiked(((Boolean) article[12]));
 		articleDetailedDTO.setLikeCount(((BigInteger) article[13]).intValue());
@@ -468,7 +467,7 @@ public class ArticleServiceImpl implements ArticleService {
 				articleSimpleDTO = new ArticleSimpleDTO();
 				articleSimpleDTO.setId((String) row[0]);
 				articleSimpleDTO.setTitle((String) row[1]);
-				articleSimpleDTO.setPublishedAt(((Timestamp) row[2]).toLocalDateTime());
+				articleSimpleDTO.setCreatedAt(((Timestamp) row[2]).toLocalDateTime());
 				articleSimpleDTO.setLikeCount(((Number) row[11]).intValue());
 				articleSimpleDTO.setLiked(((Boolean) row[12]));
 

@@ -3,25 +3,18 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {ArticleDetailedDTO, ArticleSimpleListDTO, IdDTO} from '../dto/dtos';
 import {ArticleSimpleDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
 import {SessionService} from './session.service';
 import {FormGroup} from '@angular/forms';
+import {AbstractService} from './abstract.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArticleService {
-
-  constructor(private httpClient: HttpClient,
-              private sessionService: SessionService
-  ) {}
+export class ArticleService extends AbstractService {
 
   public getArticleById(id: string): Observable<ArticleDetailedDTO> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
-
-    return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/id/' + id, {headers});
+    return this.httpClient.get<ArticleDetailedDTO>(environment.ROOT_URL + '/article/id/' + id, {headers: this.getAuthHeaders()});
   }
 
   public getFilteredArticles(
@@ -32,9 +25,6 @@ export class ArticleService {
     lowerIndex?: number,
     upperIndex?: number,
   ): Observable<ArticleSimpleListDTO> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
 
     let params = new HttpParams();
     if (title && title !== '') {
@@ -56,24 +46,16 @@ export class ArticleService {
       params = params.append('upperIndex', String(upperIndex));
     }
 
-    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article', {headers, params});
+    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article', {headers: this.getAuthHeaders(), params});
   }
 
   public getArticlesInRange(lower: number, upper: number): Observable<ArticleSimpleListDTO> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
-
     return this.httpClient.get<ArticleSimpleListDTO>(
-      environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers});
+      environment.ROOT_URL + '/article/index/' + lower + '-' + upper, {headers: this.getAuthHeaders()});
   }
 
   public getArticlesByAuthor(authorId: string, lower: number, upper: number): Observable<ArticleSimpleListDTO> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
-
-    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article/author/' + authorId + '/' + lower + '-' + upper, {headers});
+    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article/author/' + authorId + '/' + lower + '-' + upper, {headers: this.getAuthHeaders()});
   }
 
   public insertArticle(articleForm: FormGroup): Observable<IdDTO> {
@@ -126,18 +108,10 @@ export class ArticleService {
   }
 
   public likeArticle(articleId: string): Observable<number> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
-
-    return this.httpClient.put<number>(environment.ROOT_URL + '/article/like/' + articleId, null, {headers});
+    return this.httpClient.put<number>(environment.ROOT_URL + '/article/like/' + articleId, null, {headers: this.getAuthHeaders()});
   }
 
   public unlikeArticle(articleId: string): Observable<number> {
-    const headers = new HttpHeaders({
-      'Auth-Token': this.sessionService.getSession()
-    });
-
-    return this.httpClient.put<number>(environment.ROOT_URL + '/article/unlike/' + articleId, null, {headers});
+    return this.httpClient.put<number>(environment.ROOT_URL + '/article/unlike/' + articleId, null, {headers: this.getAuthHeaders()});
   }
 }

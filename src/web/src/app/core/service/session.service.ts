@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable, Observer} from 'rxjs';
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {sha256} from 'js-sha256';
 import {AppUserDTO} from '../dto/dtos';
+import {AbstractService} from './abstract.service';
 
 @Injectable({
   providedIn: 'root'

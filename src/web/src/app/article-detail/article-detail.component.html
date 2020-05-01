@@ -18,18 +18,34 @@
     </div>
 
     <div class="article-date">
-      <span>{{ article.publishedAt | date:'medium' }}</span>
+      <span>{{ article.createdAt | date:'medium' }}</span>
     </div>
 
-    <div class="article-menu" *ngIf="actions">
-      <button mat-icon-button [matMenuTriggerFor]="menu">
+    <div class="article-menu">
+      <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="actions">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngFor="let action of actions" (click)="actionClick(action.action)">
-          <span>{{action.label}}</span>
+        <div *ngFor="let action of actions">
+          <button mat-menu-item *ngIf="!action.triggerMenu" (click)="actionClick(action.action)">
+            <span>{{action.label}}</span>
+          </button>
+          <button mat-menu-item *ngIf="action.triggerMenu" [mat-menu-trigger-for]="action.triggerMenu" (menuOpened)="actionClick(action.action)">
+            <span>{{action.label}}</span>
+          </button>
+        </div>
+      </mat-menu>
+
+      <mat-menu #collectionsMenu="matMenu">
+        <button mat-menu-item *ngFor="let collection of collections" (click)="assignToCollection(collection)">
+          <span>{{collection.title}}</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>add</mat-icon>
+          <span>New collection</span>
         </button>
       </mat-menu>
+
     </div>
 
     <div class="like-count" mat-ripple (click)="likeArticle()">

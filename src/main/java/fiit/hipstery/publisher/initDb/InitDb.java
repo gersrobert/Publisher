@@ -55,7 +55,7 @@ public class InitDb implements ApplicationListener<ContextRefreshedEvent> {
 		entityManager.flush();
 		transactionManager.commit(transaction);
 
-		addArticles.insert();
+//		addArticles.insert();
 
 		transaction = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		indexScript.run();

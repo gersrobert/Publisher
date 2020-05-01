@@ -20,8 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("unchecked")
 @Service
-@Profile("!jpa")
-public class ArticleServiceNativeImpl implements ArticleService {
+public class ArticleServiceImpl implements ArticleService {
 
 	@PersistenceContext
 	private EntityManager entityManager;

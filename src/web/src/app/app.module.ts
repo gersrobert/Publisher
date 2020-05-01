@@ -31,6 +31,8 @@ import { RegisterUserComponent } from './register-user/register-user.component';
 import { TopPublishersComponent } from './top-publishers/top-publishers.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ArticleUpdateComponent } from './article-update/article-update.component';
+import { VerticalMenuComponent } from './vertical-menu/vertical-menu.component';
+import {MatTreeModule} from '@angular/material/tree';
 
 
 @NgModule({
@@ -46,29 +48,31 @@ import { ArticleUpdateComponent } from './article-update/article-update.componen
     RegisterUserComponent,
     TopPublishersComponent,
     ArticleUpdateComponent,
+    VerticalMenuComponent,
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatListModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MainRoutingModule,
-        MatPaginatorModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatCardModule,
-        MatChipsModule,
-        ShowdownModule,
-        MatRippleModule,
-        MatProgressSpinnerModule
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatListModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MainRoutingModule,
+    MatPaginatorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatCardModule,
+    MatChipsModule,
+    ShowdownModule,
+    MatRippleModule,
+    MatProgressSpinnerModule,
+    MatTreeModule
+  ],
   providers: [LoginRedirect],
   bootstrap: [AppComponent]
 })

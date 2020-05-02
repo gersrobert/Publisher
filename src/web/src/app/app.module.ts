@@ -35,6 +35,8 @@ import { VerticalMenuComponent } from './vertical-menu/vertical-menu.component';
 import {MatTreeModule} from '@angular/material/tree';
 import { CollectionDetailComponent } from './collection-detail/collection-detail.component';
 import { CollectionListComponent } from './collection-list/collection-list.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MainTranslateModule} from './app.translate';
 
 
 @NgModule({
@@ -75,7 +77,9 @@ import { CollectionListComponent } from './collection-list/collection-list.compo
     ShowdownModule,
     MatRippleModule,
     MatProgressSpinnerModule,
-    MatTreeModule
+    MatTreeModule,
+    MatSnackBarModule,
+    MainTranslateModule,
   ],
   providers: [LoginRedirect],
   bootstrap: [AppComponent]

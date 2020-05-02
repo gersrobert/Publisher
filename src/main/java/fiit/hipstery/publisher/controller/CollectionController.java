@@ -65,9 +65,22 @@ public class CollectionController extends AbstractController {
 		return ResponseEntity.ok(collections);
 	}
 
-	@PostMapping(path = "/insert")
-	public ResponseEntity<IdDTO> insertCollection(@RequestBody CollectionInsertDTO collectionInsertDTO) {
-		throw new RuntimeException();
+	@PostMapping
+	public ResponseEntity<?> insertCollection(@RequestBody CollectionInsertDTO collectionInsertDTO) {
+		UUID newCollectionId;
+		try {
+			newCollectionId = collectionService.insertCollection(collectionInsertDTO);
+		} catch (PublisherException e) {
+			logger.info(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			logger.error("Error assigning collection", e);
+			throw new InternalServerException(e);
+		}
+
+		IdDTO dto = new IdDTO();
+		dto.setId(newCollectionId.toString());
+		return ResponseEntity.ok(dto);
 	}
 
 	@PutMapping(path = "/assign/{collectionId}/{articleId}")

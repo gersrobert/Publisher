@@ -25,6 +25,7 @@ const routes: Routes = [
   {path: 'home/publisherDetail/:id', component: PublisherDetailComponent, canActivate: [LoginRedirect]},
   {path: 'home/topPublishers', component: TopPublishersComponent, canActivate: [LoginRedirect]},
   {path: 'home/collectionList', component: CollectionListComponent, canActivate: [LoginRedirect]},
+  {path: 'home/collectionDetail', component: CollectionDetailComponent, canActivate: [LoginRedirect]},
   {path: 'home/collectionDetail/:id', component: CollectionDetailComponent, canActivate: [LoginRedirect]},
 ];
 

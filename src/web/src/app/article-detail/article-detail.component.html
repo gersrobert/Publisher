@@ -40,9 +40,9 @@
         <button mat-menu-item *ngFor="let collection of collections" (click)="assignToCollection(collection)">
           <span>{{collection.title}}</span>
         </button>
-        <button mat-menu-item>
+        <button mat-menu-item (click)="newCollection()">
           <mat-icon>add</mat-icon>
-          <span>New collection</span>
+          <span>{{'newCollection' | translate}}</span>
         </button>
       </mat-menu>
 
@@ -82,3 +82,5 @@
     </form>
   </div>
 </div>
+
+<span #translate i18n>{{translateValue}}</span>

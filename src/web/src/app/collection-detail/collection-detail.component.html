@@ -1,9 +1,31 @@
 <div>
 
   <div class="collection-header" *ngIf="collection">
-    <h1 class="collection-title">{{ collection.title }}</h1>
+    <div *ngIf="!editMode">
+      <h1 class="collection-title">{{ collection.title }}</h1>
+      <p class="collection-description">{{ collection.description }}</p>
+    </div>
+    <div *ngIf="editMode">
+      <form [formGroup]="headerForm" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+          <mat-label>{{'title' | translate}}</mat-label>
+          <input matInput formControlName="title">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{'description' | translate}}</mat-label>
+          <textarea matInput cdkTextareaAutosize
+                    cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10"
+                    formControlName="description"></textarea>
+        </mat-form-field>
+      </form>
+    </div>
 
-    <p class="collection-description">{{ collection.description }}</p>
+    <div class="editControl" *ngIf="isOwner">
+      <button mat-icon-button (click)="onSubmit()">
+        <mat-icon *ngIf="!editMode">edit</mat-icon>
+        <mat-icon *ngIf="editMode">save</mat-icon>
+      </button>
+    </div>
   </div>
 
   <mat-divider></mat-divider>

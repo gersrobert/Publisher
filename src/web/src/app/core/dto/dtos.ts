@@ -68,4 +68,5 @@ export class CollectionDTO {
   public description: string;
   public author: AppUserDTO;
   public articles: ArticleSimpleDTO[];
+  public createdAt: Date;
 }

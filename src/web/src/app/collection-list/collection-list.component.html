@@ -1,1 +1,27 @@
-<p>collection-list works!</p>
+<div>
+
+  <div *ngFor="let collection of collections">
+
+    <mat-card>
+      <mat-card-content>
+        <div class="collection-wrapper" (click)="router.navigate(['/home/collectionDetail', collection.id])">
+          <p class="collection-title">{{collection.title}}</p>
+          <p class="collection-description">{{collection.description}}</p>
+        </div>
+
+        <div class="collection-authors">
+          <span>By </span>
+          <a [routerLink]="['/home/userDetail', collection.author.id]">{{collection.author.firstName + ' ' + collection.author.lastName + ' '}}</a>
+        </div>
+
+        <div class="collection-date">
+          <span>{{ collection.createdAt | date }}</span>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+</div>
+

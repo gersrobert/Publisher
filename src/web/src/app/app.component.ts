@@ -1,8 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ArticleDetailedDTO, ArticleSimpleDTO} from './core/dto/dtos';
-import {environment} from '../environments/environment';
-import {ArticleService} from './core/service/article.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +7,10 @@ import {ArticleService} from './core/service/article.service';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit {
+
+  constructor(public translate: TranslateService) {
+  }
+
   ngOnInit(): void {
   }
 }

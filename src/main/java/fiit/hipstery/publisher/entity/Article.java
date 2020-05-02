@@ -27,7 +27,11 @@ public class Article extends AbstractEntity {
 
     protected int likeCount;
 
-    protected transient boolean liked;
+    @Transient
+    protected boolean liked;
+
+    @Transient
+    protected List<AppUser> authors;
 
     public String getTitle() {
         return title;
@@ -83,5 +87,13 @@ public class Article extends AbstractEntity {
 
     public void setLiked(boolean liked) {
         this.liked = liked;
+    }
+
+    public List<AppUser> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<AppUser> authors) {
+        this.authors = authors;
     }
 }

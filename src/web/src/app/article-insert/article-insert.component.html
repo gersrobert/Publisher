@@ -13,11 +13,15 @@
     <br>
     <mat-form-field class="article-content">
       <mat-label>Content</mat-label>
-      <textarea matInput formControlName="content"></textarea>
+      <textarea matInput
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="5"
+                cdkAutosizeMaxRows="30"
+                formControlName="content"></textarea>
     </mat-form-field>
 
     <div>
-      <button mat-button type="submit" class="submit-button">Post</button>
+      <button mat-button type="submit" class="submit-button">Publish</button>
     </div>
   </form>
 </div>

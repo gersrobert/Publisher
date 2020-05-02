@@ -1,5 +1,6 @@
 package fiit.hipstery.publisher.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CollectionDTO extends AbstractDTO {
@@ -11,6 +12,8 @@ public class CollectionDTO extends AbstractDTO {
 	protected String title;
 
 	protected List<ArticleSimpleDTO> articles;
+
+	protected LocalDateTime createdAt;
 
 	public AppUserDTO getAuthor() {
 		return author;
@@ -42,5 +45,13 @@ public class CollectionDTO extends AbstractDTO {
 
 	public void setArticles(List<ArticleSimpleDTO> articles) {
 		this.articles = articles;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 }

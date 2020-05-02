@@ -6,6 +6,9 @@ import {Converter} from 'showdown';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AppuserService} from '../core/service/appuser.service';
 import {CollectionService} from '../core/service/collection.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {TranslateService} from '@ngx-translate/core';
+import {SessionService} from '../core/service/session.service';
 
 @Component({
   selector: 'app-article-detail',
@@ -21,6 +24,11 @@ export class ArticleDetailComponent implements OnInit {
   set collectionsMenu(collectionsMenu) {
     this.actionList.addToCollection.triggerMenu = collectionsMenu;
   }
+
+  @ViewChild('translate')
+  translateView;
+
+  translateValue;
 
   actions: any;
   private actionList = {
@@ -44,9 +52,12 @@ export class ArticleDetailComponent implements OnInit {
   constructor(private articleService: ArticleService,
               private appuserService: AppuserService,
               private collectionService: CollectionService,
+              private sessionService: SessionService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
-              private router: Router
+              private snackbar: MatSnackBar,
+              private router: Router,
+              public translate: TranslateService
   ) {
   }
 
@@ -54,9 +65,7 @@ export class ArticleDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
-    console.log(this.id);
     this.articleService.getArticleById(this.id).subscribe(response => {
-      console.log(response);
       this.article = response;
 
       const converter = new Converter();
@@ -72,7 +81,6 @@ export class ArticleDetailComponent implements OnInit {
   private getActions() {
     this.appuserService.getActions(this.id).subscribe(response => {
       this.actions = [];
-      console.log(this.actionList);
       for (let item of response) {
         if (item === 'addToCollection') {
           this.actions.push(this.actionList.addToCollection);
@@ -135,8 +143,30 @@ export class ArticleDetailComponent implements OnInit {
   public assignToCollection(collection: CollectionDTO) {
     console.log('assign');
     this.collectionService.assignToCollection(this.article.id, collection.id).subscribe(
-      result => {},
-      error => console.log(error.error)
-      );
+      result => {
+      },
+      error => {
+        this.translate.get(error.error).subscribe(value => {
+          this.snackbar.open(value, null, {duration: 3000, panelClass: ['snackbar-error']});
+        });
+      }
+    );
+  }
+
+  public newCollection() {
+    this.sessionService.getCurrentUser().subscribe(result => {
+      const col = {
+        articles: [this.article],
+        author: result
+      };
+
+      this.router.navigate(['/home/collectionDetail'], {
+        state: {
+          editMode: true,
+          collection: col
+        }
+      });
+    });
   }
 }
+

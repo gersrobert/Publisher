@@ -21,3 +21,16 @@ a:active {
   text-decoration: underline;
   color: lightgray;
 }
+
+.snackbar-error {
+  background: #f44336;
+  color: whitesmoke;
+}
+
+.snackbar-success {
+  background: #4caf50;
+  color: whitesmoke;
+}
+
+.snackbar-info {
+}

@@ -7,7 +7,10 @@ import fiit.hipstery.publisher.dto.AppUserDetailedDTO;
 import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
+import fiit.hipstery.publisher.entity.Publisher;
 import fiit.hipstery.publisher.entity.Role;
+import fiit.hipstery.publisher.repository.ArticleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -22,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @Override
     public UUID authenticateLogin(String userName, String passwordHash) {
@@ -109,13 +115,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<String> getActionsForArticle(UUID userId, UUID articleId) {
         AppUser user = entityManager.find(AppUser.class, userId);
-        List<Object[]> articles = entityManager.createNativeQuery("SELECT p.id as p_id, au.id as au_id FROM article a " +
-                " JOIN publisher p on a.publisher_id = p.id" +
-                " JOIN app_user_article_relation auar on a.id = auar.article_id and auar.relation_type='AUTHOR'" +
-                " JOIN app_user au on auar.app_user_id = au.id" +
-                " WHERE a.id=:a_id")
-                .setParameter("a_id", articleId.toString())
-                .getResultList();
+        List<AppUser> authors = articleRepository.getAuthor(articleId);
+        Publisher publisher = articleRepository.getPublisher(articleId);
 
         Set<String> actions = new HashSet<>();
         for (Role role : user.getRoles()) {
@@ -123,19 +124,17 @@ public class UserServiceImpl implements UserService {
                 actions.add("addToCollection");
             }
             else if (role.getName().equals("writer")) {
-                for (Object[] row : articles) {
-                    if (String.valueOf(row[1]).equals(userId.toString())) {
+                for (AppUser author : authors) {
+                    if (author.getId().equals(userId)) {
                         actions.add("edit");
                         actions.add("delete");
                     }
                 }
             }
             else if (role.getName().equals("publisher_owner")) {
-                for (Object[] row : articles) {
-                    if (String.valueOf(row[0]).equals(userId.toString())) {
-                        actions.add("edit");
-                        actions.add("delete");
-                    }
+                if (publisher.equals(user.getPublisher())) {
+                    actions.add("edit");
+                    actions.add("delete");
                 }
             }
             else if (role.getName().equals("admin")) {

@@ -1,13 +1,17 @@
 package fiit.hipstery.publisher.bl.impl;
 
-import com.github.javafaker.App;
 import fiit.hipstery.publisher.bl.service.CollectionService;
 import fiit.hipstery.publisher.dto.CollectionDTO;
 import fiit.hipstery.publisher.dto.CollectionInsertDTO;
 import fiit.hipstery.publisher.entity.AppUser;
+import fiit.hipstery.publisher.entity.AppUserArticleRelation.RelationType;
 import fiit.hipstery.publisher.entity.Article;
 import fiit.hipstery.publisher.entity.Collection;
 import fiit.hipstery.publisher.exception.PublisherException;
+import fiit.hipstery.publisher.repository.ArticleRepository;
+import fiit.hipstery.publisher.repository.CollectionRepository;
+import fiit.hipstery.publisher.repository.RelationRepository;
+import fiit.hipstery.publisher.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,27 +30,38 @@ public class CollectionServiceImpl implements CollectionService {
 	private EntityManager entityManager;
 
 	@Autowired
+	private ArticleRepository articleRepository;
+
+	@Autowired
+	private CollectionRepository collectionRepository;
+
+	@Autowired
+	private RelationRepository relationRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
 	private ModelMapper modelMapper;
 
 	@Override
 	public List<CollectionDTO> getCollectionList() {
-		List<Collection> collections = entityManager.createQuery("from Collection ", Collection.class).getResultList();
+		List<Collection> collections = collectionRepository.findAll();
 		return collections.stream().map(c -> modelMapper.map(c, CollectionDTO.class)).collect(Collectors.toList());
 	}
 
 	@Override
 	public CollectionDTO getCollection(UUID id, UUID currentUser) {
-		Collection collection = entityManager.find(Collection.class, id);
-		List<Article> articles = collection.getArticles().stream().peek(article -> { // TODO toto by chcelo nejak normalne spravit
-			boolean liked = entityManager.createQuery("from AppUserArticleRelation where appUser.id=:userId and article.id=:articleId and relationType='LIKE'")
-					.setParameter("userId", currentUser)
-					.setParameter("articleId", article.getId())
-					.getResultList().size() != 0;
+		Collection collection = collectionRepository.getOne(id);
+		List<Article> articles = collection.getArticles().stream().peek(article -> {
+			boolean liked = relationRepository.existsByAppUser_IdAndArticle_IdAndRelationType(
+							currentUser,
+							article.getId(),
+							RelationType.LIKE.toString()
+					);
 			article.setLiked(liked);
 
-			List<AppUser> authors = entityManager.createQuery("select appUser from AppUserArticleRelation rel where rel.article=:a and rel.relationType='AUTHOR'", AppUser.class)
-					.setParameter("a", article)
-					.getResultList();
+			List<AppUser> authors = articleRepository.getAuthor(article.getId());
 			article.setAuthors(authors);
 
 		}).collect(Collectors.toList());
@@ -56,11 +71,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public java.util.Collection<CollectionDTO> getCollectionsForUser(UUID userId) {
-		List<Collection> collections = entityManager.createQuery(
-				"from Collection where author.id=:userId", Collection.class)
-				.setParameter("userId", userId)
-				.getResultList();
-
+		List<Collection> collections = collectionRepository.getAllByAuthor_Id(userId);
 		return collections.stream().map(c -> modelMapper.map(c, CollectionDTO.class)).collect(Collectors.toList());
 	}
 
@@ -71,12 +82,12 @@ public class CollectionServiceImpl implements CollectionService {
 		collection.setDescription(collectionInsertDTO.getDescription());
 		collection.setTitle(collectionInsertDTO.getTitle());
 
-		List<Article> articles = entityManager.createQuery("from Article where id in :ids", Article.class)
-				.setParameter("ids", collectionInsertDTO.getArticles().stream().map(UUID::fromString).collect(Collectors.toList()))
-				.getResultList();
+		List<Article> articles = articleRepository.getAllByIdIn(
+				collectionInsertDTO.getArticles().stream().map(UUID::fromString).collect(Collectors.toList())
+		);
 
 		collection.setArticles(articles);
-		collection.setAuthor(entityManager.find(AppUser.class, UUID.fromString(collectionInsertDTO.getAuthor())));
+		collection.setAuthor(userRepository.getOne(UUID.fromString(collectionInsertDTO.getAuthor())));
 		entityManager.persist(collection);
 		entityManager.flush();
 		return collection.getId();

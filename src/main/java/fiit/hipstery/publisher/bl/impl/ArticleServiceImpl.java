@@ -3,8 +3,10 @@ package fiit.hipstery.publisher.bl.impl;
 import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.dto.*;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
+import fiit.hipstery.publisher.repository.ArticleRepository;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -23,6 +25,9 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Autowired
+	private ArticleRepository articleRepository;
 
 	@Override
 	public ArticleDetailedDTO getArticleById(UUID id, UUID currentUser) {

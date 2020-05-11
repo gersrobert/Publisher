@@ -1,6 +1,8 @@
 package fiit.hipstery.publisher.bl.impl;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.App;
 import fiit.hipstery.publisher.bl.service.UserService;
 import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.dto.AppUserDetailedDTO;
@@ -10,6 +12,8 @@ import fiit.hipstery.publisher.entity.AppUserArticleRelation;
 import fiit.hipstery.publisher.entity.Publisher;
 import fiit.hipstery.publisher.entity.Role;
 import fiit.hipstery.publisher.repository.ArticleRepository;
+import fiit.hipstery.publisher.repository.RoleRepository;
+import fiit.hipstery.publisher.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -29,16 +34,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public UUID authenticateLogin(String userName, String passwordHash) {
-        UUID userId = UUID.fromString((String) entityManager.createNativeQuery("SELECT " +
-                "id " +
-                "FROM app_user " +
-                "WHERE user_name = :userName AND " +
-                "password_hash = :passwordHash").setParameter("userName", userName
-            ).setParameter("passwordHash", passwordHash).getSingleResult());
-
-        // SELECT id FROM app_user WHERE user_name = 'Supah_Hancock_X_bcc1d3' AND password_hash = 'heslo';
+	    UUID userId = userRepository.getFirstByUserNameAndPasswordHash(userName, passwordHash).getId();
         return userId;
     }
 
@@ -78,36 +82,21 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean registerAppUser(AppUserWithPasswordDTO user) {
-    	int alreadyExists = ((Number) entityManager.createNativeQuery("SELECT COUNT(1) " +
-                "FROM app_user WHERE user_name = :user_name")
-                .setParameter("user_name", user.getUserName()).getSingleResult()).intValue();
-
-    	if (alreadyExists == 1) {
+    	AppUser alreadyExists = userRepository.getFirstByUserName(user.getUserName());
+    	if (alreadyExists != null) {
     	    return false;
         }
 
-    	UUID userId = UUID.randomUUID();
-        entityManager.createNativeQuery("INSERT INTO " +
-                "app_user (id, created_at, state, updated_at, first_name, last_name, password_hash, user_name)" +
-                "VALUES (:id, :createdAt, :state, :updatedAt, :firstName, :lastName, :passwordHash, :userName)")
-                .setParameter("id", userId)
-                .setParameter("createdAt", LocalDateTime.now())
-                .setParameter("state", AppUserArticleRelation.STATE_ACTIVE)
-                .setParameter("updatedAt", LocalDateTime.now())
-                .setParameter("firstName", user.getFirstName())
-                .setParameter("lastName", user.getLastName())
-                .setParameter("passwordHash", user.getPasswordHash())
-                .setParameter("userName", user.getUserName()).executeUpdate();
+        Role role = roleRepository.getByName("reader");
 
-        UUID roleId = UUID.fromString((String) entityManager.createNativeQuery("SELECT id "+
-                "FROM role " +
-                "WHERE name = 'reader'").getSingleResult());
+	    AppUser newUser = new AppUser();
+	    newUser.setFirstName(user.getFirstName());
+	    newUser.setLastName(user.getLastName());
+        newUser.setPasswordHash(user.getPasswordHash());
+        newUser.setUserName(user.getUserName());
+        newUser.setRoles(Collections.singletonList(role));
 
-        entityManager.createNativeQuery("INSERT " +
-                "INTO app_user_roles (app_user_id, roles_id) " +
-                "VALUES (:userId, :roleId)")
-        .setParameter("userId", userId)
-        .setParameter("roleId", roleId).executeUpdate();
+        userRepository.save(newUser);
 
         return true;
     }

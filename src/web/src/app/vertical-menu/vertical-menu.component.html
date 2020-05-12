@@ -1,20 +1,20 @@
-<mat-list *ngIf="showMenu">
-  <mat-list-item>
+<mat-list>
+  <mat-list-item *ngIf="showMenu">
     <button mat-stroked-button color="basic" [routerLink]="['/home/collectionList']">
       <span>{{'collections' | translate}}</span>
     </button>
   </mat-list-item>
-  <mat-list-item>
+  <mat-list-item *ngIf="showMenu">
     <button mat-stroked-button color="basic" [routerLink]="['/home/topPublishers']">
       <span>{{'topPublishers' | translate}}</span>
     </button>
   </mat-list-item>
-  <mat-list-item *ngIf="isWriter">
+  <mat-list-item *ngIf="isWriter && showMenu">
     <button mat-stroked-button color="basic" [routerLink]="['/home/insertArticle']">
       <span>{{'insertArticle' | translate}}</span>
     </button>
   </mat-list-item>
-  <mat-list-item>
+  <mat-list-item *ngIf="showMenu">
     <button mat-stroked-button color="basic" [routerLink]="['/home/login']" (click)="logout()">
       <span>{{'logout' | translate}}</span>
     </button>

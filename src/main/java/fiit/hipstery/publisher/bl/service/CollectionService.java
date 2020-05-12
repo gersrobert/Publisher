@@ -8,10 +8,11 @@ import java.util.UUID;
 
 public interface CollectionService {
 
-	public Collection<CollectionDTO> getCollectionList();
-	public CollectionDTO getCollection(UUID id, UUID currentUser);
-	public Collection<CollectionDTO> getCollectionsForUser(UUID userId);
-	public UUID insertCollection(CollectionInsertDTO collectionInsertDTO);
-	public void assignArticle(UUID collectionId, UUID articleId);
+	Collection<CollectionDTO> getCollectionList();
+	CollectionDTO getCollection(UUID id, UUID currentUser);
+	Collection<CollectionDTO> getCollectionsForUser(UUID userId);
+	UUID insertCollection(CollectionInsertDTO collectionInsertDTO);
+	void assignArticle(UUID collectionId, UUID articleId);
+	CollectionDTO updateCollection(CollectionDTO collection);
 
 }

@@ -108,4 +108,21 @@ public class CollectionServiceImpl implements CollectionService {
 
 		entityManager.merge(collection);
 	}
+
+	@Override
+	@Transactional
+	public CollectionDTO updateCollection(CollectionDTO collection) {
+		Collection entity = entityManager.find(Collection.class, UUID.fromString(collection.getId()));
+		entity.setArticles(articleRepository.getAllByIdIn(
+				collection.getArticles().stream().map(
+						article -> UUID.fromString(article.getId())
+				).collect(Collectors.toList()))
+		);
+		entity.setTitle(collection.getTitle());
+		entity.setDescription(collection.getDescription());
+
+		entityManager.merge(entity);
+		entityManager.flush();
+		return modelMapper.map(entity, CollectionDTO.class);
+	}
 }

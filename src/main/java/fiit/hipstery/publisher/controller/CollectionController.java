@@ -98,4 +98,19 @@ public class CollectionController extends AbstractController {
 		return ResponseEntity.ok().build();
 	}
 
+	@PostMapping(path = "/update")
+	public ResponseEntity<?> assignArticleToCollection(@RequestBody CollectionDTO collectionDTO) {
+		CollectionDTO result;
+		try {
+			result = collectionService.updateCollection(collectionDTO);
+		} catch (PublisherException e) {
+			logger.info(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			logger.error("Error assigning collection", e);
+			throw new InternalServerException(e);
+		}
+
+		return ResponseEntity.ok(result);
+	}
 }

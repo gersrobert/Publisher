@@ -82,6 +82,17 @@ export class CollectionDetailComponent implements OnInit {
             this.snackbar.open(value, null, {duration: 3000, panelClass: ['snackbar-error']});
           });
         });
+    } else {
+      this.collectionService.updateCollection(this.collection).subscribe(
+        result => {
+          this.collection = result;
+          this.editMode = false;
+        },
+        error => {
+          this.translate.get(error.error).subscribe(value => {
+            this.snackbar.open(value, null, {duration: 3000, panelClass: ['snackbar-error']});
+          });
+        });
     }
   }
 }

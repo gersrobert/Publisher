@@ -22,11 +22,11 @@
   <mat-list-item>
     <button mat-stroked-button color="basic" [mat-menu-trigger-for]="langMenu">
       <span>{{currentLanguage.label}}</span>
-      <mat-icon style="position:absolute; right: 4px; top: 4px;">arrow_drop_down</mat-icon>
+      <mat-icon class="language-dropdown">arrow_drop_down</mat-icon>
     </button>
     <mat-menu #langMenu="matMenu" xPosition="after" yPosition="below">
       <div *ngFor="let lang of languages">
-        <button mat-button (click)="setLanguage(lang)" style="color: whitesmoke">
+        <button mat-button (click)="setLanguage(lang)" class="language-menu">
           <span>{{lang.label}}</span>
         </button>
       </div>

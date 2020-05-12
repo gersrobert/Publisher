@@ -43,4 +43,13 @@ export class CollectionService extends AbstractService {
 
     return this.httpClient.post<Observable<any>>(environment.ROOT_URL + '/collection', tmpCollection, {headers});
   }
+
+  public updateCollection(collection: CollectionDTO): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    return this.httpClient.post<Observable<any>>(environment.ROOT_URL + '/collection/update', collection, {headers});
+  }
 }

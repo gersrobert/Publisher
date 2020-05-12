@@ -25,11 +25,6 @@ export class ArticleDetailComponent implements OnInit {
     this.actionList.addToCollection.triggerMenu = collectionsMenu;
   }
 
-  @ViewChild('translate')
-  translateView;
-
-  translateValue;
-
   actions: any;
   private actionList = {
     addToCollection: {

@@ -9,7 +9,7 @@
     </div>
 
     <div class="article-authors">
-      <span>By </span>
+      <span>{{'by' | translate}} </span>
       <a *ngFor="let author of article.authors"
          [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
       <span *ngIf="article.publisher.id"> for </span>
@@ -28,10 +28,10 @@
       <mat-menu #menu="matMenu">
         <div *ngFor="let action of actions">
           <button mat-menu-item *ngIf="!action.triggerMenu" (click)="actionClick(action.action)">
-            <span>{{action.label}}</span>
+            <span>{{action.label | translate}}</span>
           </button>
           <button mat-menu-item *ngIf="action.triggerMenu" [mat-menu-trigger-for]="action.triggerMenu" (menuOpened)="actionClick(action.action)">
-            <span>{{action.label}}</span>
+            <span>{{action.label | translate}}</span>
           </button>
         </div>
       </mat-menu>
@@ -50,7 +50,7 @@
 
     <div class="like-count" mat-ripple (click)="likeArticle()">
       <mat-icon>{{article.liked ? 'favorite' : 'favorite_border'}}</mat-icon>
-      <span>{{article.likeCount}} likes</span>
+      <span>{{article.likeCount}} {{'likes' | translate}}</span>
     </div>
   </div>
 
@@ -59,13 +59,13 @@
   <div class="article-content" [innerHTML]="article.content"></div>
 
   <div class="comments">
-    <h2>Comments</h2>
+    <h2>{{'comments' | translate }}</h2>
 
     <div *ngIf="article.comments.length > 0">
       <div *ngFor="let comment of article.comments" class="comment">
         <a class="comment-author"
            [routerLink]="['/home/userDetail', comment.author.id]">{{comment.author.firstName}} {{comment.author.lastName}}</a>
-        <span> says:</span>
+        <span> {{'says' | translate }}:</span>
         <p class="comment-content">{{comment.content}}</p>
         <mat-divider></mat-divider>
       </div>
@@ -74,13 +74,13 @@
     <form class="new-comment" [formGroup]="commentForm" (ngSubmit)="insertComment()">
       <div>
         <mat-form-field>
-          <mat-label>Say something</mat-label>
+          <mat-label>{{'add_comment_text' | translate}}</mat-label>
           <input matInput formControlName="comment">
         </mat-form-field>
       </div>
-      <button mat-button type="submit" class="submit-button">Add Comment</button>
+      <button mat-button type="submit" class="submit-button">
+        {{'add_comment_btn' | translate}}
+      </button>
     </form>
   </div>
 </div>
-
-<span #translate i18n>{{translateValue}}</span>

@@ -4,58 +4,43 @@
   "insertArticle": "Napísať článok",
   "duplicate_article_in_collection": "Tento článok sa už v zvolenej kolekcii nachádza",
   "title": "Názov",
+  "category": "Kategórie",
+  "content": "Obsah",
+  "publish": "Publikovať",
+  "author": "Autor",
+  "publisher": "Vydavateľ",
   "description": "Popis",
   "newCollection": "Nová kolekcia",
+  "login": "Prihlásiť",
+  "register": "Registrovať",
   "logout": "Odhlásiť sa",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "by": "Autor",
+  "for": "pre",
+  "Add to Collection": "Pridať do kolekcie",
+  "Edit": "Upraviť",
+  "Delete": "Vymazať",
+  "Filter": "Filtrovať",
+  "Apply Filter": "Uložiť Filter",
+  "likes": "lajkov",
+  "comments": "Komentáre",
+  "says": "hovorí",
+  "add_comment_text": "Povedz niečo",
+  "add_comment_btn": "Pridaj Komentár",
+  "page": "Strana",
+  "username": "Uživateľské Meno",
+  "password": "Heslo",
+  "firstname": "Krstné meno",
+  "lastname": "Priezvisko",
+  "wrong_username": "Toto Uživateľslé Meno je už obsadené.",
+  "password_again": "Heslo znova",
+  "passwords_dont_match": "Heslá sa nezhodujú.",
+  "incorrect_login": "Nesprávne meno alebo heslo",
+  "name": "Meno",
+  "created_on": "Vytvorené dňa",
+  "number_of_likes": "Celkový počet lajkov",
+  "chart_of_popularity": "Rebríček popularity",
+  "registered": "Registrovaný dňa",
+  "roles": "Role",
 
   "": ""
 }

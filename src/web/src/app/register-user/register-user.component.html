@@ -2,34 +2,34 @@
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
     <mat-form-field>
-      <mat-label>Username</mat-label>
+      <mat-label>{{'username' | translate}}</mat-label>
       <input matInput formControlName="username">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Firstname</mat-label>
+      <mat-label>{{'firstname' | translate}}</mat-label>
       <input matInput formControlName="firstname">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Lastname</mat-label>
+      <mat-label>{{'lastname' | translate}}</mat-label>
       <input matInput formControlName="lastname">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Password</mat-label>
+      <mat-label>{{'password' | translate}}</mat-label>
       <input matInput type="password" formControlName="password">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Password one more time</mat-label>
+      <mat-label>{{'password_again' | translate}}Password one more time</mat-label>
       <input matInput type="password" formControlName="passwordCheck">
     </mat-form-field>
 
     <div>
-      <span class="error-message" *ngIf="showPasswordError">Passwords do not match.</span>
-      <span class="error-message" *ngIf="showUserNameError">This username is already taken.</span>
-      <button mat-button type="submit" class="submit-button">Register</button>
+      <span class="error-message" *ngIf="showPasswordError">{{'passwords_dont_match' | translate}}</span>
+      <span class="error-message" *ngIf="showUserNameError">{{'wrong_username' | translate}}</span>
+      <button mat-button type="submit" class="submit-button">{{'register' | translate}}</button>
     </div>
   </form>
 </div>

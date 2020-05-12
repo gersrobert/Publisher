@@ -2,17 +2,17 @@
   <span class="error-message" *ngIf="insertArticleError">Could not insert article.</span>
   <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
     <mat-form-field>
-      <mat-label>Title</mat-label>
+      <mat-label>{{'title' | translate}}</mat-label>
       <input matInput formControlName="title">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <mat-label>Categories</mat-label>
+      <mat-label>{{'categories' | translate}}</mat-label>
       <input matInput formControlName="categories">
     </mat-form-field>
     <br>
     <mat-form-field class="article-content">
-      <mat-label>Content</mat-label>
+      <mat-label>{{'content' | translate}}</mat-label>
       <textarea matInput
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="5"
@@ -21,7 +21,9 @@
     </mat-form-field>
 
     <div>
-      <button mat-button type="submit" class="submit-button">Publish</button>
+      <button mat-button type="submit" class="submit-button">
+        {{'publish' | translate}}
+      </button>
     </div>
   </form>
 </div>

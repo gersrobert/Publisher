@@ -4,58 +4,43 @@
   "insertArticle": "Insert Article",
   "duplicate_article_in_collection": "Selected collection already contains this article",
   "title": "Title",
+  "category": "Categories",
+  "content": "Content",
+  "publish": "Publish",
+  "author": "Author",
+  "publisher": "Publisher",
   "description": "Description",
   "newCollection": "New Collection",
+  "login": "Login",
+  "register": "Register",
   "logout": "Logout",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "by": "By",
+  "for": "for",
+  "Add to Collection": "Add to Collection",
+  "Edit": "Edit",
+  "Delete": "Delete",
+  "Filter": "Filter",
+  "Apply Filter": "Apply Filter",
+  "likes": "likes",
+  "comments": "Comments",
+  "says": "says",
+  "add_comment_text": "Say something",
+  "add_comment_btn": "Add Comment",
+  "page": "Page",
+  "username": "Username",
+  "password": "Password",
+  "firstname": "Firstname",
+  "lastname": "Lastname",
+  "wrong_username": "This username is already taken.",
+  "password_again": "Password one more time",
+  "passwords_dont_match": "Passwords do not match.",
+  "incorrect_login": "Incorrect username or password",
+  "name": "Name",
+  "created_on": "Created on",
+  "number_of_likes": "Number of likes",
+  "chart_of_popularity": "Chart of popularity",
+  "registered": "Registered",
+  "roles": "Roles",
 
   "": ""
 }

@@ -1,14 +1,14 @@
 <div class="filter" *ngIf="enableFilter">
   <button mat-button (click)="toggleFilter()" class="filter-button">
     <mat-icon style="margin-right: .5em">filter_list</mat-icon>
-    <span>{{filterLabel}}</span>
+    <span>{{filterLabel | translate}}</span>
   </button>
 
   <form [formGroup]="filterFormGroup" *ngIf="showFilter">
 
     <div class="filter-row">
       <mat-form-field>
-        <mat-label>Title</mat-label>
+        <mat-label>{{'title' | translate}}</mat-label>
         <input matInput formControlName="title">
         <button *ngIf="filterFormGroup.get('title').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({title: ''})">
           <mat-icon>close</mat-icon>
@@ -16,7 +16,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Author</mat-label>
+        <mat-label>{{'author' | translate}}</mat-label>
         <input matInput formControlName="author">
         <button *ngIf="filterFormGroup.get('author').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({author: ''})">
           <mat-icon>close</mat-icon>
@@ -26,7 +26,7 @@
 
     <div class="filter-row">
       <mat-form-field>
-        <mat-label>Category</mat-label>
+        <mat-label>{{'category' | translate}}</mat-label>
         <input matInput formControlName="category">
         <button *ngIf="filterFormGroup.get('category').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({category: ''})">
           <mat-icon>close</mat-icon>
@@ -34,7 +34,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Publisher</mat-label>
+        <mat-label>{{'publisher' | translate }}</mat-label>
         <input matInput formControlName="publisher">
         <button *ngIf="filterFormGroup.get('publisher').value.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="filterFormGroup.patchValue({publisher: ''})">
           <mat-icon>close</mat-icon>
@@ -52,7 +52,7 @@
   </button>
 
   <div class="paging-text">
-    <span>Page </span>
+    <span>{{'page' | translate }} </span>
     <span [textContent]="pageIndex"></span>
   </div>
 
@@ -86,14 +86,14 @@
 
       <div class="like-count" mat-ripple (click)="likeArticle(article)">
         <mat-icon>{{article.liked ? 'favorite' : 'favorite_border'}}</mat-icon>
-        <span>{{article.likeCount}} likes</span>
+        <span>{{article.likeCount}} {{'likes' | translate }}</span>
       </div>
 
       <div class="article-authors">
-        <span>By </span>
+        <span>{{'by' | translate}} </span>
         <a *ngFor="let author of article.authors"
            [routerLink]="['/home/userDetail', author.id]">{{author.firstName + ' ' + author.lastName + ' '}}</a>
-        <span *ngIf="article.publisher.id">for </span>
+        <span *ngIf="article.publisher.id">{{'for' | translate}} </span>
         <a *ngIf="article.publisher.id" [routerLink]="['/home/publisherDetail', article.publisher.id]">{{article.publisher.name || ''}}</a>
       </div>
 
@@ -113,7 +113,7 @@
   </button>
 
   <div class="paging-text">
-    <span>Page </span>
+    <span>{{'page' | translate }} </span>
     <span [textContent]="pageIndex"></span>
   </div>
 

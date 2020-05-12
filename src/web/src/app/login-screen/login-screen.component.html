@@ -3,19 +3,23 @@
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
     <mat-form-field>
-      <mat-label>Username</mat-label>
+      <mat-label>{{'username' | translate}}</mat-label>
       <input matInput formControlName="username">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Password</mat-label>
+      <mat-label>{{'password' | translate}}</mat-label>
       <input matInput type="password" formControlName="password">
     </mat-form-field>
 
     <div>
-      <span class="error-message" *ngIf="showPasswordError">Incorrect username or password</span>
-      <button mat-button type="submit" class="submit-button">Login</button>
-      <button mat-button [routerLink]="['/home/register']">Register</button>
+      <span class="error-message" *ngIf="showPasswordError">{{'incorect_login' | translate}}</span>
+      <button mat-button type="submit" class="submit-button">
+        {{'login' | translate}}
+      </button>
+      <button mat-button [routerLink]="['/home/register']">
+        {{'register' | translate}}
+      </button>
     </div>
 
 

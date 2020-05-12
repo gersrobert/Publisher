@@ -10,7 +10,7 @@
         </div>
 
         <div class="collection-authors">
-          <span>By </span>
+          <span>{{'by' | translate}} </span>
           <a [routerLink]="['/home/userDetail', collection.author.id]">{{collection.author.firstName + ' ' + collection.author.lastName + ' '}}</a>
         </div>
 

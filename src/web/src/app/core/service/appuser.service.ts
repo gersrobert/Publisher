@@ -12,6 +12,9 @@ import {AbstractService} from './abstract.service';
 export class AppuserService extends AbstractService{
 
   public getAppUser(userId: string): Observable<AppUserDetailedDTO> {
+    if (!userId) {
+      return null;
+    }
     return this.httpClient.get<AppUserDetailedDTO>(environment.ROOT_URL + '/user/detailed/' + userId);
   }
 

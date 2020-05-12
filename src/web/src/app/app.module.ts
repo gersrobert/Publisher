@@ -37,6 +37,7 @@ import { CollectionDetailComponent } from './collection-detail/collection-detail
 import { CollectionListComponent } from './collection-list/collection-list.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MainTranslateModule} from './app.translate';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -56,31 +57,32 @@ import {MainTranslateModule} from './app.translate';
     CollectionDetailComponent,
     CollectionListComponent,
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatListModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MainRoutingModule,
-    MatPaginatorModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatCardModule,
-    MatChipsModule,
-    ShowdownModule,
-    MatRippleModule,
-    MatProgressSpinnerModule,
-    MatTreeModule,
-    MatSnackBarModule,
-    MainTranslateModule,
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatListModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MainRoutingModule,
+        MatPaginatorModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatCardModule,
+        MatChipsModule,
+        ShowdownModule,
+        MatRippleModule,
+        MatProgressSpinnerModule,
+        MatTreeModule,
+        MatSnackBarModule,
+        MainTranslateModule,
+        MatSelectModule,
+    ],
   providers: [LoginRedirect],
   bootstrap: [AppComponent]
 })

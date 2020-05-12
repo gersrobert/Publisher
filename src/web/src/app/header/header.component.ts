@@ -18,6 +18,11 @@ export class HeaderComponent implements OnInit {
               private domSanitizer: DomSanitizer,
               private router: Router,
               private sessionService: SessionService) {
+    this.router.events.subscribe((event: any) => {
+      if (event.routerEvent) {
+        this.ngOnInit();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -36,9 +41,5 @@ export class HeaderComponent implements OnInit {
         '../assets/img/publisher_logo.svg')
     );
   }
-
-  public logout() {
-    sessionStorage.removeItem(SessionService.SESSION_KEY);
-    this.currentUser = null;
-  }
 }
+

@@ -8,20 +8,4 @@
   <div *ngIf="currentUser" class="current-user">
     <span>{{currentUser.firstName}} {{currentUser.lastName}}</span>
   </div>
-
-  <button mat-icon-button [matMenuTriggerFor]="menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item [routerLink]="['/home/insertArticle']">
-      <span>Create article</span>
-    </button>
-    <button mat-menu-item [routerLink]="['/home/login']">
-      <span>Login</span>
-    </button>
-    <button mat-menu-item [routerLink]="['/home/login']" (click)="logout()">
-      <span>Logout</span>
-    </button>
-  </mat-menu>
 </mat-toolbar>

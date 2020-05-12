@@ -1,4 +1,4 @@
-<mat-list>
+<mat-list *ngIf="showMenu">
   <mat-list-item>
     <button mat-stroked-button color="basic" [routerLink]="['/home/collectionList']">
       <span>{{'collections' | translate}}</span>
@@ -13,5 +13,23 @@
     <button mat-stroked-button color="basic" [routerLink]="['/home/insertArticle']">
       <span>{{'insertArticle' | translate}}</span>
     </button>
+  </mat-list-item>
+  <mat-list-item>
+    <button mat-stroked-button color="basic" [routerLink]="['/home/login']" (click)="logout()">
+      <span>{{'logout' | translate}}</span>
+    </button>
+  </mat-list-item>
+  <mat-list-item>
+    <button mat-stroked-button color="basic" [mat-menu-trigger-for]="langMenu">
+      <span>{{currentLanguage.label}}</span>
+      <mat-icon style="position:absolute; right: 4px; top: 4px;">arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #langMenu="matMenu" xPosition="after" yPosition="below">
+      <div *ngFor="let lang of languages">
+        <button mat-button (click)="setLanguage(lang)" style="color: whitesmoke">
+          <span>{{lang.label}}</span>
+        </button>
+      </div>
+    </mat-menu>
   </mat-list-item>
 </mat-list>

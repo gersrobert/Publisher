@@ -25,7 +25,7 @@ export class UserDetailComponent implements OnInit {
       this.userId = params['id'];
     });
 
-    this.appUserService.getAppUser(this.userId).subscribe(response => {
+    this.appUserService.getAppUser(this.userId)?.subscribe(response => {
       this.appUser = response;
 
       if (this.appUser.roles.indexOf('writer') > -1) {

@@ -58,6 +58,10 @@ export class ArticleService extends AbstractService {
     return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article/author/' + authorId + '/' + lower + '-' + upper, {headers: this.getAuthHeaders()});
   }
 
+  public getArticlesByPublisher(publisherId: string, page: number, pageSize: number): Observable<ArticleSimpleListDTO> {
+    return this.httpClient.get<ArticleSimpleListDTO>(environment.ROOT_URL + '/article/publisher/' + publisherId + '/' + page + '/' + pageSize, {headers: this.getAuthHeaders()});
+  }
+
   public insertArticle(articleForm: FormGroup): Observable<IdDTO> {
     let id = articleForm.value['id'];
     let title = articleForm.value['title'];

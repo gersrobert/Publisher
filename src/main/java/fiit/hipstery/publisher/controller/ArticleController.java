@@ -11,9 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Id;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -95,17 +92,18 @@ public class ArticleController extends AbstractController{
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/forUser/{id}")
-    public ResponseEntity<List<ArticleSimpleDTO>> getArticleListForUser(@PathVariable String id) {
-        List<ArticleSimpleDTO> article;
+    @GetMapping("/publisher/{publisherId}/{page}/{pageSize}")
+    public ResponseEntity<ArticleSimpleListDTO> getArticlesByPublisher(
+            @PathVariable String publisherId, @PathVariable int page, @PathVariable int pageSize, @RequestHeader("Auth-Token") String currentUserId) {
+        ArticleSimpleListDTO response;
         try {
-            article = articleService.getArticleListForUser(UUID.fromString(id));
+            response = articleService.getArticlesByPublisher(UUID.fromString(publisherId), UUID.fromString(currentUserId), page, pageSize);
         } catch (Exception e) {
-            logger.error("Error getting some strange bobo shit", e);
+            logger.error("Error getting list of articles published by : " + publisherId, e);
             throw new InternalServerException(e);
         }
 
-        return ResponseEntity.of(Optional.of(article));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(value = "/insert", headers = "Accept=application/json", produces = "application/json")

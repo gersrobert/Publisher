@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AppUserDetailedDTO, AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO, CollectionDTO} from '../core/dto/dtos';
+import {AppUserDetailedDTO, AppUserDTO, ArticleSimpleDTO, ArticleSimpleListDTO, CollectionDTO, Publisher} from '../core/dto/dtos';
 import {ArticleService} from '../core/service/article.service';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -18,6 +18,9 @@ export class ArticleListComponent implements OnInit {
 
   @Input()
   collection: CollectionDTO;
+
+  @Input()
+  publisher: Publisher;
 
   @Input()
   enablePaging = true;
@@ -94,6 +97,8 @@ export class ArticleListComponent implements OnInit {
     let request: Observable<ArticleSimpleListDTO>;
     if (this.writer != null) {
       request = this.filterByAuthor();
+    } else if (this.publisher != null) {
+      request = this.filterByPublisher();
     } else if (this.collection != null) {
       request = new Observable<ArticleSimpleListDTO>((observer) => {
         const val = {
@@ -124,6 +129,10 @@ export class ArticleListComponent implements OnInit {
 
   private filterByAuthor() {
     return this.articleService.getArticlesByAuthor(this.writer.id, this.getLower(), this.getUpper());
+  }
+
+  private filterByPublisher() {
+    return this.articleService.getArticlesByPublisher(this.publisher.id, this.pageIndex, this.pageSize);
   }
 
   private filterByCriteria() {

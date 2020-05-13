@@ -2,11 +2,16 @@ package fiit.hipstery.publisher.bl.impl;
 
 import fiit.hipstery.publisher.bl.service.ArticleService;
 import fiit.hipstery.publisher.dto.*;
+import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.AppUserArticleRelation;
+import fiit.hipstery.publisher.entity.Article;
 import fiit.hipstery.publisher.repository.ArticleRepository;
+import fiit.hipstery.publisher.repository.RelationRepository;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -18,6 +23,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -28,6 +34,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Autowired
 	private ArticleRepository articleRepository;
+
+	@Autowired
+	private RelationRepository relationRepository;
+
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
 	public ArticleDetailedDTO getArticleById(UUID id, UUID currentUser) {
@@ -285,6 +297,30 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleSimpleListDTO;
 	}
 
+	@Override
+	public ArticleSimpleListDTO getArticlesByPublisher(UUID publisherId, UUID currentUserId, int page, int pageSize) {
+		List<Article> articles = articleRepository.getAllByPublisherIdOrderByLikeCountDesc(publisherId, PageRequest.of(page - 1, pageSize + 1));
+		List<ArticleSimpleDTO> dtos = articles.subList(0, Math.min(pageSize, articles.size())).stream().map(article -> {
+			boolean liked = relationRepository.existsByAppUser_IdAndArticle_IdAndRelationType(
+					currentUserId,
+					article.getId(),
+					AppUserArticleRelation.RelationType.LIKE.toString()
+			);
+			article.setLiked(liked);
+
+			List<AppUser> authors = articleRepository.getAuthor(article.getId());
+			article.setAuthors(authors);
+
+			return modelMapper.map(article, ArticleSimpleDTO.class);
+
+		}).collect(Collectors.toList());
+
+		ArticleSimpleListDTO dto = new ArticleSimpleListDTO();
+		dto.setHasMore(articles.size() > pageSize);
+		dto.setArticles(dtos);
+		return dto;
+	}
+
 	@Transactional
 	@Override
 	public String insertArticle(ArticleInsertDTO article) {
@@ -452,11 +488,6 @@ public class ArticleServiceImpl implements ArticleService {
 				.executeUpdate();
 
 		return ((BigInteger) likeCount).intValue();
-	}
-
-	@Override
-	public List<ArticleSimpleDTO> getArticleListForUser(UUID userId) {
-		return null;
 	}
 
 	@Override

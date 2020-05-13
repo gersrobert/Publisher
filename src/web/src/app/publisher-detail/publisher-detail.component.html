@@ -1,20 +1,23 @@
 <mat-card>
   <mat-card-content>
     <div>
-      <span class="leftPart">{{'name' | translate}} :</span>
+      <span class="leftPart">{{'name' | translate}}:</span>
       <span class="rightPart" *ngIf="publisher">{{publisher.name}}</span>
     </div>
     <div>
-      <span class="leftPart">{{'created_on' | translate}} :</span>
+      <span class="leftPart">{{'created_on' | translate}}:</span>
       <span class="rightPart" *ngIf="publisher">{{publisher.createdAt | date:'mediumDate'}}</span>
     </div>
     <div>
-      <span class="leftPart">{{'number_of_likes' | translate}} :</span>
+      <span class="leftPart">{{'number_of_likes' | translate}}:</span>
       <span class="rightPart" *ngIf="publisher">{{publisher.likeCount}}</span>
     </div>
     <div>
-      <span class="leftPart">{{'chart_of_popularity' | translate}}  :</span>
-      <a class="rightPart" [routerLink]="['/home/topPublishers']" *ngIf="publisher">{{publisher.order}}</a>
+      <span class="leftPart">{{'chart_of_popularity' | translate}}:</span>
+      <a class="rightPart" [routerLink]="['/home/topPublishers']" *ngIf="publisher">#{{publisher.order}}</a>
     </div>
   </mat-card-content>
 </mat-card>
+
+<mat-divider></mat-divider>
+<app-article-list *ngIf="publisher" [publisher]="publisher" [enableFilter]="false" [enablePaging]="true"></app-article-list>

@@ -8,7 +8,7 @@
       <span class="leftPart">{{'registered' | translate}} :</span>
       <span class="rightPart" *ngIf="appUser">{{appUser.createdAt | date:'mediumDate'}}</span>
     </div>
-    <div style="height: 50px">
+    <div>
       <span class="rolesLeftPart">{{'roles' | translate}} :</span>
       <div class="rolesRightPart">
         <mat-chip-list *ngIf="appUser">
@@ -19,5 +19,5 @@
   </mat-card-content>
 </mat-card>
 
-<br>
-<app-article-list *ngIf="isWriter" [writer]="appUser" [enableFilter]="false" [enablePaging]="false"></app-article-list>
+<mat-divider></mat-divider>
+<app-article-list *ngIf="isWriter" [writer]="appUser" [enableFilter]="false" [enablePaging]="true"></app-article-list>

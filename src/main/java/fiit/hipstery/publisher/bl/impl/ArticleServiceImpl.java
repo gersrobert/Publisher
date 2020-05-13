@@ -299,8 +299,8 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public ArticleSimpleListDTO getArticlesByPublisher(UUID publisherId, UUID currentUserId, int page, int pageSize) {
-		List<Article> articles = articleRepository.getAllByPublisherIdOrderByLikeCountDesc(publisherId, PageRequest.of(page, pageSize));
-		List<ArticleSimpleDTO> dtos = articles.stream().map(article -> {
+		List<Article> articles = articleRepository.getAllByPublisherIdOrderByLikeCountDesc(publisherId, PageRequest.of(page - 1, pageSize + 1));
+		List<ArticleSimpleDTO> dtos = articles.subList(0, Math.min(pageSize, articles.size())).stream().map(article -> {
 			boolean liked = relationRepository.existsByAppUser_IdAndArticle_IdAndRelationType(
 					currentUserId,
 					article.getId(),
@@ -316,7 +316,7 @@ public class ArticleServiceImpl implements ArticleService {
 		}).collect(Collectors.toList());
 
 		ArticleSimpleListDTO dto = new ArticleSimpleListDTO();
-		dto.setHasMore(true);
+		dto.setHasMore(articles.size() > pageSize);
 		dto.setArticles(dtos);
 		return dto;
 	}

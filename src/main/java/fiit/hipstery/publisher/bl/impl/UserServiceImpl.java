@@ -111,6 +111,7 @@ public class UserServiceImpl implements UserService {
         for (Role role : user.getRoles()) {
             if (role.getName().equals("reader")) {
                 actions.add("addToCollection");
+                actions.add("downloadPdf");
             }
             else if (role.getName().equals("writer")) {
                 for (AppUser author : authors) {

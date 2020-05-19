@@ -36,6 +36,8 @@
         </div>
       </mat-menu>
 
+      <a #downloadPdfLink [href]="pdfFileUrl" download="text.txt" style="display: none"></a>
+
       <mat-menu #collectionsMenu="matMenu">
         <button mat-menu-item *ngFor="let collection of collections" (click)="assignToCollection(collection)">
           <span>{{collection.title}}</span>

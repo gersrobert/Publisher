@@ -9,6 +9,7 @@ import {CollectionService} from '../core/service/collection.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslateService} from '@ngx-translate/core';
 import {SessionService} from '../core/service/session.service';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-article-detail',
@@ -40,7 +41,15 @@ export class ArticleDetailComponent implements OnInit {
       label: 'Delete',
       action: 'delete',
     },
+    downloadPdf: {
+      label: 'Download PDF',
+      action: 'downloadPdf',
+    },
   };
+
+  @ViewChild('downloadPdfLink')
+  downloadPdfLink;
+  pdfFileUrl: SafeResourceUrl;
 
   collections: CollectionDTO[] = [];
 
@@ -52,7 +61,8 @@ export class ArticleDetailComponent implements OnInit {
               private formBuilder: FormBuilder,
               private snackbar: MatSnackBar,
               private router: Router,
-              public translate: TranslateService
+              public translate: TranslateService,
+              private sanitizer: DomSanitizer
   ) {
   }
 
@@ -79,6 +89,8 @@ export class ArticleDetailComponent implements OnInit {
       for (let item of response) {
         if (item === 'addToCollection') {
           this.actions.push(this.actionList.addToCollection);
+        } else if (item === 'downloadPdf') {
+          this.actions.push(this.actionList.downloadPdf);
         } else if (item === 'edit') {
           this.actions.push(this.actionList.edit);
         } else if (item === 'delete') {
@@ -103,6 +115,8 @@ export class ArticleDetailComponent implements OnInit {
       );
     } else if (action === 'addToCollection') {
       this.collectionService.getCollectionForUser().subscribe(result => this.collections = result);
+    } else if (action === 'downloadPdf') {
+      this.downloadPdf();
     }
   }
 
@@ -162,6 +176,13 @@ export class ArticleDetailComponent implements OnInit {
         }
       });
     });
+  }
+
+  public downloadPdf() {
+    const data = this.article.title; // TODO call backend
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    this.pdfFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+    this.downloadPdfLink.nativeElement.click();
   }
 }
 

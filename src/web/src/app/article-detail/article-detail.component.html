@@ -36,7 +36,7 @@
         </div>
       </mat-menu>
 
-      <a #downloadPdfLink [href]="pdfFileUrl" download="text.txt" style="display: none"></a>
+      <a #downloadPdfLink [href]="pdfFileUrl" [download]="article.title.split(' ').join('-') + '.pdf'" style="display: none"></a>
 
       <mat-menu #collectionsMenu="matMenu">
         <button mat-menu-item *ngFor="let collection of collections" (click)="assignToCollection(collection)">

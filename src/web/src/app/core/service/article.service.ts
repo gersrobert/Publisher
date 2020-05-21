@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {ArticleDetailedDTO, ArticleSimpleListDTO, IdDTO} from '../dto/dtos';
-import {ArticleSimpleDTO} from '../dto/dtos';
+import {HttpHeaders, HttpParams} from '@angular/common/http';
+import {ArticleDetailedDTO, ArticleSimpleListDTO, DataDTO, IdDTO} from '../dto/dtos';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
-import {SessionService} from './session.service';
 import {FormGroup} from '@angular/forms';
 import {AbstractService} from './abstract.service';
 
@@ -65,7 +63,7 @@ export class ArticleService extends AbstractService {
   public insertArticle(articleForm: FormGroup): Observable<IdDTO> {
     let id = articleForm.value['id'];
     let title = articleForm.value['title'];
-    let categories = articleForm.value['categories'].split(", ");
+    let categories = articleForm.value['categories'].split(', ');
     let content = articleForm.value['content'];
     let authors = [this.sessionService.getSession()];
 
@@ -96,7 +94,7 @@ export class ArticleService extends AbstractService {
   public insertComment(articleId: string, commentForm: FormGroup) {
 
     const body = {
-      content: commentForm.value["comment"],
+      content: commentForm.value['comment'],
       articleId: articleId,
       appUserId: this.sessionService.getSession()
     };
@@ -117,5 +115,9 @@ export class ArticleService extends AbstractService {
 
   public unlikeArticle(articleId: string): Observable<number> {
     return this.httpClient.put<number>(environment.ROOT_URL + '/article/unlike/' + articleId, null, {headers: this.getAuthHeaders()});
+  }
+
+  public getPdf(articleId: string): Observable<DataDTO> {
+    return this.httpClient.get<DataDTO>(environment.ROOT_URL + '/article/export/' + articleId, {headers: this.getAuthHeaders()});
   }
 }

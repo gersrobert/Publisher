@@ -179,10 +179,11 @@ export class ArticleDetailComponent implements OnInit {
   }
 
   public downloadPdf() {
-    const data = this.article.title; // TODO call backend
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    this.pdfFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
-    this.downloadPdfLink.nativeElement.click();
+    this.articleService.getPdf(this.article.id).subscribe(response => {
+      const content = encodeURIComponent(response.data);
+      this.pdfFileUrl = this.sanitizer.bypassSecurityTrustUrl('data:application/pdf;base64,' + content);
+      this.downloadPdfLink.nativeElement.click();
+    });
   }
 }
 

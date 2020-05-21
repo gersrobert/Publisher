@@ -70,3 +70,7 @@ export class CollectionDTO {
   public articles: ArticleSimpleDTO[];
   public createdAt: Date;
 }
+
+export class DataDTO {
+  public data: string;
+}

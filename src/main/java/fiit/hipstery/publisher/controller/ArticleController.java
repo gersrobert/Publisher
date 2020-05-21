@@ -1,6 +1,7 @@
 package fiit.hipstery.publisher.controller;
 
 import fiit.hipstery.publisher.bl.service.ArticleService;
+import fiit.hipstery.publisher.bl.service.PdfService;
 import fiit.hipstery.publisher.dto.*;
 import fiit.hipstery.publisher.exception.InternalServerException;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ public class ArticleController extends AbstractController{
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private PdfService pdfService;
 
     Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
@@ -170,6 +174,19 @@ public class ArticleController extends AbstractController{
             response = articleService.unlikeArticle(UUID.fromString(articleId), UUID.fromString(userId));
         } catch (Exception e) {
             logger.error("Error unliking article", e);
+            throw new InternalServerException(e);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "export/{articleId}")
+    public ResponseEntity<DataDTO> exportArticle(@PathVariable String articleId) {
+        DataDTO response = new DataDTO();
+        try {
+            response.setData(pdfService.generatePdf(UUID.fromString(articleId)));
+        } catch (Exception e) {
+            logger.error("Error exporting article", e);
             throw new InternalServerException(e);
         }
 

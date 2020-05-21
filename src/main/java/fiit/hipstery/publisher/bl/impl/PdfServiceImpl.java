@@ -40,6 +40,7 @@ public class PdfServiceImpl implements PdfService {
 		document.close();
 
 		try {
+			// TODO remove after testing
 			File tempFile = File.createTempFile("article_", "_" + article.getId().toString() + ".pdf", null);
 			FileOutputStream fos = new FileOutputStream(tempFile);
 			fos.write(stream.toByteArray());

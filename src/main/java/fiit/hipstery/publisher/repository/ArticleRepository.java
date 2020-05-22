@@ -19,7 +19,7 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
 	List<Article> getAllByPublisherIdOrderByLikeCountDesc(UUID publisher_id, Pageable page);
 
 	@Query("select rel.appUser from AppUserArticleRelation rel where rel.article.id = :article and rel.relationType='AUTHOR'")
-	List<AppUser> getAuthor(@Param("article") UUID articleId);
+	List<AppUser> getAuthors(@Param("article") UUID articleId);
 
 	default Publisher getPublisher(UUID articleId) {
 		return getOne(articleId).getPublisher();

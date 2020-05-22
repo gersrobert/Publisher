@@ -308,7 +308,7 @@ public class ArticleServiceImpl implements ArticleService {
 			);
 			article.setLiked(liked);
 
-			List<AppUser> authors = articleRepository.getAuthor(article.getId());
+			List<AppUser> authors = articleRepository.getAuthors(article.getId());
 			article.setAuthors(authors);
 
 			return modelMapper.map(article, ArticleSimpleDTO.class);

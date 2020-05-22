@@ -1,6 +1,5 @@
 package fiit.hipstery.publisher.bl.impl;
 
-import com.github.javafaker.App;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import fiit.hipstery.publisher.bl.service.PdfService;
@@ -20,7 +19,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PdfServiceImpl implements PdfService {
@@ -33,21 +34,25 @@ public class PdfServiceImpl implements PdfService {
 	@Override
 	public String generatePdf(UUID articleId) throws DocumentException {
 		Article article = articleRepository.getOne(articleId);
+		List<AppUser> authorList = articleRepository.getAuthors(articleId);
 
 		Document document = new Document();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		PdfWriter.getInstance(document, stream);
 
 		document.open();
-		Font metadataPrimaryFont = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-		Font metadataSecondaryFont = FontFactory.getFont(FontFactory.COURIER, 14, BaseColor.BLACK);
-		Font contentFont = FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK);
+		Font metadataPrimaryFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK);
+		Font metadataSecondaryFont = FontFactory.getFont(FontFactory.HELVETICA, 14, BaseColor.BLACK);
+		Font contentFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
 
 
-		Chunk title = new Chunk("Title : " + article.getTitle(), metadataPrimaryFont);
+		Chunk title = new Chunk(article.getTitle(), metadataPrimaryFont);
 		Phrase phTitle = new Phrase(title);
 
-		String categoryNames = new String();
+		List<String> authorStrings = authorList.stream().map(a -> a.getFirstName() + " " + a.getLastName()).collect(Collectors.toList());
+		String authorString = String.join(", ", authorStrings);
+
+		String categoryNames = "";
 		for (Category category : article.getCategories()) {
 			if (categoryNames.isBlank()) {
 				categoryNames = category.getName();
@@ -55,24 +60,31 @@ public class PdfServiceImpl implements PdfService {
 				categoryNames += ", " + category.getName();
 			}
 		}
-		Chunk categories = new Chunk("Categories : " + categoryNames, metadataSecondaryFont);
+
+		Chunk authors = new Chunk("Authors: " + authorString, metadataSecondaryFont);
+		Phrase phAuthors = new Phrase(authors);
+
+		Chunk categories = new Chunk("Categories: " + categoryNames, metadataSecondaryFont);
 		Phrase phCategories = new Phrase(categories);
 
-		Chunk publisher = new Chunk("Publisher : " + article.getPublisher().getName(), metadataSecondaryFont);
+		Chunk publisher = new Chunk("Publisher: " + article.getPublisher().getName(), metadataSecondaryFont);
 		Phrase phPublisher = new Phrase(publisher);
 
-		Chunk createdAt = new Chunk("Published : " + DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(article.getCreatedAt()), metadataSecondaryFont);
+		Chunk createdAt = new Chunk("Published: " + DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(article.getCreatedAt()), metadataSecondaryFont);
 		Phrase phCreatedAt = new Phrase(createdAt);
 
-		Chunk likes = new Chunk("Number Of Likes : " + String.valueOf(article.getLikeCount()), metadataSecondaryFont);
+		Chunk likes = new Chunk("Number Of Likes: " + String.valueOf(article.getLikeCount()), metadataSecondaryFont);
 		Phrase phLikes = new Phrase(likes);
 
 		Chunk content = new Chunk(article.getContent(), contentFont);
 		Phrase phContent = new Phrase(content);
 
 		Paragraph ph = new Paragraph();
+		ph.setAlignment(Element.ALIGN_JUSTIFIED);
 		ph.add(phTitle);
 		ph.add("\n");
+		ph.add("\n");
+		ph.add(phAuthors);
 		ph.add("\n");
 		ph.add(phCategories);
 		ph.add("\n");
@@ -93,7 +105,7 @@ public class PdfServiceImpl implements PdfService {
 
 		for (Comment comment : article.getComments()) {
 			String commentAuthor = comment.getAuthor().getFirstName() + " " + comment.getAuthor().getLastName();
-			Chunk commentChunk = new Chunk(commentAuthor + " : " + comment.getContent(), contentFont);
+			Chunk commentChunk = new Chunk(commentAuthor + ": " + comment.getContent(), contentFont);
 			Phrase phComment = new Phrase(commentChunk);
 			ph.add(phComment);
 			ph.add("\n");
@@ -102,17 +114,6 @@ public class PdfServiceImpl implements PdfService {
 		document.add(ph);
 
 		document.close();
-
-		try {
-			// TODO remove after testing
-			File tempFile = File.createTempFile("article_", "_" + article.getId().toString() + ".pdf", null);
-			FileOutputStream fos = new FileOutputStream(tempFile);
-			fos.write(stream.toByteArray());
-			logger.info(tempFile.getAbsolutePath());
-		} catch (IOException e) {
-			logger.error("error saving temp file", e);
-		}
-
 		return Base64.getEncoder().encodeToString(stream.toByteArray());
 	}
 }

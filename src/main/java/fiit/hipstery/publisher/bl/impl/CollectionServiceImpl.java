@@ -61,7 +61,7 @@ public class CollectionServiceImpl implements CollectionService {
 					);
 			article.setLiked(liked);
 
-			List<AppUser> authors = articleRepository.getAuthor(article.getId());
+			List<AppUser> authors = articleRepository.getAuthors(article.getId());
 			article.setAuthors(authors);
 
 		}).collect(Collectors.toList());

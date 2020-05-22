@@ -1,14 +1,10 @@
 package fiit.hipstery.publisher.bl.impl;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javafaker.App;
 import fiit.hipstery.publisher.bl.service.UserService;
 import fiit.hipstery.publisher.dto.AppUserDTO;
 import fiit.hipstery.publisher.dto.AppUserDetailedDTO;
 import fiit.hipstery.publisher.dto.AppUserWithPasswordDTO;
 import fiit.hipstery.publisher.entity.AppUser;
-import fiit.hipstery.publisher.entity.AppUserArticleRelation;
 import fiit.hipstery.publisher.entity.Publisher;
 import fiit.hipstery.publisher.entity.Role;
 import fiit.hipstery.publisher.repository.ArticleRepository;
@@ -21,8 +17,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import javax.validation.constraints.Null;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -104,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<String> getActionsForArticle(UUID userId, UUID articleId) {
         AppUser user = entityManager.find(AppUser.class, userId);
-        List<AppUser> authors = articleRepository.getAuthor(articleId);
+        List<AppUser> authors = articleRepository.getAuthors(articleId);
         Publisher publisher = articleRepository.getPublisher(articleId);
 
         Set<String> actions = new HashSet<>();

@@ -1,6 +1,5 @@
 package fiit.hipstery.publisher.repository;
 
-import fiit.hipstery.publisher.entity.AppUser;
 import fiit.hipstery.publisher.entity.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 

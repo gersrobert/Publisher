@@ -1,7 +1,6 @@
 package fiit.hipstery.publisher.bl.impl;
 
 import fiit.hipstery.publisher.bl.service.PublisherService;
-import fiit.hipstery.publisher.dto.PublisherDTO;
 import fiit.hipstery.publisher.dto.PublisherDetailedDTO;
 import fiit.hipstery.publisher.dto.PublisherLeadershipDTO;
 import org.springframework.stereotype.Component;

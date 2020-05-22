@@ -23,4 +23,10 @@ public abstract class InitDbScript implements Runnable {
 
 	@Autowired
 	protected PublisherFaker publisherFaker;
+
+	/**
+	 * Override this method to implement script logic
+	 */
+	@Override
+	public abstract void run();
 }

@@ -1,8 +1,6 @@
 package fiit.hipstery.publisher.dto;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 public class ArticleSimpleListDTO {
 	protected Collection<ArticleSimpleDTO> articles;

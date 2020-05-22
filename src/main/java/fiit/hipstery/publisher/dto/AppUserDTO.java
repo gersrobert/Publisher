@@ -2,8 +2,6 @@ package fiit.hipstery.publisher.dto;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-import java.time.LocalDateTime;
-
 public class AppUserDTO extends AbstractDTO {
 
 	protected String firstName;

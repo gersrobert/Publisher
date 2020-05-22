@@ -1,8 +1,6 @@
 package fiit.hipstery.publisher.controller;
 
 import fiit.hipstery.publisher.bl.service.PublisherService;
-import fiit.hipstery.publisher.dto.ArticleDetailedDTO;
-import fiit.hipstery.publisher.dto.PublisherDTO;
 import fiit.hipstery.publisher.dto.PublisherDetailedDTO;
 import fiit.hipstery.publisher.dto.PublisherLeadershipDTO;
 import fiit.hipstery.publisher.exception.InternalServerException;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller

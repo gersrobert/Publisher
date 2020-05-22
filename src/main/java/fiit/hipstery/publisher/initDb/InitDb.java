@@ -1,9 +1,6 @@
 package fiit.hipstery.publisher.initDb;
 
-import fiit.hipstery.publisher.controller.ArticleController;
 import fiit.hipstery.publisher.initDb.scripts.IndexScript;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +15,12 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Utility class for inserting default data into database.
+ * Executes all instances of {@link InitDbScript} bean.
+ */
 @Component
 @Profile("initDb")
 public class InitDb implements ApplicationListener<ContextRefreshedEvent> {
@@ -55,7 +55,7 @@ public class InitDb implements ApplicationListener<ContextRefreshedEvent> {
 		entityManager.flush();
 		transactionManager.commit(transaction);
 
-//		addArticles.insert();
+		addArticles.insert();
 
 		transaction = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		indexScript.run();

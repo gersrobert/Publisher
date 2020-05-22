@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Extend this class to execute a script which parses a .csv file
+ * @param <E> Entity which this scripts inserts
+ */
 @Profile("initDb")
 public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbScript {
 
@@ -36,8 +40,17 @@ public abstract class InitDbCsvScript<E extends AbstractEntity> extends InitDbSc
 		});
 	}
 
+	/**
+	 * Specifies file containing entity data
+	 * @return .csv resource file
+	 */
 	protected abstract Resource getDataFile();
 
+	/**
+	 * Map one row from .csv resource file to Entity class
+	 * @param row from .csv file
+	 * @return parsed Entity
+	 */
 	protected abstract E mapRowToEntity(List<String> row);
 
 	private List<List<String>> getData(Resource resource) {

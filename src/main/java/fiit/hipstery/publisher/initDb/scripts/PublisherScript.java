@@ -22,12 +22,7 @@ public class PublisherScript extends InitDbScript {
 	public void run() {
 		SourcesDTO sources = publisherFaker.getSources();
 
-//		MutableInt count = new MutableInt(0);
 		sources.getSources().forEach(source -> {
-//			if (count.getAndIncrement() > 10) {
-//				return;
-//			}
-
 			Publisher publisher = new Publisher();
 			publisher.setName(source.getName());
 

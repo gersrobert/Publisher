@@ -1,9 +1,6 @@
 package fiit.hipstery.publisher.entity;
 
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
-import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.util.List;

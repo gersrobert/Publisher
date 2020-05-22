@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @Profile("initDb")
-public class BeanConfig {
+public class BeanConfigInitDb {
 
 	@Bean
 	Faker faker() {

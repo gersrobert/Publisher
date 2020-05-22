@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
         return dto;
     }
 
-
     @Override
     @Transactional
     public boolean registerAppUser(AppUserWithPasswordDTO user) {

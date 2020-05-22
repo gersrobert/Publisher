@@ -11,6 +11,8 @@ public interface UserService {
 
     /**
      * Authenticate user based on userName and password
+     * @param userName
+     * @param passwordHash sha256 hash of password for maximum security :D
      * @return id of the logged user
      */
     UUID authenticateLogin(String userName, String passwordHash);
